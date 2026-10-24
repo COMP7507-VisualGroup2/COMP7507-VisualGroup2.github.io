@@ -1,0 +1,181 @@
+quarter,component,receipts_sgd_m
+2019-Q1,Total,6600.0
+2019-Q2,Total,6566.0
+2019-Q3,Total,7383.0
+2019-Q4,Total,7140.0
+2020-Q1,Total,4029.0
+2020-Q2,Total,158.0
+2020-Q3,Total,249.0
+2020-Q4,Total,394.0
+2021-Q1,Total,425.0
+2021-Q2,Total,403.0
+2021-Q3,Total,362.0
+2021-Q4,Total,704.0
+2022-Q1,Total,1417.0
+2022-Q2,Total,3156.0
+2022-Q3,Total,4511.0
+2022-Q4,Total,5094.0
+2023-Q1,Total,6018.0
+2023-Q2,Total,6428.0
+2023-Q3,Total,7862.0
+2023-Q4,Total,6848.0
+2024-Q1,Total,8077.0
+2024-Q2,Total,6846.0
+2024-Q3,Total,7498.0
+2024-Q4,Total,7360.0
+2025-Q1,Total,8087.0
+2025-Q2,Total,7679.0
+2025-Q3,Total,8339.0
+2025-Q4,Total,8650.0
+2026-Q1,Total,8511.0
+2026-Q2,Total,7204.0
+2019-Q1,Accommodation,1256.0
+2019-Q2,Accommodation,1309.0
+2019-Q3,Accommodation,1525.0
+2019-Q4,Accommodation,1439.0
+2020-Q1,Accommodation,862.0
+2020-Q2,Accommodation,13.0
+2020-Q3,Accommodation,30.0
+2020-Q4,Accommodation,117.0
+2021-Q1,Accommodation,108.0
+2021-Q2,Accommodation,102.0
+2021-Q3,Accommodation,123.0
+2021-Q4,Accommodation,247.0
+2022-Q1,Accommodation,500.0
+2022-Q2,Accommodation,546.0
+2022-Q3,Accommodation,892.0
+2022-Q4,Accommodation,1025.0
+2023-Q1,Accommodation,1009.0
+2023-Q2,Accommodation,1022.0
+2023-Q3,Accommodation,1307.0
+2023-Q4,Accommodation,1133.0
+2024-Q1,Accommodation,1314.0
+2024-Q2,Accommodation,1128.0
+2024-Q3,Accommodation,1416.0
+2024-Q4,Accommodation,1283.0
+2025-Q1,Accommodation,1391.0
+2025-Q2,Accommodation,1170.0
+2025-Q3,Accommodation,1337.0
+2025-Q4,Accommodation,1516.0
+2026-Q1,Accommodation,1353.0
+2026-Q2,Accommodation,1073.0
+2019-Q1,Food & Beverage,588.0
+2019-Q2,Food & Beverage,587.0
+2019-Q3,Food & Beverage,673.0
+2019-Q4,Food & Beverage,649.0
+2020-Q1,Food & Beverage,376.0
+2020-Q2,Food & Beverage,14.0
+2020-Q3,Food & Beverage,22.0
+2020-Q4,Food & Beverage,42.0
+2021-Q1,Food & Beverage,48.0
+2021-Q2,Food & Beverage,45.0
+2021-Q3,Food & Beverage,36.0
+2021-Q4,Food & Beverage,63.0
+2022-Q1,Food & Beverage,113.0
+2022-Q2,Food & Beverage,254.0
+2022-Q3,Food & Beverage,389.0
+2022-Q4,Food & Beverage,526.0
+2023-Q1,Food & Beverage,868.0
+2023-Q2,Food & Beverage,990.0
+2023-Q3,Food & Beverage,1150.0
+2023-Q4,Food & Beverage,969.0
+2024-Q1,Food & Beverage,1103.0
+2024-Q2,Food & Beverage,948.0
+2024-Q3,Food & Beverage,1141.0
+2024-Q4,Food & Beverage,1077.0
+2025-Q1,Food & Beverage,1259.0
+2025-Q2,Food & Beverage,1121.0
+2025-Q3,Food & Beverage,1280.0
+2025-Q4,Food & Beverage,1252.0
+2026-Q1,Food & Beverage,1222.0
+2026-Q2,Food & Beverage,1011.0
+2019-Q1,Shopping,1371.0
+2019-Q2,Shopping,1386.0
+2019-Q3,Shopping,1426.0
+2019-Q4,Shopping,1457.0
+2020-Q1,Shopping,656.0
+2020-Q2,Shopping,8.0
+2020-Q3,Shopping,11.0
+2020-Q4,Shopping,28.0
+2021-Q1,Shopping,45.0
+2021-Q2,Shopping,42.0
+2021-Q3,Shopping,31.0
+2021-Q4,Shopping,56.0
+2022-Q1,Shopping,211.0
+2022-Q2,Shopping,689.0
+2022-Q3,Shopping,845.0
+2022-Q4,Shopping,1039.0
+2023-Q1,Shopping,1098.0
+2023-Q2,Shopping,1223.0
+2023-Q3,Shopping,1394.0
+2023-Q4,Shopping,1238.0
+2024-Q1,Shopping,1338.0
+2024-Q2,Shopping,1225.0
+2024-Q3,Shopping,1330.0
+2024-Q4,Shopping,1305.0
+2025-Q1,Shopping,1305.0
+2025-Q2,Shopping,1194.0
+2025-Q3,Shopping,1366.0
+2025-Q4,Shopping,1343.0
+2026-Q1,Shopping,1395.0
+2026-Q2,Shopping,1177.0
+2019-Q1,"Sightseeing, Entertainment & Gaming",1457.0
+2019-Q2,"Sightseeing, Entertainment & Gaming",1442.0
+2019-Q3,"Sightseeing, Entertainment & Gaming",1505.0
+2019-Q4,"Sightseeing, Entertainment & Gaming",1593.0
+2020-Q1,"Sightseeing, Entertainment & Gaming",858.0
+2020-Q2,"Sightseeing, Entertainment & Gaming",5.0
+2020-Q3,"Sightseeing, Entertainment & Gaming",46.0
+2020-Q4,"Sightseeing, Entertainment & Gaming",42.0
+2021-Q1,"Sightseeing, Entertainment & Gaming",62.0
+2021-Q2,"Sightseeing, Entertainment & Gaming",51.0
+2021-Q3,"Sightseeing, Entertainment & Gaming",19.0
+2021-Q4,"Sightseeing, Entertainment & Gaming",91.0
+2022-Q1,"Sightseeing, Entertainment & Gaming",162.0
+2022-Q2,"Sightseeing, Entertainment & Gaming",590.0
+2022-Q3,"Sightseeing, Entertainment & Gaming",816.0
+2022-Q4,"Sightseeing, Entertainment & Gaming",769.0
+2023-Q1,"Sightseeing, Entertainment & Gaming",1007.0
+2023-Q2,"Sightseeing, Entertainment & Gaming",1114.0
+2023-Q3,"Sightseeing, Entertainment & Gaming",1570.0
+2023-Q4,"Sightseeing, Entertainment & Gaming",1373.0
+2024-Q1,"Sightseeing, Entertainment & Gaming",1937.0
+2024-Q2,"Sightseeing, Entertainment & Gaming",1393.0
+2024-Q3,"Sightseeing, Entertainment & Gaming",1283.0
+2024-Q4,"Sightseeing, Entertainment & Gaming",1456.0
+2025-Q1,"Sightseeing, Entertainment & Gaming",1622.0
+2025-Q2,"Sightseeing, Entertainment & Gaming",1874.0
+2025-Q3,"Sightseeing, Entertainment & Gaming",1821.0
+2025-Q4,"Sightseeing, Entertainment & Gaming",2032.0
+2026-Q1,"Sightseeing, Entertainment & Gaming",1992.0
+2026-Q2,"Sightseeing, Entertainment & Gaming",1584.0
+2019-Q1,Other Components,1929.0
+2019-Q2,Other Components,1841.0
+2019-Q3,Other Components,2254.0
+2019-Q4,Other Components,2002.0
+2020-Q1,Other Components,1278.0
+2020-Q2,Other Components,118.0
+2020-Q3,Other Components,138.0
+2020-Q4,Other Components,166.0
+2021-Q1,Other Components,162.0
+2021-Q2,Other Components,162.0
+2021-Q3,Other Components,153.0
+2021-Q4,Other Components,246.0
+2022-Q1,Other Components,431.0
+2022-Q2,Other Components,1078.0
+2022-Q3,Other Components,1567.0
+2022-Q4,Other Components,1736.0
+2023-Q1,Other Components,2036.0
+2023-Q2,Other Components,2080.0
+2023-Q3,Other Components,2441.0
+2023-Q4,Other Components,2133.0
+2024-Q1,Other Components,2386.0
+2024-Q2,Other Components,2152.0
+2024-Q3,Other Components,2328.0
+2024-Q4,Other Components,2238.0
+2025-Q1,Other Components,2511.0
+2025-Q2,Other Components,2318.0
+2025-Q3,Other Components,2538.0
+2025-Q4,Other Components,2504.0
+2026-Q1,Other Components,2549.0
+2026-Q2,Other Components,2359.0
