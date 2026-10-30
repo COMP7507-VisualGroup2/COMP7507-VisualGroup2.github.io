@@ -16,7 +16,7 @@ COMP7507 Group 2. A static Next.js + Tailwind dashboard evaluating Hong Kong inb
 The global filters (granularity, date range, origin, visitor type) are shared across tabs and persist for the browser session.
 
 ## Data sources (all live, snapshotted to `data/raw/`)
-
+ 
 | Dataset | Source |
 | --- | --- |
 | Visitor arrivals by region (monthly) | C&SD 650-80001 |
