@@ -6,9 +6,9 @@ COMP7507 Group 2. A static Next.js + Tailwind dashboard evaluating Hong Kong inb
 
 | Route | Tab | Contents |
 | --- | --- | --- |
-| `/` | 1. Summary (KPI tracking & consolidation) | KPI cards (arrivals, length of stay, per-capita spend, hotel sector, tourism share of GDP/jobs), bullet graph vs prior year / 2019 / target, YoY lines, sector revenue (BRI), takeaways |
+| `/` | 1. Summary (KPI tracking & consolidation) | KPI cards (arrivals, length of stay, per-capita spend, hotel sector, tourism share of GDP/jobs), bullet graph vs prior year / 2019 / target, YoY lines, sector revenue (BRI), source-market movers and concentration (HKTB), takeaways |
 | `/visitor-persona/` | 2. Visitor Persona | Choropleth world map, origin mix (segments or 18 HKTB markets), ports of entry (HSR vs air vs land vs sea), overnight vs same-day + length of stay, then an HKTB visitor profile (2025 / H1 2026): age, companions, trip purpose, stay pattern, multi-destination trips, spending mix and shopping basket, market yield map, satisfaction, top places, and a persona card for each of 18 source markets |
-| `/revenue/` | 3. Revenue Analysis | Per-capita spend by market, high-yield vs volume scatter, value added by category, hotel supply & accommodation receipts, BRI heatmap |
+| `/revenue/` | 3. Revenue Analysis | Per-capita spend by market, high-yield vs volume scatter, value added by category, estimated overnight spend by source market (share vs visitors, volume vs yield, spend by category), hotel supply & accommodation receipts, BRI heatmap |
 | `/outlook-2027/` | 5. 2027 Outlook | 3 strategic pillars (with lead markets) + a playbook for each of the 18 HKTB source markets: key initiatives and 2027 KPI targets against Jan–Jun 2026 baselines, plus a pillar coverage matrix |
 | `/methodology/` | Methodology | Sources, formulas, forecast model, data-pending list |
 

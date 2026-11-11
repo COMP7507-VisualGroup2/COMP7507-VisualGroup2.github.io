@@ -1,0 +1,87 @@
+import { MARKETS, marketH1, profile, profileValue } from './persona';
+import type { Origin, ProfilePeriod } from './types';
+
+/**
+ * Market-level economics for the 18 HKTB source markets. Estimated overnight spend (HK$ m) =
+ * Jan-Jun overnight arrivals (HKTB arrival statistics) x spend per overnight visitor (HKTB Visitor Profile).
+ * Same-day spend is not published by market, so it is excluded.
+ */
+export interface MarketEcon {
+  market: string;
+  origin: Origin;
+  arrivals: number;
+  overnight: number;
+  growth: number | null;
+  arrivalsChange: number | null;
+  perCapita: number | null;
+  perCapitaPrev: number | null;
+  spend: number | null;
+  spendPrev: number | null;
+  overnightShare: number;
+  spendShare: number | null;
+  /** Change in estimated spend from more or fewer overnight visitors, at last year's spend per head. */
+  volumeEffect: number | null;
+  /** Change in estimated spend from a different spend per head, on this year's overnight visitors. */
+  yieldEffect: number | null;
+}
+
+const PC = 'per_capita_overnight_hkd';
+
+export function marketEconomics(period: ProfilePeriod): MarketEcon[] {
+  const comparable = period === '2026-H1';
+  const rows = MARKETS.flatMap((m) => {
+    const now = marketH1(period, m.market);
+    if (!now) return [];
+    const before = comparable ? marketH1('2025', m.market) : undefined;
+    const perCapita = profileValue(period, m.market, PC);
+    const perCapitaPrev = comparable ? profileValue('2025', m.market, PC) : null;
+    const spend = perCapita !== null ? (now.overnight * perCapita) / 1e6 : null;
+    const spendPrev = before && perCapitaPrev !== null ? (before.overnight * perCapitaPrev) / 1e6 : null;
+    return [
+      {
+        market: m.market,
+        origin: m.origin,
+        arrivals: now.arrivals,
+        overnight: now.overnight,
+        growth: before ? ((now.arrivals - before.arrivals) / before.arrivals) * 100 : null,
+        arrivalsChange: before ? now.arrivals - before.arrivals : null,
+        perCapita,
+        perCapitaPrev,
+        spend,
+        spendPrev,
+        volumeEffect: before && perCapitaPrev !== null ? ((now.overnight - before.overnight) * perCapitaPrev) / 1e6 : null,
+        yieldEffect: perCapita !== null && perCapitaPrev !== null ? (now.overnight * (perCapita - perCapitaPrev)) / 1e6 : null,
+      },
+    ];
+  });
+  const totalOvernight = rows.reduce((a, r) => a + r.overnight, 0) || 1;
+  const totalSpend = rows.reduce((a, r) => a + (r.spend ?? 0), 0) || 1;
+  return rows.map((r) => ({
+    ...r,
+    overnightShare: (r.overnight / totalOvernight) * 100,
+    spendShare: r.spend !== null ? (r.spend / totalSpend) * 100 : null,
+  }));
+}
+
+/** Arrivals of all markets for the period (HKTB), used as the denominator for market shares. */
+export function totalArrivals(period: ProfilePeriod): number | null {
+  return marketH1(period, 'All markets')?.arrivals ?? null;
+}
+
+export const SPEND_CATEGORIES = ['Hotel bills', 'Shopping', 'Dining', 'Others'] as const;
+
+/** Estimated overnight spend (HK$ m) by category for each HKTB segment: segment spend x published spending mix. */
+export function segmentSpendByCategory(period: ProfilePeriod) {
+  return (['Mainland', 'Short-haul', 'Long-haul'] as const).flatMap((segment) => {
+    const h1 = marketH1(period, segment);
+    const perCapita = profileValue(period, segment, PC);
+    const mix = profile(period, segment, 'spend_mix');
+    if (!h1 || perCapita === null || !mix.length) return [];
+    const total = (h1.overnight * perCapita) / 1e6;
+    const row: Record<string, string | number> = { segment, total };
+    SPEND_CATEGORIES.forEach((c) => {
+      row[c] = (total * (mix.find((x) => x.category === c)?.value ?? 0)) / 100;
+    });
+    return [row];
+  });
+}

@@ -20,12 +20,23 @@ import {
 } from 'recharts';
 import { revenue } from '@/lib/data';
 import { quarterOf } from '@/lib/filters';
+import { marketEconomics } from '@/lib/markets';
+import { PERIOD_LABEL, shortMarket } from '@/lib/persona';
 import { formatCompact, formatHkd, formatHkdMillions, formatNumber } from '@/lib/format';
 import { AXIS_TICK, COLORS, ORIGIN_COLORS, SERIES, TOOLTIP_STYLE, VISITOR_TYPE_COLORS } from '@/lib/theme';
 import { Segmented } from '../SectionCard';
-import type { Filters, VisitorType } from '@/lib/types';
+import type { Filters, Origin, ProfilePeriod, VisitorType } from '@/lib/types';
 
 const SPEND_YEARS = Array.from(new Set(revenue.market_spending.map((r) => r.year))).sort();
+
+function RegionGap({ origin }: { origin: Origin | 'All' }) {
+  return (
+    <div className="flex h-[300px] items-center justify-center rounded-xl bg-slate-50 p-6 text-center text-sm text-slate-600">
+      C&amp;SD publishes spending by region, with Europe, Africa and the Middle East combined in one region that counts as Long-haul, so there is no {origin} region to
+      show. The 18 source markets view (HKTB) lists the Middle East under Emerging.
+    </div>
+  );
+}
 
 /** Grouped bars: per-capita spending by source market, overnight vs same-day (C&SD 650-80004). */
 export function PerCapitaByMarket({ filters }: { filters: Filters }) {
@@ -53,6 +64,9 @@ export function PerCapitaByMarket({ filters }: { filters: Filters }) {
       <div className="mb-2">
         <Segmented size="xs" value={year} onChange={setYear} options={SPEND_YEARS.map((y) => ({ value: y, label: y }))} />
       </div>
+      {data.length === 0 ? (
+        <RegionGap origin={filters.origin} />
+      ) : (
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} margin={{ top: 4, right: 4, left: -4, bottom: 0 }}>
           <CartesianGrid stroke={COLORS.grid} vertical={false} />
@@ -65,14 +79,26 @@ export function PerCapitaByMarket({ filters }: { filters: Filters }) {
           ))}
         </BarChart>
       </ResponsiveContainer>
+      )}
     </div>
   );
 }
 
 /** Scatter separating high-yield segments from volume-driven ones (bubble = total spend). */
-export function YieldVolumeScatter({ filters }: { filters: Filters }) {
+export function YieldVolumeScatter({ filters, period }: { filters: Filters; period: ProfilePeriod }) {
+  const [mode, setMode] = useState<'markets' | 'regions'>('markets');
   const year = SPEND_YEARS[SPEND_YEARS.length - 1];
   const { points, medianVisitors, medianYield } = useMemo(() => {
+    const median = (xs: number[]) => {
+      const s = [...xs].sort((a, b) => a - b);
+      return s.length ? s[Math.floor(s.length / 2)] : 0;
+    };
+    if (mode === 'markets') {
+      const points = marketEconomics(period)
+        .filter((r) => r.spend !== null && r.perCapita !== null && (filters.origin === 'All' || r.origin === filters.origin))
+        .map((r) => ({ market: r.market, short: shortMarket(r.market), origin: r.origin as Origin | undefined, visitors: r.overnight, spend: r.spend as number, yield: r.perCapita as number }));
+      return { points, medianVisitors: median(points.map((p) => p.visitors)), medianYield: median(points.map((p) => p.yield)) };
+    }
     const markets = Array.from(new Set(revenue.market_spending.map((r) => r.market)));
     const points = markets
       .map((market) => {
@@ -81,19 +107,32 @@ export function YieldVolumeScatter({ filters }: { filters: Filters }) {
         );
         const visitors = rows.reduce((a, r) => a + (r.visitors ?? 0), 0);
         const spend = rows.reduce((a, r) => a + r.spend_hkd_m, 0);
-        return { market, origin: rows[0]?.origin, visitors, spend, yield: visitors ? (spend * 1e6) / visitors : 0 };
+        return { market, short: market, origin: rows[0]?.origin as Origin | undefined, visitors, spend, yield: visitors ? (spend * 1e6) / visitors : 0 };
       })
       .filter((p) => p.visitors > 0 && (filters.origin === 'All' || p.origin === filters.origin));
-    const median = (xs: number[]) => {
-      const s = [...xs].sort((a, b) => a - b);
-      return s.length ? s[Math.floor(s.length / 2)] : 0;
-    };
     return { points, medianVisitors: median(points.map((p) => p.visitors)), medianYield: median(points.map((p) => p.yield)) };
-  }, [filters, year]);
+  }, [filters, year, mode, period]);
 
   return (
     <div>
-      <ResponsiveContainer width="100%" height={300}>
+      <div className="mb-2 flex flex-wrap items-center gap-2">
+        <Segmented
+          size="xs"
+          value={mode}
+          onChange={setMode}
+          options={[
+            { value: 'markets', label: '18 source markets' },
+            { value: 'regions', label: 'C&SD regions' },
+          ]}
+        />
+        <span className="text-[11px] text-slate-600">
+          {mode === 'markets' ? `Overnight visitors, ${PERIOD_LABEL[period]} (HKTB)` : `Annual ${year} (C&SD)`}
+        </span>
+      </div>
+      {mode === 'regions' && points.length === 0 ? (
+        <RegionGap origin={filters.origin} />
+      ) : (
+      <ResponsiveContainer width="100%" height={mode === 'markets' ? 340 : 300}>
         <ScatterChart margin={{ top: 12, right: 16, left: -4, bottom: 4 }}>
           <CartesianGrid stroke={COLORS.grid} />
           <XAxis
@@ -121,20 +160,21 @@ export function YieldVolumeScatter({ filters }: { filters: Filters }) {
               return (
                 <div className="rounded-xl border border-mist bg-canvas px-3 py-2 text-xs shadow-card">
                   <p className="font-semibold text-slate-900">{p.market}</p>
-                  <p className="text-slate-600">{formatNumber(p.visitors)} visitors</p>
+                  <p className="text-slate-600">{formatNumber(p.visitors)} {mode === 'markets' ? 'overnight visitors' : 'visitors'}</p>
                   <p className="text-slate-600">{formatHkd(p.yield)} per visitor</p>
                   <p className="text-slate-600">{formatHkdMillions(p.spend)} total</p>
                 </div>
               );
             }}
           />
-          <Scatter data={points} fillOpacity={0.8}>
+          <Scatter data={points} fillOpacity={0.8} label={mode === 'markets' ? { dataKey: 'short', position: 'top', fontSize: 9, fill: COLORS.ink } : undefined}>
             {points.map((p) => (
               <Cell key={p.market} fill={p.origin ? ORIGIN_COLORS[p.origin] : COLORS.steel} stroke={COLORS.canvas} />
             ))}
           </Scatter>
         </ScatterChart>
       </ResponsiveContainer>
+      )}
       <div className="mt-1 grid grid-cols-2 gap-2 text-[11px] text-slate-600">
         <span>↖ <strong className="text-slate-800">High-yield niche</strong>: high spend, low volume</span>
         <span className="text-right">↗ <strong className="text-slate-800">Core value</strong>: high spend, high volume</span>
@@ -142,10 +182,10 @@ export function YieldVolumeScatter({ filters }: { filters: Filters }) {
         <span className="text-right">↘ <strong className="text-slate-800">Volume-driven</strong>: high volume, low spend</span>
       </div>
       <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-slate-600">
-        {points.map((p) => (
-          <li key={p.market} className="inline-flex items-center gap-1">
-            <span className="h-2 w-2 rounded-full" style={{ background: p.origin ? ORIGIN_COLORS[p.origin] : COLORS.steel }} />
-            {p.market}
+        {(mode === 'markets' ? (Object.keys(ORIGIN_COLORS) as Origin[]).map((o) => ({ key: o, label: o, origin: o })) : points.map((p) => ({ key: p.market, label: p.market, origin: p.origin }))).map((item) => (
+          <li key={item.key} className="inline-flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full" style={{ background: item.origin ? ORIGIN_COLORS[item.origin] : COLORS.steel }} />
+            {item.label}
           </li>
         ))}
       </ul>

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import KpiSummary from '../KpiSummary';
 import LazyMount from '../LazyMount';
+import MarketMovers from '../MarketMovers';
 import SectionCard, { Insight, PageHeading } from '../SectionCard';
 import ArrivalsBullet from '../charts/ArrivalsBullet';
 import SectorRevenueChart from '../charts/SectorRevenueChart';
@@ -65,6 +66,8 @@ export default function SummaryTab() {
         </SectionCard>
       </div>
 
+      <MarketMovers filters={filters} />
+
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <SectionCard
           title="Sector revenue: retail, dining, accommodation and transport"
@@ -81,6 +84,8 @@ export default function SummaryTab() {
             <Insight>{insights.arrivals}</Insight>
             <Insight tone="steel">{insights.mainland}</Insight>
             <Insight tone="accent">{insights.yield}</Insight>
+            {insights.marketMix && <Insight tone="steel">{insights.marketMix}</Insight>}
+            {insights.marketMovers && <Insight>{insights.marketMovers}</Insight>}
             <Insight>{insights.outlook}</Insight>
           </div>
         </SectionCard>
