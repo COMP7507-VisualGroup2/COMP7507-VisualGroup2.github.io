@@ -38,15 +38,6 @@ export const PORT_COLORS: Record<string, string> = {
   'Ferries & Cruise': COLORS.accentDeep,
 };
 
-export const PEER_COLORS: Record<string, string> = {
-  HK: COLORS.brandDeep,
-  SG: COLORS.accent,
-  JP: COLORS.steelDeep,
-  TH: COLORS.accentDeep,
-  MO: COLORS.brandLight,
-  KR: COLORS.brand,
-};
-
 /** Ordered categorical series colours. */
 export const SERIES = [COLORS.brandDeep, COLORS.accent, COLORS.brand, COLORS.accentDeep, COLORS.brandLight, COLORS.steelDeep];
 

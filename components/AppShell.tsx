@@ -12,7 +12,6 @@ export const TABS = [
   { href: '/', label: 'Summary', short: 'Summary', filters: true },
   { href: '/visitor-persona/', label: 'Visitor Persona', short: 'Persona', filters: true },
   { href: '/revenue/', label: 'Revenue Analysis', short: 'Revenue', filters: true },
-  { href: '/competitors/', label: 'Competitor Analysis', short: 'Competitors', filters: true },
   { href: '/outlook-2027/', label: '2027 Outlook', short: '2027', filters: false },
 ];
 

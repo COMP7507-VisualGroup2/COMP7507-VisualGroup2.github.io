@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Hong Kong Inbound Tourism Evaluation - data pipeline.
 
-Fetches, cleans and aggregates Hong Kong tourism data (Jan 2025 - 2026 YTD) plus
-regional competitor benchmarks, and writes static JSON files consumed by the
-Next.js dashboard (Summary / Visitor Persona / Revenue / Competitor / 2027 Outlook).
+Fetches, cleans and aggregates Hong Kong tourism data (Jan 2025 - 2026 YTD) and
+writes static JSON files consumed by the Next.js dashboard (Summary / Visitor Persona / Revenue / 2027 Outlook).
 
 Only official, openly published data is used:
 
@@ -12,14 +11,9 @@ Only official, openly published data is used:
   (660-69001 / 660-69002) and value added & employment of Tourism (655-82101).
 * DATA.GOV.HK - Immigration Department daily passenger traffic by control point;
   Culture, Sports and Tourism Bureau hotel room supply.
-* HKMA API - monthly HKD exchange rates (for converting competitor receipts).
-* SingStat Table Builder API (Singapore Tourism Board) - visitor arrivals, receipts.
-* JNTO (Japan National Tourism Organization) - monthly visitor arrivals workbook.
-* World Bank API (UN Tourism-sourced) - 2019 arrivals & receipts baselines.
 
 Datasets with no open API (hotel occupancy/ADR, government arrival targets,
-Thailand monthly arrivals, UN Tourism Asia-Pacific trend, HKTB visitor profile)
-are read from optional CSVs in data/manual/. When a manual file is empty the
+HKTB visitor profile) are read from optional CSVs in data/manual/. When a manual file is empty the
 dashboard shows the item as "data pending". HKTB's monthly visitor arrival
 workbooks (data/*all countries visitor type.xlsx) supply arrivals by nationality.
 
@@ -64,14 +58,6 @@ IMMD_CSV = (
     "statistics_on_daily_passenger_traffic.csv"
 )
 CSTB_ROOMS_CSV = "https://www.tourism.gov.hk/datagovhk/hotelrooms/number_of_hotel_rooms_next_three_years_en.csv"
-HKMA_FX = (
-    "https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/"
-    "er-ir/er-eeri-endperiod?segment=hkd&pagesize=1000&from=2019-01&sortby=end_of_month&sortorder=asc"
-)
-SINGSTAT_API = "https://tablebuilder.singstat.gov.sg/api/table/tabledata/{table}"
-SINGSTAT_PAGE = "https://tablebuilder.singstat.gov.sg/table/TS/{table}"
-JNTO_PAGE = "https://www.jnto.go.jp/statistics/data/visitors-statistics/"
-WORLD_BANK_API = "https://api.worldbank.org/v2/country/{codes}/indicator/{ind}?format=json&date=2019&per_page=100"
 HTTP_TIMEOUT = 60
 USER_AGENT = "Mozilla/5.0 (compatible; hk-tourism-dashboard/2.0)"
 
@@ -147,14 +133,6 @@ INDUSTRY_MEASURES = {
     "Number": "employment",
     "% share in total employment": "emp_share_pct",
 }
-PEERS = [
-    {"code": "HK", "name": "Hong Kong", "wb": "HKG", "currency": "HKD"},
-    {"code": "SG", "name": "Singapore", "wb": "SGP", "currency": "SGD"},
-    {"code": "JP", "name": "Japan", "wb": "JPN", "currency": "JPY"},
-    {"code": "TH", "name": "Thailand", "wb": "THA", "currency": "THB"},
-]
-WB_EXTRA = [{"code": "MO", "name": "Macao", "wb": "MAC"}, {"code": "KR", "name": "South Korea", "wb": "KOR"}]
-
 # Optional manual inputs: filename -> (columns, dashboard tab, description, where to obtain)
 MANUAL_INPUTS = {
     "hotel_occupancy_monthly.csv": (
@@ -165,14 +143,6 @@ MANUAL_INPUTS = {
         ["year", "target_arrivals", "source"], "Summary",
         "Official annual visitor arrival targets (bullet graph target marker)",
         "HKSAR Budget / HKTB work plan - published as text only"),
-    "thailand_arrivals_monthly.csv": (
-        ["month", "arrivals", "source"], "Competitor Analysis",
-        "Thailand monthly international arrivals",
-        "Ministry of Tourism and Sports, Thailand (mots.go.th) - no machine-readable API"),
-    "un_tourism_apac_monthly.csv": (
-        ["month", "apac_recovery_pct", "source"], "Competitor Analysis",
-        "UN Tourism Asia & the Pacific inbound recovery vs 2019",
-        "UN Tourism Dashboard (Tableau) - no public API / download"),
     "visitor_profile.csv": (
         ["period", "market", "dimension", "category", "value", "source"], "Visitor Persona",
         "HKTB visitor profile: age, companions, trip purpose, spending, satisfaction, places visited",
@@ -477,13 +447,6 @@ def fetch_csd(table):
     if not rows:
         raise ValueError("C&SD table {} returned no dataSet".format(table))
     return rows
-
-
-def fetch_singstat(table):
-    data = json.loads(http_get(SINGSTAT_API.format(table=table)))["Data"]
-    if not data.get("row"):
-        raise ValueError("SingStat table {} returned no rows".format(table))
-    return data["row"]
 
 
 def read_csv(path):
@@ -823,82 +786,6 @@ def refresh_hotel_rooms():
     write_csv("hotel_rooms_pipeline.csv", ["year", "rooms"], rows)
 
 
-def refresh_fx():
-    records = json.loads(http_get(HKMA_FX))["result"]["records"]
-    rows = [{"month": r["end_of_month"], "usd": r["usd"], "sgd": r["sgd"], "jpy": r["jpy"], "thb": r["thb"], "cny": r["cny"]}
-            for r in records if r.get("usd")]
-    if not rows:
-        raise ValueError("HKMA FX returned no records")
-    write_csv("fx_monthly.csv", ["month", "usd", "sgd", "jpy", "thb", "cny"], rows)
-
-
-def _peer_keep(month):
-    return month[:4] in BASELINE_YEARS or month >= SCOPE_START
-
-
-def refresh_singapore():
-    row = fetch_singstat("M550001")[0]
-    arrivals = []
-    for c in row["columns"]:
-        month = datetime.strptime(c["key"], "%Y %b").strftime("%Y-%m")
-        if _peer_keep(month):
-            arrivals.append({"country": "SG", "month": month, "arrivals": int(float(c["value"]))})
-    receipts = []
-    for r in fetch_singstat("M550371"):
-        component = "Total" if r["seriesNo"] == "1" else r["rowText"]
-        ytd = {}
-        for c in r["columns"]:
-            year, q = c["key"].split(" ")
-            ytd[(year, int(q[0]))] = float(c["value"])
-        for (year, q), value in sorted(ytd.items()):
-            if year >= "2019":
-                quarterly = value - ytd.get((year, q - 1), 0) if q > 1 else value
-                receipts.append({"quarter": "{}-Q{}".format(year, q), "component": component, "receipts_sgd_m": round(quarterly, 1)})
-    write_csv("sg_arrivals_monthly.csv", ["country", "month", "arrivals"], arrivals)
-    write_csv("sg_receipts_quarterly.csv", ["quarter", "component", "receipts_sgd_m"], receipts)
-
-
-def refresh_japan():
-    page = http_get(JNTO_PAGE)
-    links = re.findall(r'href="([^"]+/_files/[^"]+\.xlsx)"', page)
-    if not links:
-        raise ValueError("JNTO workbook link not found")
-    url = links[0] if links[0].startswith("http") else "https://www.jnto.go.jp" + links[0]
-    sheets = read_xlsx(http_get_bytes(url))
-    rows = []
-    for name, cells in sheets.items():
-        if not re.fullmatch(r"\d{4}", name) or not (name in BASELINE_YEARS or name >= SCOPE_START[:4]):
-            continue
-        header = next((r for r in cells.values() if any(str(v).startswith("1月") for v in r.values())), None)
-        total = next((r for r in cells.values() if str(r.get("A", "")).startswith("総数")), None)
-        if not header or not total:
-            continue
-        for col, label in header.items():
-            m = re.match(r"(\d{1,2})月", str(label))
-            if m and total.get(col) not in (None, ""):
-                month = "{}-{:02d}".format(name, int(m.group(1)))
-                if _peer_keep(month):
-                    rows.append({"country": "JP", "month": month, "arrivals": int(float(total[col]))})
-    if not rows:
-        raise ValueError("JNTO workbook parsed no arrivals")
-    rows.sort(key=lambda r: r["month"])
-    write_csv("jp_arrivals_monthly.csv", ["country", "month", "arrivals"], rows)
-
-
-def refresh_world_bank():
-    codes = ";".join(p["wb"] for p in PEERS + WB_EXTRA)
-    values = defaultdict(dict)
-    for ind, key in (("ST.INT.ARVL", "arrivals"), ("ST.INT.RCPT.CD", "receipts_usd")):
-        for r in json.loads(http_get(WORLD_BANK_API.format(codes=codes, ind=ind)))[1]:
-            if r["value"] is not None:
-                values[r["countryiso3code"]][key] = r["value"]
-    rows = [{"country_code": p["code"], "country": p["name"], "arrivals": values[p["wb"]].get("arrivals", ""),
-             "receipts_usd": values[p["wb"]].get("receipts_usd", "")} for p in PEERS + WB_EXTRA]
-    if not any(r["arrivals"] for r in rows):
-        raise ValueError("World Bank returned no 2019 values")
-    write_csv("worldbank_2019.csv", ["country_code", "country", "arrivals", "receipts_usd"], rows)
-
-
 # --------------------------------------------------------------------------- #
 # Transform
 # --------------------------------------------------------------------------- #
@@ -1009,16 +896,6 @@ def seasonal_trend_forecast(history, baseline, horizon_end):
     return forecast, model
 
 
-def fx_annual(fx_rows):
-    """Average of end-month HKD rates per (year, currency)."""
-    acc = defaultdict(list)
-    for r in fx_rows:
-        for cur in ("usd", "sgd", "jpy", "thb", "cny"):
-            if r.get(cur):
-                acc[(r["month"][:4], cur)].append(float(r[cur]))
-    return {k: statistics.mean(v) for k, v in acc.items()}
-
-
 # --------------------------------------------------------------------------- #
 # Build JSON outputs
 # --------------------------------------------------------------------------- #
@@ -1044,19 +921,6 @@ def build_outputs(registry):
     rooms = load_with_fallback(registry, "cstb_hotel_rooms", "DATA.GOV.HK / CSTB: Number of hotel rooms for the next three years",
                                "https://data.gov.hk/en-data/dataset/hk-cstb-cstb_tc-tc-number-of-hotel-rooms-next-three-years",
                                refresh_hotel_rooms, "hotel_rooms_pipeline.csv")
-    fx = load_with_fallback(registry, "hkma_fx", "HKMA: Exchange rates of HKD (end of period)",
-                            "https://apidocs.hkma.gov.hk/documentation/market-data-and-statistics/monthly-statistical-bulletin/er-ir/er-eeri-endperiod/",
-                            refresh_fx, "fx_monthly.csv", "Used to convert competitor receipts to HKD (annual average).")
-    sg_arr = load_with_fallback(registry, "singstat_m550001", "SingStat M550001 / M550371: Singapore visitor arrivals & tourism receipts",
-                                SINGSTAT_PAGE.format(table="M550001"), refresh_singapore, "sg_arrivals_monthly.csv",
-                                "Singapore Tourism Board via SingStat Table Builder API.")
-    sg_rec = read_csv("sg_receipts_quarterly.csv") if (RAW_DIR / "sg_receipts_quarterly.csv").exists() else []
-    jp_arr = load_with_fallback(registry, "jnto_arrivals", "JNTO: Visitor arrivals to Japan (monthly workbook)",
-                                JNTO_PAGE, refresh_japan, "jp_arrivals_monthly.csv",
-                                "Latest months are JNTO preliminary estimates.")
-    wb = load_with_fallback(registry, "world_bank_2019", "World Bank (UN Tourism data): International arrivals & receipts, 2019",
-                            "https://data.worldbank.org/indicator/ST.INT.ARVL", refresh_world_bank, "worldbank_2019.csv",
-                            "Pre-pandemic baseline; World Bank series end in 2020.")
     manual = load_manual(registry)
     market_monthly, market_h1 = load_hktb_arrivals(registry)
 
@@ -1222,76 +1086,7 @@ def build_outputs(registry):
         "bri_quarterly": bri_records,
     }
 
-    # ---- 4. competitor_benchmark.json -------------------------------------------
-    peer_monthly = defaultdict(dict)
-    for m, v in totals.items():
-        peer_monthly[m]["HK"] = v
-    for r in sg_arr + jp_arr:
-        peer_monthly[r["month"]][r["country"]] = int(r["arrivals"])
-    for r in manual["thailand_arrivals_monthly.csv"]:
-        peer_monthly[r["month"]]["TH"] = int(float(r["arrivals"]))
-    peers_available = [p for p in PEERS if any(p["code"] in v for m, v in peer_monthly.items() if m >= SCOPE_START)]
-    comp_months = [m for m in sorted(peer_monthly) if m >= SCOPE_START and "HK" in peer_monthly[m]]
-    monthly_rows = []
-    for m in comp_months:
-        row = {"month": m}
-        base = peer_monthly.get("2019-" + m[5:], {})
-        for p in peers_available:
-            v = peer_monthly[m].get(p["code"])
-            row[p["code"]] = v
-            row[p["code"] + "_recovery"] = round(v / base[p["code"]] * 100, 1) if v and base.get(p["code"]) else None
-        monthly_rows.append(row)
-
-    fx_avg = fx_annual(fx)
-    wb_rows = {r["country_code"]: r for r in wb}
-    receipts = []
-    for p in PEERS + WB_EXTRA:
-        r = wb_rows.get(p["code"])
-        if r and r["receipts_usd"] and fx_avg.get(("2019", "usd")):
-            receipts.append({"country": p["code"], "name": p["name"], "year": "2019",
-                             "receipts_hkd_m": round(float(r["receipts_usd"]) * fx_avg[("2019", "usd")] / 1e6),
-                             "arrivals": int(float(r["arrivals"])) if r["arrivals"] else None, "source": "World Bank / UN Tourism"})
-    for y in spend_years:
-        receipts.append({"country": "HK", "name": "Hong Kong", "year": y, "receipts_hkd_m": round(total_spend[y]),
-                         "arrivals": fy.get(y), "source": "C&SD destination consumption expenditure"})
-    sg_total = defaultdict(float)
-    sg_components = defaultdict(float)
-    for r in sg_rec:
-        year = r["quarter"][:4]
-        if r["component"] == "Total":
-            sg_total[year] += float(r["receipts_sgd_m"])
-        else:
-            sg_components[(year, r["component"])] += float(r["receipts_sgd_m"])
-    sg_quarters = {r["quarter"] for r in sg_rec if r["component"] == "Total"}
-    for y in ("2024", "2025"):
-        if all("{}-Q{}".format(y, q) in sg_quarters for q in range(1, 5)) and fx_avg.get((y, "sgd")):
-            sg_arrivals = sum(int(r["arrivals"]) for r in sg_arr if r["month"].startswith(y))
-            receipts.append({"country": "SG", "name": "Singapore", "year": y,
-                             "receipts_hkd_m": round(sg_total[y] * fx_avg[(y, "sgd")]), "arrivals": sg_arrivals,
-                             "source": "Singapore Tourism Board (SGD converted at HKMA annual average)"})
-    for rec in receipts:
-        rec["per_visitor_hkd"] = round(rec["receipts_hkd_m"] * 1e6 / rec["arrivals"]) if rec.get("arrivals") else None
-
-    sg_mix_year = "2025" if ("2025", "Shopping") in sg_components else "2024"
-    competitor = {
-        "peers": [{"code": p["code"], "name": p["name"], "available": p in peers_available} for p in PEERS],
-        "monthly": monthly_rows,
-        "baseline_2019_annual": [
-            {"country": p["code"], "name": p["name"],
-             "arrivals": int(float(wb_rows[p["code"]]["arrivals"])) if wb_rows.get(p["code"], {}).get("arrivals") else None}
-            for p in PEERS + WB_EXTRA],
-        "receipts": receipts,
-        "sg_receipts_mix": {
-            "year": sg_mix_year,
-            "components": [{"component": c, "receipts_hkd_m": round(v * fx_avg.get((sg_mix_year, "sgd"), 0))}
-                           for (y, c), v in sorted(sg_components.items()) if y == sg_mix_year],
-        },
-        "un_tourism_apac": [{"month": r["month"], "apac_recovery_pct": num(r["apac_recovery_pct"])}
-                            for r in manual["un_tourism_apac_monthly.csv"]],
-        "fx_annual_hkd": {"{}_{}".format(y, c): round(v, 5) for (y, c), v in sorted(fx_avg.items()) if y >= "2019"},
-    }
-
-    # ---- 5. strategy_forecast_2027.json ----------------------------------------
+    # ---- 4. strategy_forecast_2027.json ----------------------------------------
     baseline_for_season = {m: v for m, v in totals.items() if m[:4] in ("2024", "2025")}
     forecast, model = seasonal_trend_forecast(in_scope, baseline_for_season, "{}-12".format(FORECAST_YEAR))
     series = [{"month": m, "actual": v, "forecast": None, "lower": None, "upper": None} for m, v in in_scope.items()]
@@ -1362,8 +1157,6 @@ def build_outputs(registry):
     accom_peak_q = max(accom_q, key=accom_q.get) if accom_q else "Q4"
     accom_low_q = min(accom_q, key=accom_q.get) if accom_q else "Q3"
     accom_gap = (accom_q[accom_peak_q] / accom_q[accom_low_q] - 1) * 100 if accom_q else 0
-    sg_2025 = next((r for r in receipts if r["country"] == "SG" and r["year"] == "2025"), None)
-    hk_2025 = next((r for r in receipts if r["country"] == "HK" and r["year"] == "2025"), None)
 
     pillars = [
         {
@@ -1376,9 +1169,7 @@ def build_outputs(registry):
                 "Long-haul markets are only {}% of arrivals despite the highest per-capita spend.".format(longhaul_share),
                 "Yield per visitor moved from HK${:,.0f} (2024) to HK${:,.0f} (2025) as volume shifted to same-day trips.".format(
                     yields.get("2024", 0), yields["2025"]),
-            ] + ([
-                "Singapore earned HK${:,.0f} per visitor in 2025 vs HK${:,.0f} for Hong Kong.".format(
-                    sg_2025["per_visitor_hkd"], hk_2025["per_visitor_hkd"])] if sg_2025 and hk_2025 else []),
+            ],
             "initiatives": [
                 "Scale 'CityWalk' neighbourhood trails (Sham Shui Po, Sai Kung, Central-Western) into bookable multi-day itineraries.",
                 "Long-haul air-capacity incentives and stopover packages with airline partners through HKIA.",
@@ -1468,7 +1259,6 @@ def build_outputs(registry):
         "kpi_summary.json": kpi,
         "visitor_demographics.json": demographics,
         "hotel_sector_performance.json": revenue,
-        "competitor_benchmark.json": competitor,
         "strategy_forecast_2027.json": strategy,
     }, (scope_months[0], latest)
 

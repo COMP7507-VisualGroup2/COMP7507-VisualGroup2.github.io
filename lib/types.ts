@@ -183,30 +183,6 @@ export interface RevenueData {
   bri_quarterly: BriRecord[];
 }
 
-export interface PeerMonth {
-  month: string;
-  [key: string]: string | number | null;
-}
-
-export interface CompetitorBenchmark {
-  meta: Meta;
-  peers: { code: string; name: string; available: boolean }[];
-  monthly: PeerMonth[];
-  baseline_2019_annual: { country: string; name: string; arrivals: number | null }[];
-  receipts: {
-    country: string;
-    name: string;
-    year: string;
-    receipts_hkd_m: number;
-    arrivals: number | null;
-    per_visitor_hkd: number | null;
-    source: string;
-  }[];
-  sg_receipts_mix: { year: string; components: { component: string; receipts_hkd_m: number }[] };
-  un_tourism_apac: { month: string; apac_recovery_pct: number | null }[];
-  fx_annual_hkd: Record<string, number>;
-}
-
 export interface ForecastPoint {
   month: string;
   actual: number | null;

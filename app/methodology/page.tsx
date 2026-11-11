@@ -30,11 +30,6 @@ const FORMULAS = [
     note: 'Annual shares per source region (C&SD 650-80003/04) are applied to official monthly arrivals by region. 2026 uses 2025 ratios and per-capita rates (badged as Derived).',
   },
   {
-    name: 'Receipts per visitor (competitors)',
-    formula: 'Tourism receipts (local currency) × HKMA annual-average HKD rate ÷ International visitor arrivals',
-    note: 'Singapore receipts are STB quarterly year-to-date figures converted to quarters. HK uses C&SD destination consumption expenditure.',
-  },
-  {
     name: 'Recovery vs 2019',
     formula: 'Arrivalsₘ ÷ Arrivals₂₀₁₉,ₘ × 100',
     note: 'Same calendar month in 2019 used as baseline, consistent with UN Tourism recovery reporting.',

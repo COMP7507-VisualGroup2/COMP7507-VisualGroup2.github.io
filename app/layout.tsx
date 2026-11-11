@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: '%s | HK Inbound Tourism Dashboard',
   },
   description:
-    'Interactive dashboard evaluating Hong Kong inbound tourism (Jan 2025 – 2026 YTD): KPI summary, visitor persona, revenue analysis, competitor benchmarks and a 2027 outlook.',
+    'Interactive dashboard evaluating Hong Kong inbound tourism (Jan 2025 – 2026 YTD): KPI summary, visitor persona, revenue analysis and a 2027 outlook.',
 };
 
 export const viewport: Viewport = {
@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="mt-8 border-t border-slate-200 bg-canvas">
           <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
             <p>
-              Sources: C&SD, DATA.GOV.HK (ImmD, CSTB), HKMA, Singapore Tourism Board (SingStat), JNTO, World Bank / UN Tourism.
+              Sources: C&SD, DATA.GOV.HK (ImmD, CSTB), HKTB.
             </p>
             <nav className="flex gap-4">
               <Link href="/" className="font-medium text-brand-800 hover:underline">

@@ -9,7 +9,6 @@ COMP7507 Group 2. A static Next.js + Tailwind dashboard evaluating Hong Kong inb
 | `/` | 1. Summary (KPI tracking & consolidation) | KPI cards (arrivals, length of stay, per-capita spend, hotel sector, tourism share of GDP/jobs), bullet graph vs prior year / 2019 / target, YoY lines, sector revenue (BRI), takeaways |
 | `/visitor-persona/` | 2. Visitor Persona | Choropleth world map, origin mix (segments or 18 HKTB markets), ports of entry (HSR vs air vs land vs sea), overnight vs same-day + length of stay, then an HKTB visitor profile (2025 / H1 2026): age, companions, trip purpose, stay pattern, multi-destination trips, spending mix and shopping basket, market yield map, satisfaction, top places, and a persona card for each of 18 source markets |
 | `/revenue/` | 3. Revenue Analysis | Per-capita spend by market, high-yield vs volume scatter, value added by category, hotel supply & accommodation receipts, BRI heatmap |
-| `/competitors/` | 4. Competitor Analysis | HK vs Singapore vs Japan recovery / arrivals / share, receipts benchmark, value-added treemap & employment scatter |
 | `/outlook-2027/` | 5. 2027 Outlook | 3 strategic pillars (with lead markets) + a playbook for each of the 18 HKTB source markets: key initiatives and 2027 KPI targets against Jan–Jun 2026 baselines, plus a pillar coverage matrix |
 | `/methodology/` | Methodology | Sources, formulas, forecast model, data-pending list |
 
@@ -26,10 +25,6 @@ The global filters (granularity, date range, origin, visitor type) are shared ac
 | Tourism value added & employment by sub-industry | C&SD 655-82101 |
 | Visitor entries by control point | DATA.GOV.HK / Immigration Department |
 | Hotel room supply | DATA.GOV.HK / CSTB |
-| HKD exchange rates | HKMA API |
-| Singapore arrivals & tourism receipts | SingStat (Singapore Tourism Board) |
-| Japan arrivals | JNTO monthly workbook |
-| 2019 arrivals & receipts baselines | World Bank (UN Tourism data) |
 
 ### HKTB published data (Visitor Persona, **Manual input** badge)
 
@@ -42,7 +37,7 @@ The global filters (granularity, date range, origin, visitor type) are shared ac
 
 These proposal items have no open data. Each has a CSV template; fill it from the published report, re-run the pipeline, and the chart appears with a **Manual input** badge:
 
-`hotel_occupancy_monthly.csv`, `arrival_targets.csv`, `thailand_arrivals_monthly.csv`, `un_tourism_apac_monthly.csv`.
+`hotel_occupancy_monthly.csv`, `arrival_targets.csv`.
 
 ## Palette
 

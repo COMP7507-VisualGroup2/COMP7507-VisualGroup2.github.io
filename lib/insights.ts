@@ -1,5 +1,5 @@
-import { competitor, demographics, kpiSummary, strategy } from './data';
-import { formatCompact, formatHkd, formatPct, monthLong } from './format';
+import { demographics, kpiSummary, strategy } from './data';
+import { formatCompact, formatHkd, formatPct } from './format';
 
 /** Cross-tab headline facts, all computed from official data. */
 export function headlineInsights() {
@@ -14,9 +14,6 @@ export function headlineInsights() {
   };
   const sd24 = sameDayShare('2024');
   const sd25 = sameDayShare('2025');
-  const hk25 = competitor.receipts.find((r) => r.country === 'HK' && r.year === '2025');
-  const sg25 = competitor.receipts.find((r) => r.country === 'SG' && r.year === '2025');
-  const latestPeer = [...competitor.monthly].reverse().find((m) => m.SG_recovery != null && m.JP_recovery != null);
   const base = strategy.scenarios.base;
 
   return {
@@ -29,18 +26,7 @@ export function headlineInsights() {
     yield: `Spend per visitor fell from ${formatHkd(s.yield_per_visitor_hkd['2024'])} (2024) to ${formatHkd(
       s.yield_per_visitor_hkd['2025'],
     )} (2025) as volume grew faster than spending.`,
-    competitor:
-      hk25 && sg25 && latestPeer
-        ? `Singapore earned ${formatHkd(sg25.per_visitor_hkd ?? 0)} per visitor in 2025 vs ${formatHkd(hk25.per_visitor_hkd ?? 0)} for Hong Kong; in ${monthLong(
-            String(latestPeer.month),
-          )} HK stood at ${formatPct(Number(latestPeer.HK_recovery))} of 2019 vs Singapore ${formatPct(Number(latestPeer.SG_recovery))} and Japan ${formatPct(
-            Number(latestPeer.JP_recovery),
-          )}.`
-        : null,
     outlook: `Base-case 2027 projection: ${formatCompact(base.arrivals, 1)} arrivals and ${formatHkd(base.yield_hkd)} per visitor.`,
     sameDayShare2025: sd25,
-    sg25,
-    hk25,
-    latestPeer,
   };
 }

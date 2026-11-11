@@ -3,7 +3,7 @@ export type BadgeKind = 'official' | 'derived' | 'manual' | 'pending';
 const STYLES: Record<BadgeKind, { label: string; title: string; pill: string; dot: string }> = {
   official: {
     label: 'Official',
-    title: 'Official open data (C&SD, DATA.GOV.HK, HKMA, STB, JNTO, World Bank)',
+    title: 'Official open data (C&SD, DATA.GOV.HK)',
     pill: 'bg-brand-50 text-brand-800',
     dot: 'bg-brand-500',
   },

@@ -32,12 +32,6 @@ export default function SummaryTab() {
       caption: 'Spend per visitor (2025)',
     },
     {
-      href: '/competitors/',
-      title: 'Competitor Analysis',
-      metric: insights.sg25?.per_visitor_hkd ? formatHkd(insights.sg25.per_visitor_hkd) : '–',
-      caption: 'Singapore spend per visitor (2025)',
-    },
-    {
       href: '/outlook-2027/',
       title: '2027 Outlook',
       metric: `${strategy.pillars.length} × ${strategy.market_playbooks?.length ?? 0}`,
@@ -87,13 +81,12 @@ export default function SummaryTab() {
             <Insight>{insights.arrivals}</Insight>
             <Insight tone="steel">{insights.mainland}</Insight>
             <Insight tone="accent">{insights.yield}</Insight>
-            {insights.competitor && <Insight tone="steel">{insights.competitor}</Insight>}
             <Insight>{insights.outlook}</Insight>
           </div>
         </SectionCard>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {nextSteps.map((s) => (
           <Link
             key={s.href}
