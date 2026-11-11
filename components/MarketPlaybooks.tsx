@@ -1,7 +1,8 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import DataSourceBadge from './DataSourceBadge';
+import { AnimatedNumber, AnimatedText, FadeText, useFlipList } from './motion';
 import StrategyPillars, { PILLAR_ACCENTS } from './StrategyPillars';
 import { strategy } from '@/lib/data';
 import { formatCompact, formatHkd, formatPct } from '@/lib/format';
@@ -83,7 +84,7 @@ function MarketPicker({ active, onSelect }: { active: string; onSelect: (m: stri
   );
 }
 
-function Fact({ label, value, hint }: { label: string; value: string; hint?: string }) {
+function Fact({ label, value, hint }: { label: string; value: ReactNode; hint?: ReactNode }) {
   return (
     <div className="min-w-0 rounded-xl bg-slate-50 p-2.5">
       <p className="truncate text-[11px] text-slate-600">{label}</p>
@@ -97,17 +98,19 @@ function PlaybookPanel({ book }: { book: MarketPlaybook }) {
   const f = book.facts;
   const lead = PILLARS[pillarIndex(book.primary)];
   const plays = [...book.plays].sort((a, b) => Number(b.pillar === book.primary) - Number(a.pillar === book.primary));
+  const flipRef = useFlipList(plays.map((p) => p.pillar));
+  const num = (v: number | null, fmt: (n: number) => string) => <AnimatedNumber value={v} format={fmt} />;
 
   return (
-    <article className="rounded-2xl border border-slate-200/80 bg-canvas p-4 shadow-card sm:p-5" style={{ borderTop: `4px solid ${ORIGIN_COLORS[book.origin]}` }}>
+    <article className="rounded-2xl border border-slate-200/80 bg-canvas p-4 shadow-card transition-[border-color] duration-500 sm:p-5" style={{ borderTop: `4px solid ${ORIGIN_COLORS[book.origin]}` }}>
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="max-w-3xl">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">2027 market playbook</p>
-          <h3 className="text-xl font-bold text-brand-900">{book.market}</h3>
-          <p className="mt-1 text-sm text-slate-700">{book.headline}</p>
+          <FadeText as="h3" text={book.market} className="text-xl font-bold text-brand-900" />
+          <FadeText as="p" text={book.headline} delay={60} className="mt-1 text-sm text-slate-700" />
         </div>
         <div className="flex flex-col items-end gap-1.5">
-          <span className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold text-canvas" style={{ background: ORIGIN_COLORS[book.origin] }}>
+          <span className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold text-canvas transition-colors duration-500" style={{ background: ORIGIN_COLORS[book.origin] }}>
             {book.origin}
           </span>
           {lead && (
@@ -121,14 +124,22 @@ function PlaybookPanel({ book }: { book: MarketPlaybook }) {
       <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
         <Fact
           label="Arrivals, Jan–Jun 2026"
-          value={f.arrivals_h1_2026 !== null ? formatCompact(f.arrivals_h1_2026, f.arrivals_h1_2026 >= 1e6 ? 2 : 0) : '–'}
-          hint={f.yoy_pct !== null ? `${formatPct(f.yoy_pct, 1, true)} YoY` : undefined}
+          value={num(f.arrivals_h1_2026, (v) => formatCompact(v, v >= 1e6 ? 2 : 0))}
+          hint={f.yoy_pct !== null ? num(f.yoy_pct, (v) => `${formatPct(v, 1, true)} YoY`) : undefined}
         />
-        <Fact label="Overnight share" value={f.overnight_pct !== null ? `${Math.round(f.overnight_pct)}%` : '–'} />
-        <Fact label="Average nights" value={f.nights !== null ? f.nights.toFixed(1) : '–'} />
-        <Fact label="Spend / overnight visitor" value={f.spend_hkd !== null ? formatHkd(f.spend_hkd) : '–'} />
-        <Fact label="First-time visitors" value={f.first_timer_pct !== null ? `${Math.round(f.first_timer_pct)}%` : '–'} hint={f.mean_age ? `Mean age ${f.mean_age.toFixed(1)}` : undefined} />
-        <Fact label="Top places" value={f.top_places[0] ?? '–'} hint={f.top_places.slice(1).join(' · ')} />
+        <Fact label="Overnight share" value={num(f.overnight_pct, (v) => `${Math.round(v)}%`)} />
+        <Fact label="Average nights" value={num(f.nights, (v) => v.toFixed(1))} />
+        <Fact label="Spend / overnight visitor" value={num(f.spend_hkd, (v) => formatHkd(v))} />
+        <Fact
+          label="First-time visitors"
+          value={num(f.first_timer_pct, (v) => `${Math.round(v)}%`)}
+          hint={f.mean_age ? num(f.mean_age, (v) => `Mean age ${v.toFixed(1)}`) : undefined}
+        />
+        <Fact
+          label="Top places"
+          value={<FadeText text={f.top_places[0] ?? '–'} />}
+          hint={<FadeText text={f.top_places.slice(1).join(' · ')} delay={80} />}
+        />
       </div>
 
       <div className={`mt-5 grid grid-cols-1 gap-4 ${plays.length >= 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-2'}`}>
@@ -138,7 +149,7 @@ function PlaybookPanel({ book }: { book: MarketPlaybook }) {
           const accent = PILLAR_ACCENTS[i % PILLAR_ACCENTS.length];
           const isLead = play.pillar === book.primary;
           return (
-            <div key={play.pillar} className="flex flex-col overflow-hidden rounded-xl border border-slate-200">
+            <div key={play.pillar} ref={flipRef(play.pillar)} className="flex flex-col overflow-hidden rounded-xl border border-slate-200">
               <div className="flex items-start justify-between gap-2 px-3 py-2.5 text-canvas" style={{ background: accent }}>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-canvas/80">Pillar {pillar?.number}</p>
@@ -151,11 +162,11 @@ function PlaybookPanel({ book }: { book: MarketPlaybook }) {
                   <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Key initiatives</p>
                   <ol className="space-y-1.5">
                     {play.initiatives.map((x, idx) => (
-                      <li key={x} className="flex gap-2 text-sm leading-snug text-slate-700">
+                      <li key={idx} className="flex gap-2 text-sm leading-snug text-slate-700">
                         <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-canvas" style={{ background: accent }}>
                           {idx + 1}
                         </span>
-                        {x}
+                        <FadeText text={x} delay={idx * 60} />
                       </li>
                     ))}
                   </ol>
@@ -171,12 +182,16 @@ function PlaybookPanel({ book }: { book: MarketPlaybook }) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {play.kpis.map((k) => (
-                        <tr key={k.metric}>
-                          <td className="py-1.5 pr-2 text-slate-700">{k.metric}</td>
-                          <td className="py-1.5 text-right tabular-nums text-slate-600">{k.baseline}</td>
+                      {play.kpis.map((k, ki) => (
+                        <tr key={ki}>
+                          <td className="py-1.5 pr-2 text-slate-700">
+                            <FadeText text={k.metric} delay={ki * 60} />
+                          </td>
+                          <td className="py-1.5 text-right tabular-nums text-slate-600">
+                            <AnimatedText text={k.baseline} />
+                          </td>
                           <td className="py-1.5 pl-2 text-right font-semibold tabular-nums" style={{ color: accent }}>
-                            {k.target_2027}
+                            <AnimatedText text={k.target_2027} />
                           </td>
                         </tr>
                       ))}
@@ -219,7 +234,7 @@ function CoverageMatrix({ active, onSelect }: { active: string; onSelect: (m: st
               <tr
                 key={b.market}
                 onClick={() => onSelect(b.market)}
-                className={`cursor-pointer hover:bg-slate-50 ${active === b.market ? 'bg-brand-50' : ''}`}
+                className={`cursor-pointer transition-colors duration-300 hover:bg-slate-50 ${active === b.market ? 'bg-brand-50' : ''}`}
               >
                 <td className="py-1.5 font-medium text-slate-800">
                   <span className="inline-flex items-center gap-1.5">

@@ -2,9 +2,10 @@
 
 import { useMemo, useRef, useState, type ReactNode } from 'react';
 import DataSourceBadge from '../DataSourceBadge';
+import Dropdown from '../Dropdown';
 import LazyMount from '../LazyMount';
 import { MarketPersonaCard, MarketPersonaTable } from '../MarketPersona';
-import SectionCard, { Insight, PageHeading, Segmented } from '../SectionCard';
+import SectionCard, { Insight, PageHeading } from '../SectionCard';
 import OriginMap from '../charts/OriginMap';
 import OriginStackedBar from '../charts/OriginStackedBar';
 import PortStackedBar from '../charts/PortStackedBar';
@@ -26,9 +27,8 @@ import { demographics } from '@/lib/data';
 import { describeSegment, inRange } from '@/lib/filters';
 import { useFilters } from '@/lib/filters-context';
 import { formatHkd, formatPct } from '@/lib/format';
-import { H1_LABEL, MARKETS, PERIOD_LABEL, PROFILE_PERIODS, hasProfile, marketH1, profileValue } from '@/lib/persona';
+import { H1_LABEL, MARKETS, PERIOD_LABEL, hasProfile, marketH1, periodForRange, profileValue } from '@/lib/persona';
 import { ORIGIN_COLORS } from '@/lib/theme';
-import type { ProfilePeriod } from '@/lib/types';
 
 function SubHeading({ n, title, children }: { n: number; title: string; children?: ReactNode }) {
   return (
@@ -47,7 +47,7 @@ const FY_ONLY = '2025 full year · detail not published for H1 2026';
 export default function VisitorPersonaTab() {
   const { filters } = useFilters();
   const segment = describeSegment(filters);
-  const [period, setPeriod] = useState<ProfilePeriod>('2026-H1');
+  const period = periodForRange(filters.end);
   const marketChoices = MARKETS.filter((m) => filters.origin === 'All' || m.origin === filters.origin);
   const [picked, setPicked] = useState('Chinese Mainland');
   const cardRef = useRef<HTMLDivElement>(null);
@@ -117,7 +117,7 @@ export default function VisitorPersonaTab() {
         badge="official"
         footnote="C&SD reports arrivals by region, not by country, so every country in a region shares that region's colour."
       >
-        <LazyMount height={420}>
+        <LazyMount height={640}>
           <OriginMap filters={filters} />
         </LazyMount>
       </SectionCard>
@@ -189,18 +189,44 @@ export default function VisitorPersonaTab() {
             <DataSourceBadge kind={hasHktb ? 'manual' : 'pending'} />
           </div>
           <p className="mt-1 text-sm text-slate-700">
-            From the HKTB Departing Visitor Survey (Visitor Profile Reports 2025 FY and 2026 H1) and HKTB arrival statistics by nationality. Segment charts compare
-            Mainland, short-haul and long-haul visitors; the market section drills into 18 source markets.
+            From the HKTB Departing Visitor Survey (Visitor Profile Reports 2025 FY and 2026 H1) and HKTB arrival statistics by nationality. The market
+            personas come first, followed by segment charts comparing Mainland, short-haul and long-haul visitors.
             {filters.origin !== 'All' && ` Market views are filtered to ${filters.origin}; segment charts always show all segments.`}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-slate-700">Period</span>
-          <Segmented<ProfilePeriod> value={period} onChange={setPeriod} options={PROFILE_PERIODS} />
-        </div>
+        <p className="text-xs font-semibold text-slate-700">
+          Showing {PERIOD_LABEL[period]} <span className="font-normal text-slate-600">· set by the date range filter above</span>
+        </p>
       </div>
 
-      <SubHeading n={1} title="Who they are" />
+      <SubHeading n={1} title="Market personas: 18 source markets">
+        <div className="flex items-center gap-2 text-xs text-slate-700">
+          Market
+          <Dropdown
+            label="Market"
+            align="right"
+            value={selected}
+            onChange={setPicked}
+            options={marketChoices.map((m) => ({ value: m.market, label: m.market }))}
+          />
+        </div>
+      </SubHeading>
+      <div ref={cardRef} className="scroll-mt-28">
+        {marketChoices.length > 0 && <MarketPersonaCard market={selected} period={period} />}
+      </div>
+      <SectionCard title="Markets at a glance" subtitle={`Click a column to sort, a row to open its persona above · ${PERIOD_LABEL[period]}`} badge="manual">
+        <MarketPersonaTable
+          period={period}
+          origin={filters.origin}
+          selected={selected}
+          onSelect={(m) => {
+            setPicked(m);
+            cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }}
+        />
+      </SectionCard>
+
+      <SubHeading n={2} title="Who they are" />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <SectionCard title="Age profile by segment" subtitle={`All arrivals · ${H1_LABEL[period]}`} badge="manual">
           <LazyMount height={250}>
@@ -212,7 +238,7 @@ export default function VisitorPersonaTab() {
         </SectionCard>
       </div>
 
-      <SubHeading n={2} title="Why and how they travel" />
+      <SubHeading n={3} title="Why and how they travel" />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <SectionCard title="Main purpose of visit" subtitle={`Overnight visitors · ${PERIOD_LABEL[period]}`} badge="manual">
           <LazyMount height={240}>
@@ -236,7 +262,7 @@ export default function VisitorPersonaTab() {
         </LazyMount>
       </SectionCard>
 
-      <SubHeading n={3} title="What they spend on" />
+      <SubHeading n={4} title="What they spend on" />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <SectionCard title="Spending mix and spend per visitor" subtitle={`Overnight visitors · ${PERIOD_LABEL[period]}`} badge="manual">
           <LazyMount height={250}>
@@ -289,7 +315,7 @@ export default function VisitorPersonaTab() {
         </SectionCard>
       </div>
 
-      <SubHeading n={4} title="Experience and places" />
+      <SubHeading n={5} title="Experience and places" />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <SectionCard title="Trip satisfaction" subtitle={`Overnight visitors · ${PERIOD_LABEL[period]}`} badge="manual">
           <ExperienceScorecard period={period} />
@@ -302,37 +328,6 @@ export default function VisitorPersonaTab() {
           <TopPlaces period={period} />
         </SectionCard>
       </div>
-
-      <SubHeading n={5} title="Market personas: 18 source markets">
-        <label className="flex items-center gap-2 text-xs text-slate-700">
-          Market
-          <select
-            value={selected}
-            onChange={(e) => setPicked(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-canvas px-2 py-1 text-xs font-medium text-slate-800"
-          >
-            {marketChoices.map((m) => (
-              <option key={m.market} value={m.market}>
-                {m.market}
-              </option>
-            ))}
-          </select>
-        </label>
-      </SubHeading>
-      <div ref={cardRef} className="scroll-mt-28">
-        {marketChoices.length > 0 && <MarketPersonaCard market={selected} period={period} />}
-      </div>
-      <SectionCard title="Markets at a glance" subtitle={`Click a column to sort, a row to open its persona above · ${PERIOD_LABEL[period]}`} badge="manual">
-        <MarketPersonaTable
-          period={period}
-          origin={filters.origin}
-          selected={selected}
-          onSelect={(m) => {
-            setPicked(m);
-            cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }}
-        />
-      </SectionCard>
     </div>
   );
 }

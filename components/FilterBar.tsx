@@ -2,6 +2,7 @@
 
 import type { Filters, Granularity, Origin, VisitorType } from '@/lib/types';
 import { monthLong } from '@/lib/format';
+import Dropdown from './Dropdown';
 import { Segmented } from './SectionCard';
 
 interface Props {
@@ -75,18 +76,12 @@ export default function FilterBar({ filters, months, defaults, onChange }: Props
       </Field>
 
       <Field label="Visitor origin">
-        <select
-          aria-label="Visitor origin"
+        <Dropdown<Origin | 'All'>
+          label="Visitor origin"
           value={filters.origin}
-          onChange={(e) => set('origin', e.target.value as Origin | 'All')}
-          className="rounded-lg border border-slate-200 bg-canvas px-2.5 py-1.5 text-xs font-medium text-slate-700 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
-        >
-          {ORIGIN_OPTIONS.map((o) => (
-            <option key={o} value={o}>
-              {o === 'All' ? 'All markets' : o}
-            </option>
-          ))}
-        </select>
+          onChange={(v) => set('origin', v)}
+          options={ORIGIN_OPTIONS.map((o) => ({ value: o, label: o === 'All' ? 'All markets' : o }))}
+        />
       </Field>
 
       <Field label="Visitor type">
@@ -135,17 +130,6 @@ function MonthSelect({
   onChange: (v: string) => void;
 }) {
   return (
-    <select
-      aria-label={label}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="rounded-lg border border-slate-200 bg-canvas px-2 py-1.5 text-xs font-medium text-slate-700 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
-    >
-      {options.map((m) => (
-        <option key={m} value={m}>
-          {monthLong(m)}
-        </option>
-      ))}
-    </select>
+    <Dropdown label={label} value={value} onChange={onChange} options={options.map((m) => ({ value: m, label: monthLong(m) }))} />
   );
 }

@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import HeatTable from './HeatTable';
+import { AnimatedBar, AnimatedNumber, useFlipList } from './motion';
 import { RankBadge } from './charts/ProfileCharts';
 import { formatCompact, formatHkd, formatPct, pctChange } from '@/lib/format';
 import {
@@ -111,7 +112,7 @@ export function MarketPersonaTable({
   );
 }
 
-function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
+function Stat({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {
   return (
     <div className="rounded-xl bg-slate-50 p-2.5">
       <p className="text-[11px] text-slate-600">{label}</p>
@@ -138,6 +139,10 @@ export function MarketPersonaCard({ market, period }: { market: string; period: 
     .slice(0, 6);
   const places = profile(period, market, 'place_rank').sort((a, b) => a.value - b.value);
   const comp = (c: string) => profileValue(period, market, 'companion', c);
+  const flipRef = useFlipList(places.map((p) => p.category));
+  const num = (v: number | null, f: (n: number) => string) => <AnimatedNumber value={v} format={f} />;
+  const share = (v: number | null) => num(v, formatShare);
+  const alone = comp('With companion') !== null ? 100 - (comp('With companion') ?? 0) : null;
 
   const traits: string[] = [];
   if (m.age !== null && avg.age !== null) traits.push(m.age >= avg.age + 2 ? 'older than average' : m.age <= avg.age - 2 ? 'younger than average' : 'around the average age');
@@ -163,24 +168,24 @@ export function MarketPersonaCard({ market, period }: { market: string; period: 
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-2">
             <Stat
               label={`Arrivals, ${H1_LABEL[period]}`}
-              value={m.arrivals !== null ? formatCompact(m.arrivals, m.arrivals >= 1e6 ? 2 : 0) : '–'}
+              value={num(m.arrivals, (v) => formatCompact(v, v >= 1e6 ? 2 : 0))}
               hint={m.growth !== null ? `${formatPct(m.growth, 1, true)} vs Jan–Jun 2025` : undefined}
             />
-            <Stat label="Overnight share" value={m.overnight !== null ? `${Math.round(m.overnight)}%` : '–'} hint={h1 ? `${formatCompact(h1.overnight, 0)} overnight` : undefined} />
+            <Stat label="Overnight share" value={num(m.overnight, (v) => `${Math.round(v)}%`)} hint={h1 ? `${formatCompact(h1.overnight, 0)} overnight` : undefined} />
             <Stat
               label="Mean age"
-              value={m.age !== null ? `${m.age.toFixed(1)} yrs` : '–'}
+              value={num(m.age, (v) => `${v.toFixed(1)} yrs`)}
               hint={h1?.male_pct !== null && h1?.male_pct !== undefined ? `${Math.round(h1.male_pct)}% male · ${Math.round(100 - h1.male_pct)}% female` : undefined}
             />
-            <Stat label="First-time visitors" value={formatShare(m.first)} />
-            <Stat label="Average nights" value={m.nights !== null ? m.nights.toFixed(1) : '–'} hint={avg.nights ? `All markets: ${avg.nights.toFixed(1)}` : undefined} />
-            <Stat label="Spend per overnight visitor" value={m.spend !== null ? formatHkd(m.spend) : '–'} hint={avg.spend ? `All markets: ${formatHkd(avg.spend)}` : undefined} />
+            <Stat label="First-time visitors" value={share(m.first)} />
+            <Stat label="Average nights" value={num(m.nights, (v) => v.toFixed(1))} hint={avg.nights ? `All markets: ${avg.nights.toFixed(1)}` : undefined} />
+            <Stat label="Spend per overnight visitor" value={num(m.spend, (v) => formatHkd(v))} hint={avg.spend ? `All markets: ${formatHkd(avg.spend)}` : undefined} />
             <Stat
               label="Travel with companions"
-              value={formatShare(comp('With companion'))}
+              value={share(comp('With companion'))}
               hint={`Family ${formatShare(comp('With family members'))} · kids ${formatShare(comp('With kids'))}`}
             />
-            <Stat label="Travel alone" value={comp('With companion') !== null ? formatShare(100 - (comp('With companion') ?? 0)) : '–'} />
+            <Stat label="Travel alone" value={share(alone)} />
           </div>
 
           {ages.length > 0 && (
@@ -192,11 +197,11 @@ export function MarketPersonaCard({ market, period }: { market: string; period: 
                   return (
                     <div
                       key={g}
-                      className="flex items-center justify-center text-[10px] font-semibold"
+                      className="flex items-center justify-center overflow-hidden whitespace-nowrap text-[10px] font-semibold transition-[width] duration-700 ease-out motion-reduce:transition-none"
                       style={{ width: `${v}%`, background: AGE_COLORS[i], color: labelColor(AGE_COLORS[i]) }}
                       title={`${g}: ${v}%`}
                     >
-                      {v >= 8 ? `${v}%` : ''}
+                      {v >= 8 ? num(v, (n) => `${Math.round(n)}%`) : ''}
                     </div>
                   );
                 })}
@@ -217,16 +222,16 @@ export function MarketPersonaCard({ market, period }: { market: string; period: 
           <p className="mb-1.5 text-xs font-semibold text-slate-800">Where they come from (overnight visitors)</p>
           {origins.length ? (
             <ul className="space-y-1.5">
-              {origins.map((o) => (
-                <li key={o.category} className="text-xs">
+              {origins.map((o, i) => (
+                <li key={i} className="text-xs">
                   <div className="flex justify-between gap-2">
                     <span className="truncate text-slate-700" title={o.category}>
                       {o.category}
                     </span>
-                    <span className="tabular-nums text-slate-600">{formatShare(o.value)}</span>
+                    <span className="tabular-nums text-slate-600">{share(o.value)}</span>
                   </div>
                   <div className="mt-0.5 h-2 rounded-full bg-slate-100">
-                    <div className="h-2 rounded-full" style={{ width: `${(o.value / origins[0].value) * 100}%`, background: ORIGIN_COLORS[origin] }} />
+                    <AnimatedBar percent={(o.value / origins[0].value) * 100} className="h-2 rounded-full" style={{ background: ORIGIN_COLORS[origin] }} />
                   </div>
                 </li>
               ))}
@@ -240,8 +245,10 @@ export function MarketPersonaCard({ market, period }: { market: string; period: 
           {places.length ? (
             <ol className="space-y-1">
               {places.map((p) => (
-                <li key={p.category} className="flex items-center gap-2 text-xs">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-700 text-[10px] font-bold text-canvas">{p.value}</span>
+                <li key={p.category} ref={flipRef(p.category)} className="flex items-center gap-2 text-xs">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-700 text-[10px] font-bold text-canvas">
+                    {num(p.value, (n) => String(Math.round(n)))}
+                  </span>
                   <span className="min-w-0 flex-1 truncate text-slate-700" title={p.category}>
                     {p.category}
                   </span>

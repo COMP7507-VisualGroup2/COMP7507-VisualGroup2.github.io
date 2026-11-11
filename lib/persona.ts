@@ -4,10 +4,10 @@ import type { MarketH1, Origin, ProfilePeriod } from './types';
 
 /** Helpers for the HKTB Visitor Profile data (data/manual/visitor_profile.csv + HKTB arrival workbooks). */
 
-export const PROFILE_PERIODS: { value: ProfilePeriod; label: string }[] = [
-  { value: '2025', label: '2025' },
-  { value: '2026-H1', label: 'H1 2026' },
-];
+/** The HKTB profile period shown for a global date range: H1 2026 once the range reaches 2026, otherwise 2025. */
+export function periodForRange(end: string): ProfilePeriod {
+  return end.startsWith('2026') ? '2026-H1' : '2025';
+}
 
 export const PERIOD_LABEL: Record<ProfilePeriod, string> = { '2025': '2025 full year', '2026-H1': 'Jan–Jun 2026' };
 
