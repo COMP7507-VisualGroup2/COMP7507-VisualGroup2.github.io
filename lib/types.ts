@@ -103,6 +103,30 @@ export interface RegionMonth {
   arrivals: number;
 }
 
+/** HKTB Visitor Profile periods: 2025 full year and Jan-Jun 2026. */
+export type ProfilePeriod = '2025' | '2026-H1';
+
+export interface ProfileRecord {
+  period: ProfilePeriod;
+  /** 'All markets' | 'Mainland' | 'Short-haul' | 'Long-haul' or one of the 18 HKTB source markets. */
+  market: string;
+  dimension: string;
+  category: string;
+  value: number | null;
+}
+
+/** Jan-Jun arrivals by visitor type, gender and age for a market or segment (HKTB monthly workbooks). */
+export interface MarketH1 {
+  period: string;
+  market: string;
+  arrivals: number;
+  same_day: number;
+  overnight: number;
+  male_pct: number | null;
+  mean_age: number | null;
+  age: Record<string, number>;
+}
+
 export interface VisitorDemographics {
   meta: Meta;
   months: string[];
@@ -115,8 +139,10 @@ export interface VisitorDemographics {
   port_arrivals: PortRecord[];
   length_of_stay: { year: string; nights: number }[];
   visitor_type_annual: { year: string; visitor_type: VisitorType; arrivals: number }[];
-  visitor_profile: { year: string; dimension: string; category: string; share_pct: number | null }[];
-  attraction_sentiment: { attraction: string; mentions: number | null; sentiment_score: number | null; recommend_pct: number | null }[];
+  markets: { market: string; origin: Origin }[];
+  market_monthly: { month: string; market: string; arrivals: number }[];
+  market_h1: MarketH1[];
+  visitor_profile: ProfileRecord[];
 }
 
 export interface HotelMonth {
@@ -209,6 +235,33 @@ export interface Pillar {
   initiatives: string[];
   kpis: { metric: string; baseline: string; target_2027: string }[];
   timeline: { phase: string; action: string }[];
+  /** HKTB source markets whose playbook leads with this pillar. */
+  focus_markets: string[];
+}
+
+export interface PillarKpi {
+  metric: string;
+  baseline: string;
+  target_2027: string;
+}
+
+/** 2027 playbook for one HKTB source market: data-driven baselines with proposed targets per pillar. */
+export interface MarketPlaybook {
+  market: string;
+  origin: Origin;
+  primary: string;
+  headline: string;
+  facts: {
+    arrivals_h1_2026: number | null;
+    yoy_pct: number | null;
+    overnight_pct: number | null;
+    nights: number | null;
+    spend_hkd: number | null;
+    first_timer_pct: number | null;
+    mean_age: number | null;
+    top_places: string[];
+  };
+  plays: { pillar: string; initiatives: string[]; kpis: PillarKpi[] }[];
 }
 
 export interface StrategyForecast {
@@ -236,6 +289,7 @@ export interface StrategyForecast {
   }[];
   scenarios: Record<'base' | 'upside' | 'downside', Scenario>;
   pillars: Pillar[];
+  market_playbooks: MarketPlaybook[];
 }
 
 export interface Filters {

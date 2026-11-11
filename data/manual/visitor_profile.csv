@@ -1,1 +1,1455 @@
-year,dimension,category,share_pct,source
+period,market,dimension,category,value,source
+2025,All markets,visitor_type_share,Same-day,54,HKTB Visitor Profile Report 2026 H1 p.5
+2025,All markets,visitor_type_share,Overnight,46,HKTB Visitor Profile Report 2026 H1 p.5
+2026-H1,All markets,visitor_type_share,Same-day,57,HKTB Visitor Profile Report 2026 H1 p.5
+2026-H1,All markets,visitor_type_share,Overnight,43,HKTB Visitor Profile Report 2026 H1 p.5
+2025,All markets,per_capita_sameday_hkd,Per capita spending,1100,HKTB Visitor Profile Report 2026 H1 p.5
+2026-H1,All markets,per_capita_sameday_hkd,Per capita spending,1100,HKTB Visitor Profile Report 2026 H1 p.5
+2025,All markets,avg_nights,Average nights,3.1,HKTB Visitor Profile Report 2026 H1 p.5
+2026-H1,All markets,avg_nights,Average nights,3.1,HKTB Visitor Profile Report 2026 H1 p.5
+2025,All markets,per_capita_overnight_hkd,Per capita spending,5500,HKTB Visitor Profile Report 2026 H1 p.5
+2026-H1,All markets,per_capita_overnight_hkd,Per capita spending,5400,HKTB Visitor Profile Report 2026 H1 p.5
+2025,All markets,trip_purpose,Vacation,59,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,trip_purpose,Visiting friends / relatives,22,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,trip_purpose,Business,10,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,trip_purpose,En-route,3,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,trip_purpose,Others,6,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,trip_purpose,Vacation,61,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,trip_purpose,Visiting friends / relatives,21,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,trip_purpose,Business,10,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,trip_purpose,En-route,4,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,trip_purpose,Others,5,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,spend_mix,Shopping,36,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,spend_mix,Hotel bills,27,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,spend_mix,Dining,23,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,spend_mix,Others,14,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,spend_mix,Shopping,36,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,spend_mix,Hotel bills,27,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,spend_mix,Dining,23,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,spend_mix,Others,14,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,shopping_mix,Garments / fabrics,9,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,shopping_mix,Jewellery & watches,6,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,shopping_mix,Cosmetics & skincare,5,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,shopping_mix,Leather goods,5,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,shopping_mix,Electrical / photographic goods,3,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,shopping_mix,Foodstuff / alcohol / tobacco,4,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,shopping_mix,Medicines & health supplements,3,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,shopping_mix,Personal care,1,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,shopping_mix,Other items,1,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,shopping_mix,Garments / fabrics,8,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,shopping_mix,Jewellery & watches,7,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,shopping_mix,Cosmetics & skincare,5,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,shopping_mix,Leather goods,4,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,shopping_mix,Electrical / photographic goods,4,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,shopping_mix,Foodstuff / alcohol / tobacco,3,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,shopping_mix,Medicines & health supplements,3,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,shopping_mix,Personal care,1,HKTB Visitor Profile Report 2026 H1 p.6
+2026-H1,All markets,shopping_mix,Other items,1,HKTB Visitor Profile Report 2026 H1 p.6
+2025,All markets,satisfaction,Overall satisfaction,8.9,HKTB Visitor Profile Report 2026 H1 p.7
+2025,All markets,satisfaction,Will recommend,95,HKTB Visitor Profile Report 2026 H1 p.7
+2025,All markets,satisfaction,Revisit intention,96,HKTB Visitor Profile Report 2026 H1 p.7
+2026-H1,All markets,satisfaction,Overall satisfaction,9,HKTB Visitor Profile Report 2026 H1 p.7
+2026-H1,All markets,satisfaction,Will recommend,96,HKTB Visitor Profile Report 2026 H1 p.7
+2026-H1,All markets,satisfaction,Revisit intention,95,HKTB Visitor Profile Report 2026 H1 p.7
+2025,Mainland,arrivals_m,Total,37.8,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,arrivals_m,Same-day,22.7,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,arrivals_m,Overnight,15.1,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,arrivals_m,Total,20.6,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,arrivals_m,Same-day,13,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,arrivals_m,Overnight,7.5,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,per_capita_sameday_hkd,Per capita spending,1200,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,per_capita_sameday_hkd,Per capita spending,1200,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,avg_nights,Average nights,3.1,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,avg_nights,Average nights,3.1,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,per_capita_overnight_hkd,Per capita spending,5000,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,per_capita_overnight_hkd,Per capita spending,5200,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,trip_purpose,Vacation,55,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,trip_purpose,Visiting friends / relatives,27,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,trip_purpose,Business,8,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,trip_purpose,En-route,2,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,trip_purpose,Others,8,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,trip_purpose,Vacation,58,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,trip_purpose,Visiting friends / relatives,25,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,trip_purpose,Business,8,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,trip_purpose,En-route,2,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,trip_purpose,Others,7,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,spend_mix,Shopping,41,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,spend_mix,Hotel bills,24,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,spend_mix,Dining,23,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,spend_mix,Others,13,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,spend_mix,Shopping,41,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,spend_mix,Hotel bills,24,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,spend_mix,Dining,23,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,spend_mix,Others,12,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,shopping_mix,Garments / fabrics,8,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,shopping_mix,Jewellery & watches,7,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,shopping_mix,Cosmetics & skincare,6,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,shopping_mix,Leather goods,5,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,shopping_mix,Electrical / photographic goods,4,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,shopping_mix,Foodstuff / alcohol / tobacco,4,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,shopping_mix,Medicines & health supplements,5,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,shopping_mix,Personal care,2,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,shopping_mix,Other items,1,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,shopping_mix,Garments / fabrics,8,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,shopping_mix,Jewellery & watches,7,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,shopping_mix,Cosmetics & skincare,7,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,shopping_mix,Leather goods,4,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,shopping_mix,Electrical / photographic goods,4,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,shopping_mix,Foodstuff / alcohol / tobacco,3,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,shopping_mix,Medicines & health supplements,4,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,shopping_mix,Personal care,1,HKTB Visitor Profile Report 2026 H1 p.8
+2026-H1,Mainland,shopping_mix,Other items,1,HKTB Visitor Profile Report 2026 H1 p.8
+2025,Mainland,satisfaction,Overall satisfaction,8.9,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Mainland,satisfaction,Will recommend,94,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Mainland,satisfaction,Revisit intention,97,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,satisfaction,Overall satisfaction,9,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,satisfaction,Will recommend,94,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,satisfaction,Revisit intention,97,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Short-haul,arrivals_m,Total,8.2,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,arrivals_m,Same-day,2.9,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,arrivals_m,Overnight,5.4,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,arrivals_m,Total,4,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,arrivals_m,Same-day,1.5,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,arrivals_m,Overnight,2.5,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,per_capita_sameday_hkd,Per capita spending,900,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,per_capita_sameday_hkd,Per capita spending,800,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,avg_nights,Average nights,2.9,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,avg_nights,Average nights,2.9,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,per_capita_overnight_hkd,Per capita spending,5700,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,per_capita_overnight_hkd,Per capita spending,5500,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,trip_purpose,Vacation,72,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,trip_purpose,Visiting friends / relatives,10,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,trip_purpose,Business,13,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,trip_purpose,En-route,3,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,trip_purpose,Others,2,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,trip_purpose,Vacation,71,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,trip_purpose,Visiting friends / relatives,11,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,trip_purpose,Business,13,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,trip_purpose,En-route,3,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,trip_purpose,Others,2,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,spend_mix,Shopping,34,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,spend_mix,Hotel bills,28,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,spend_mix,Dining,22,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,spend_mix,Others,17,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,spend_mix,Shopping,33,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,spend_mix,Hotel bills,30,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,spend_mix,Dining,21,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,spend_mix,Others,17,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,shopping_mix,Garments / fabrics,10,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,shopping_mix,Jewellery & watches,6,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,shopping_mix,Cosmetics & skincare,3,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,shopping_mix,Leather goods,6,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,shopping_mix,Electrical / photographic goods,2,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,shopping_mix,Foodstuff / alcohol / tobacco,5,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,shopping_mix,Medicines & health supplements,1,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,shopping_mix,Personal care,1,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,shopping_mix,Other items,2,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,shopping_mix,Garments / fabrics,9,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,shopping_mix,Jewellery & watches,6,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,shopping_mix,Cosmetics & skincare,3,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,shopping_mix,Leather goods,4,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,shopping_mix,Electrical / photographic goods,2,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,shopping_mix,Foodstuff / alcohol / tobacco,4,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,shopping_mix,Medicines & health supplements,1,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,shopping_mix,Personal care,1,HKTB Visitor Profile Report 2026 H1 p.10
+2026-H1,Short-haul,shopping_mix,Other items,2,HKTB Visitor Profile Report 2026 H1 p.10
+2025,Short-haul,satisfaction,Overall satisfaction,8.7,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Short-haul,satisfaction,Will recommend,97,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Short-haul,satisfaction,Revisit intention,96,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,satisfaction,Overall satisfaction,8.8,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,satisfaction,Will recommend,97,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,satisfaction,Revisit intention,97,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Long-haul,arrivals_m,Total,3.8,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,arrivals_m,Same-day,1.1,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,arrivals_m,Overnight,2.7,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,arrivals_m,Total,2.2,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,arrivals_m,Same-day,0.7,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,arrivals_m,Overnight,1.5,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,per_capita_sameday_hkd,Per capita spending,800,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,per_capita_sameday_hkd,Per capita spending,800,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,avg_nights,Average nights,3.7,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,avg_nights,Average nights,3.5,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,per_capita_overnight_hkd,Per capita spending,7700,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,per_capita_overnight_hkd,Per capita spending,6800,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,trip_purpose,Vacation,54,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,trip_purpose,Visiting friends / relatives,17,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,trip_purpose,Business,17,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,trip_purpose,En-route,9,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,trip_purpose,Others,3,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,trip_purpose,Vacation,56,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,trip_purpose,Visiting friends / relatives,15,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,trip_purpose,Business,16,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,trip_purpose,En-route,10,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,trip_purpose,Others,3,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,spend_mix,Shopping,25,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,spend_mix,Hotel bills,37,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,spend_mix,Dining,25,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,spend_mix,Others,13,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,spend_mix,Shopping,24,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,spend_mix,Hotel bills,38,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,spend_mix,Dining,24,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,spend_mix,Others,14,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,shopping_mix,Garments / fabrics,8,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,shopping_mix,Jewellery & watches,6,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,shopping_mix,Cosmetics & skincare,2,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,shopping_mix,Leather goods,2,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,shopping_mix,Electrical / photographic goods,3,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,shopping_mix,Foodstuff / alcohol / tobacco,2,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,shopping_mix,Medicines & health supplements,0.4,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,shopping_mix,Personal care,1,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,shopping_mix,Other items,1,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,shopping_mix,Garments / fabrics,7,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,shopping_mix,Jewellery & watches,6,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,shopping_mix,Cosmetics & skincare,1,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,shopping_mix,Leather goods,3,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,shopping_mix,Electrical / photographic goods,4,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,shopping_mix,Foodstuff / alcohol / tobacco,1,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,shopping_mix,Medicines & health supplements,0.4,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,shopping_mix,Personal care,0.4,HKTB Visitor Profile Report 2026 H1 p.12
+2026-H1,Long-haul,shopping_mix,Other items,1,HKTB Visitor Profile Report 2026 H1 p.12
+2025,Long-haul,satisfaction,Overall satisfaction,8.9,HKTB Visitor Profile Report 2026 H1 p.13
+2025,Long-haul,satisfaction,Will recommend,98,HKTB Visitor Profile Report 2026 H1 p.13
+2025,Long-haul,satisfaction,Revisit intention,93,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,satisfaction,Overall satisfaction,9,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,satisfaction,Will recommend,98,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,satisfaction,Revisit intention,92,HKTB Visitor Profile Report 2026 H1 p.13
+2025,All markets,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2025 FY p.7
+2025,All markets,place_rank,The Peak,2,HKTB Visitor Profile Report 2025 FY p.7
+2025,All markets,place_rank,Hong Kong Disneyland,3,HKTB Visitor Profile Report 2025 FY p.7
+2025,All markets,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2025 FY p.7
+2025,All markets,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2025 FY p.7
+2025,All markets,place_rank,West Kowloon Cultural District,6,HKTB Visitor Profile Report 2025 FY p.7
+2025,All markets,place_rank,Hong Kong Observation Wheel,7,HKTB Visitor Profile Report 2025 FY p.7
+2025,All markets,place_rank,Ngong Ping 360,8,HKTB Visitor Profile Report 2025 FY p.7
+2025,All markets,place_rank,Urban Parks,9,HKTB Visitor Profile Report 2025 FY p.7
+2025,All markets,place_rank,Lan Kwai Fong,10,HKTB Visitor Profile Report 2025 FY p.7
+2026-H1,All markets,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.7
+2026-H1,All markets,place_rank,The Peak,2,HKTB Visitor Profile Report 2026 H1 p.7
+2026-H1,All markets,place_rank,Hong Kong Disneyland,3,HKTB Visitor Profile Report 2026 H1 p.7
+2026-H1,All markets,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2026 H1 p.7
+2026-H1,All markets,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2026 H1 p.7
+2026-H1,All markets,place_rank,Urban Parks,6,HKTB Visitor Profile Report 2026 H1 p.7
+2026-H1,All markets,place_rank,West Kowloon Cultural District,7,HKTB Visitor Profile Report 2026 H1 p.7
+2026-H1,All markets,place_rank,Hong Kong Observation Wheel,8,HKTB Visitor Profile Report 2026 H1 p.7
+2026-H1,All markets,place_rank,Beaches,9,HKTB Visitor Profile Report 2026 H1 p.7
+2026-H1,All markets,place_rank,HK Convention & Exhibition Centre,10,HKTB Visitor Profile Report 2026 H1 p.7
+2025,Mainland,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Mainland,place_rank,The Peak,2,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Mainland,place_rank,Hong Kong Disneyland,3,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Mainland,place_rank,Hong Kong Observation Wheel,4,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Mainland,place_rank,West Kowloon Cultural District,5,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Mainland,place_rank,Old Town Central,6,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Mainland,place_rank,Temple Street / Ladies' Market,7,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Mainland,place_rank,HK Convention & Exhibition Centre,8,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Mainland,place_rank,Ocean Park,9,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Mainland,place_rank,Urban Parks,10,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,place_rank,The Peak,2,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,place_rank,Hong Kong Disneyland,3,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,place_rank,Old Town Central,4,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,place_rank,Hong Kong Observation Wheel,5,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,place_rank,West Kowloon Cultural District,6,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,place_rank,Temple Street / Ladies' Market,7,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,place_rank,Urban Parks,8,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,place_rank,Kai Tak Sports Park,9,HKTB Visitor Profile Report 2026 H1 p.9
+2026-H1,Mainland,place_rank,HK Convention & Exhibition Centre,10,HKTB Visitor Profile Report 2026 H1 p.9
+2025,Short-haul,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Short-haul,place_rank,Hong Kong Disneyland,2,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Short-haul,place_rank,The Peak,3,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Short-haul,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Short-haul,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Short-haul,place_rank,Ngong Ping 360,6,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Short-haul,place_rank,West Kowloon Cultural District,7,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Short-haul,place_rank,Lan Kwai Fong,8,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Short-haul,place_rank,Ocean Park,9,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Short-haul,place_rank,Hong Kong Museum of Art,10,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,place_rank,Hong Kong Disneyland,2,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,place_rank,The Peak,3,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,place_rank,Ngong Ping 360,6,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,place_rank,Urban Parks,7,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,place_rank,West Kowloon Cultural District,8,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,place_rank,Lan Kwai Fong,9,HKTB Visitor Profile Report 2026 H1 p.11
+2026-H1,Short-haul,place_rank,Wong Tai Sin Temple,10,HKTB Visitor Profile Report 2026 H1 p.11
+2025,Long-haul,place_rank,The Peak,1,HKTB Visitor Profile Report 2026 H1 p.13
+2025,Long-haul,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2026 H1 p.13
+2025,Long-haul,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2026 H1 p.13
+2025,Long-haul,place_rank,Old Town Central,4,HKTB Visitor Profile Report 2026 H1 p.13
+2025,Long-haul,place_rank,Ngong Ping 360,5,HKTB Visitor Profile Report 2026 H1 p.13
+2025,Long-haul,place_rank,Urban Parks,6,HKTB Visitor Profile Report 2026 H1 p.13
+2025,Long-haul,place_rank,West Kowloon Cultural District,7,HKTB Visitor Profile Report 2026 H1 p.13
+2025,Long-haul,place_rank,Hiking Trail / Country Park,8,HKTB Visitor Profile Report 2026 H1 p.13
+2025,Long-haul,place_rank,Beaches,9,HKTB Visitor Profile Report 2026 H1 p.13
+2025,Long-haul,place_rank,Hong Kong Disneyland,10,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,place_rank,The Peak,2,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,place_rank,Urban Parks,4,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,place_rank,West Kowloon Cultural District,6,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,place_rank,Ngong Ping 360,7,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,place_rank,Hiking Trail / Country Park,8,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,place_rank,Beaches,9,HKTB Visitor Profile Report 2026 H1 p.13
+2026-H1,Long-haul,place_rank,Hong Kong Disneyland,10,HKTB Visitor Profile Report 2026 H1 p.13
+2025,All markets,first_timer_pct,First-time visitors,25,HKTB Visitor Profile Report 2025 FY p.51
+2025,Mainland,first_timer_pct,First-time visitors,18,HKTB Visitor Profile Report 2025 FY p.51
+2025,Short-haul,first_timer_pct,First-time visitors,34,HKTB Visitor Profile Report 2025 FY p.51
+2025,Long-haul,first_timer_pct,First-time visitors,41,HKTB Visitor Profile Report 2025 FY p.51
+2025,All markets,companion_detail,Travelling alone,53,HKTB Visitor Profile Report 2025 FY p.51
+2025,Mainland,companion_detail,Travelling alone,57,HKTB Visitor Profile Report 2025 FY p.51
+2025,Short-haul,companion_detail,Travelling alone,41,HKTB Visitor Profile Report 2025 FY p.51
+2025,Long-haul,companion_detail,Travelling alone,60,HKTB Visitor Profile Report 2025 FY p.51
+2025,All markets,companion_detail,Spouse / partner,19,HKTB Visitor Profile Report 2025 FY p.51
+2025,Mainland,companion_detail,Spouse / partner,16,HKTB Visitor Profile Report 2025 FY p.51
+2025,Short-haul,companion_detail,Spouse / partner,25,HKTB Visitor Profile Report 2025 FY p.51
+2025,Long-haul,companion_detail,Spouse / partner,25,HKTB Visitor Profile Report 2025 FY p.51
+2025,All markets,companion_detail,Children / grandchildren,12,HKTB Visitor Profile Report 2025 FY p.51
+2025,Mainland,companion_detail,Children / grandchildren,12,HKTB Visitor Profile Report 2025 FY p.51
+2025,Short-haul,companion_detail,Children / grandchildren,13,HKTB Visitor Profile Report 2025 FY p.51
+2025,Long-haul,companion_detail,Children / grandchildren,7,HKTB Visitor Profile Report 2025 FY p.51
+2025,All markets,companion_detail,Parents / grandparents,5,HKTB Visitor Profile Report 2025 FY p.51
+2025,Mainland,companion_detail,Parents / grandparents,4,HKTB Visitor Profile Report 2025 FY p.51
+2025,Short-haul,companion_detail,Parents / grandparents,7,HKTB Visitor Profile Report 2025 FY p.51
+2025,Long-haul,companion_detail,Parents / grandparents,3,HKTB Visitor Profile Report 2025 FY p.51
+2025,All markets,companion_detail,Other immediate family,4,HKTB Visitor Profile Report 2025 FY p.51
+2025,Mainland,companion_detail,Other immediate family,3,HKTB Visitor Profile Report 2025 FY p.51
+2025,Short-haul,companion_detail,Other immediate family,7,HKTB Visitor Profile Report 2025 FY p.51
+2025,Long-haul,companion_detail,Other immediate family,2,HKTB Visitor Profile Report 2025 FY p.51
+2025,All markets,companion_detail,Relatives / friends / associates,18,HKTB Visitor Profile Report 2025 FY p.51
+2025,Mainland,companion_detail,Relatives / friends / associates,16,HKTB Visitor Profile Report 2025 FY p.51
+2025,Short-haul,companion_detail,Relatives / friends / associates,25,HKTB Visitor Profile Report 2025 FY p.51
+2025,Long-haul,companion_detail,Relatives / friends / associates,10,HKTB Visitor Profile Report 2025 FY p.51
+2025,All markets,itinerary,Hong Kong only,61,HKTB Visitor Profile Report 2025 FY p.52
+2025,Mainland,itinerary,Hong Kong only,71,HKTB Visitor Profile Report 2025 FY p.52
+2025,Short-haul,itinerary,Hong Kong only,51,HKTB Visitor Profile Report 2025 FY p.52
+2025,Long-haul,itinerary,Hong Kong only,20,HKTB Visitor Profile Report 2025 FY p.52
+2025,All markets,itinerary,Multi-destination,39,HKTB Visitor Profile Report 2025 FY p.52
+2025,Mainland,itinerary,Multi-destination,29,HKTB Visitor Profile Report 2025 FY p.52
+2025,Short-haul,itinerary,Multi-destination,49,HKTB Visitor Profile Report 2025 FY p.52
+2025,Long-haul,itinerary,Multi-destination,80,HKTB Visitor Profile Report 2025 FY p.52
+2025,All markets,other_destination,Greater Bay Area (Mainland),29,HKTB Visitor Profile Report 2025 FY p.52
+2025,Mainland,other_destination,Greater Bay Area (Mainland),24,HKTB Visitor Profile Report 2025 FY p.52
+2025,Short-haul,other_destination,Greater Bay Area (Mainland),40,HKTB Visitor Profile Report 2025 FY p.52
+2025,Long-haul,other_destination,Greater Bay Area (Mainland),37,HKTB Visitor Profile Report 2025 FY p.52
+2025,All markets,other_destination,Macao SAR,18,HKTB Visitor Profile Report 2025 FY p.52
+2025,Mainland,other_destination,Macao SAR,14,HKTB Visitor Profile Report 2025 FY p.52
+2025,Short-haul,other_destination,Macao SAR,30,HKTB Visitor Profile Report 2025 FY p.52
+2025,Long-haul,other_destination,Macao SAR,15,HKTB Visitor Profile Report 2025 FY p.52
+2025,All markets,other_destination,Other Mainland cities,5,HKTB Visitor Profile Report 2025 FY p.52
+2025,Mainland,other_destination,Other Mainland cities,3,HKTB Visitor Profile Report 2025 FY p.52
+2025,Short-haul,other_destination,Other Mainland cities,3,HKTB Visitor Profile Report 2025 FY p.52
+2025,Long-haul,other_destination,Other Mainland cities,19,HKTB Visitor Profile Report 2025 FY p.52
+2025,All markets,other_destination,Japan,2,HKTB Visitor Profile Report 2025 FY p.52
+2025,Mainland,other_destination,Japan,1,HKTB Visitor Profile Report 2025 FY p.52
+2025,Short-haul,other_destination,Japan,2,HKTB Visitor Profile Report 2025 FY p.52
+2025,Long-haul,other_destination,Japan,10,HKTB Visitor Profile Report 2025 FY p.52
+2025,All markets,other_destination,Thailand,2,HKTB Visitor Profile Report 2025 FY p.52
+2025,Mainland,other_destination,Thailand,1,HKTB Visitor Profile Report 2025 FY p.52
+2025,Short-haul,other_destination,Thailand,1,HKTB Visitor Profile Report 2025 FY p.52
+2025,Long-haul,other_destination,Thailand,10,HKTB Visitor Profile Report 2025 FY p.52
+2025,All markets,other_destination,Vietnam,1,HKTB Visitor Profile Report 2025 FY p.52
+2025,Mainland,other_destination,Vietnam,0.4,HKTB Visitor Profile Report 2025 FY p.52
+2025,Short-haul,other_destination,Vietnam,1,HKTB Visitor Profile Report 2025 FY p.52
+2025,Long-haul,other_destination,Vietnam,7,HKTB Visitor Profile Report 2025 FY p.52
+2025,All markets,other_destination,Singapore,1,HKTB Visitor Profile Report 2025 FY p.52
+2025,Mainland,other_destination,Singapore,0.4,HKTB Visitor Profile Report 2025 FY p.52
+2025,Short-haul,other_destination,Singapore,1,HKTB Visitor Profile Report 2025 FY p.52
+2025,Long-haul,other_destination,Singapore,6,HKTB Visitor Profile Report 2025 FY p.52
+2025,All markets,other_destination,Taiwan,1,HKTB Visitor Profile Report 2025 FY p.52
+2025,Mainland,other_destination,Taiwan,0.4,HKTB Visitor Profile Report 2025 FY p.52
+2025,Short-haul,other_destination,Taiwan,2,HKTB Visitor Profile Report 2025 FY p.52
+2025,Long-haul,other_destination,Taiwan,5,HKTB Visitor Profile Report 2025 FY p.52
+2025,All markets,aspect_rating,Sightseeing,94,HKTB Visitor Profile Report 2025 FY p.55
+2025,Mainland,aspect_rating,Sightseeing,95,HKTB Visitor Profile Report 2025 FY p.55
+2025,Short-haul,aspect_rating,Sightseeing,93,HKTB Visitor Profile Report 2025 FY p.55
+2025,Long-haul,aspect_rating,Sightseeing,93,HKTB Visitor Profile Report 2025 FY p.55
+2025,All markets,aspect_rating,Shopping,93,HKTB Visitor Profile Report 2025 FY p.55
+2025,Mainland,aspect_rating,Shopping,95,HKTB Visitor Profile Report 2025 FY p.55
+2025,Short-haul,aspect_rating,Shopping,90,HKTB Visitor Profile Report 2025 FY p.55
+2025,Long-haul,aspect_rating,Shopping,92,HKTB Visitor Profile Report 2025 FY p.55
+2025,All markets,aspect_rating,Entertainment,91,HKTB Visitor Profile Report 2025 FY p.55
+2025,Mainland,aspect_rating,Entertainment,93,HKTB Visitor Profile Report 2025 FY p.55
+2025,Short-haul,aspect_rating,Entertainment,87,HKTB Visitor Profile Report 2025 FY p.55
+2025,Long-haul,aspect_rating,Entertainment,88,HKTB Visitor Profile Report 2025 FY p.55
+2025,All markets,aspect_rating,Dining,89,HKTB Visitor Profile Report 2025 FY p.55
+2025,Mainland,aspect_rating,Dining,89,HKTB Visitor Profile Report 2025 FY p.55
+2025,Short-haul,aspect_rating,Dining,88,HKTB Visitor Profile Report 2025 FY p.55
+2025,Long-haul,aspect_rating,Dining,92,HKTB Visitor Profile Report 2025 FY p.55
+2025,All markets,aspect_rating,Hotels,84,HKTB Visitor Profile Report 2025 FY p.55
+2025,Mainland,aspect_rating,Hotels,85,HKTB Visitor Profile Report 2025 FY p.55
+2025,Short-haul,aspect_rating,Hotels,84,HKTB Visitor Profile Report 2025 FY p.55
+2025,Long-haul,aspect_rating,Hotels,81,HKTB Visitor Profile Report 2025 FY p.55
+2025,Chinese Mainland,mean_age,Mean age,36.5,HKTB Visitor Profile Report 2026 H1 p.16
+2025,Chinese Mainland,age_group,0-15,8,HKTB Visitor Profile Report 2026 H1 p.16
+2025,Chinese Mainland,age_group,16-25,16,HKTB Visitor Profile Report 2026 H1 p.16
+2025,Chinese Mainland,age_group,26-35,26,HKTB Visitor Profile Report 2026 H1 p.16
+2025,Chinese Mainland,age_group,36-45,22,HKTB Visitor Profile Report 2026 H1 p.16
+2025,Chinese Mainland,age_group,46-55,15,HKTB Visitor Profile Report 2026 H1 p.16
+2025,Chinese Mainland,age_group,56-65,9,HKTB Visitor Profile Report 2026 H1 p.16
+2025,Chinese Mainland,age_group,66+,5,HKTB Visitor Profile Report 2026 H1 p.16
+2026-H1,Chinese Mainland,mean_age,Mean age,36.7,HKTB Visitor Profile Report 2026 H1 p.16
+2026-H1,Chinese Mainland,age_group,0-15,7,HKTB Visitor Profile Report 2026 H1 p.16
+2026-H1,Chinese Mainland,age_group,16-25,16,HKTB Visitor Profile Report 2026 H1 p.16
+2026-H1,Chinese Mainland,age_group,26-35,26,HKTB Visitor Profile Report 2026 H1 p.16
+2026-H1,Chinese Mainland,age_group,36-45,22,HKTB Visitor Profile Report 2026 H1 p.16
+2026-H1,Chinese Mainland,age_group,46-55,14,HKTB Visitor Profile Report 2026 H1 p.16
+2026-H1,Chinese Mainland,age_group,56-65,9,HKTB Visitor Profile Report 2026 H1 p.16
+2026-H1,Chinese Mainland,age_group,66+,5,HKTB Visitor Profile Report 2026 H1 p.16
+2025,Chinese Mainland,first_timer_pct,First-time visitors,18,HKTB Visitor Profile Report 2026 H1 p.17
+2025,Chinese Mainland,companion,With companion,43,HKTB Visitor Profile Report 2026 H1 p.17
+2025,Chinese Mainland,companion,With family members,29,HKTB Visitor Profile Report 2026 H1 p.17
+2025,Chinese Mainland,companion,With kids,8,HKTB Visitor Profile Report 2026 H1 p.17
+2025,Chinese Mainland,avg_nights,Average nights,3.1,HKTB Visitor Profile Report 2026 H1 p.17
+2025,Chinese Mainland,per_capita_overnight_hkd,Per capita spending,5000,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,first_timer_pct,First-time visitors,21,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,companion,With companion,44,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,companion,With family members,28,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,companion,With kids,8,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,avg_nights,Average nights,3.1,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,per_capita_overnight_hkd,Per capita spending,5200,HKTB Visitor Profile Report 2026 H1 p.17
+2025,Chinese Mainland,origin_region,Guangdong,51,HKTB Visitor Profile Report 2026 H1 p.17
+2025,Chinese Mainland,origin_region,Shanghai,8,HKTB Visitor Profile Report 2026 H1 p.17
+2025,Chinese Mainland,origin_region,Beijing,6,HKTB Visitor Profile Report 2026 H1 p.17
+2025,Chinese Mainland,origin_region,Zhejiang,5,HKTB Visitor Profile Report 2026 H1 p.17
+2025,Chinese Mainland,origin_region,Fujian,4,HKTB Visitor Profile Report 2026 H1 p.17
+2025,Chinese Mainland,origin_region,Jiangsu,4,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,origin_region,Guangdong,47,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,origin_region,Shanghai,8,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,origin_region,Beijing,7,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,origin_region,Zhejiang,6,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,origin_region,Jiangsu,5,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,origin_region,Fujian,4,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,place_rank,The Peak,2,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,place_rank,Hong Kong Disneyland,3,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,place_rank,Old Town Central,4,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,place_rank,Hong Kong Observation Wheel,5,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,place_rank,West Kowloon Cultural District,6,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,place_rank,Temple Street / Ladies' Market,7,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,place_rank,Urban Parks,8,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,place_rank,Kai Tak Sports Park,9,HKTB Visitor Profile Report 2026 H1 p.17
+2026-H1,Chinese Mainland,place_rank,HK Convention & Exhibition Centre,10,HKTB Visitor Profile Report 2026 H1 p.17
+2025,Chinese Mainland,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2025 FY p.17
+2025,Chinese Mainland,place_rank,The Peak,2,HKTB Visitor Profile Report 2025 FY p.17
+2025,Chinese Mainland,place_rank,Hong Kong Disneyland,3,HKTB Visitor Profile Report 2025 FY p.17
+2025,Chinese Mainland,place_rank,Hong Kong Observation Wheel,4,HKTB Visitor Profile Report 2025 FY p.17
+2025,Chinese Mainland,place_rank,West Kowloon Cultural District,5,HKTB Visitor Profile Report 2025 FY p.17
+2025,Chinese Mainland,place_rank,Old Town Central,6,HKTB Visitor Profile Report 2025 FY p.17
+2025,Chinese Mainland,place_rank,Temple Street / Ladies' Market,7,HKTB Visitor Profile Report 2025 FY p.17
+2025,Chinese Mainland,place_rank,HK Convention & Exhibition Centre,8,HKTB Visitor Profile Report 2025 FY p.17
+2025,Chinese Mainland,place_rank,Ocean Park,9,HKTB Visitor Profile Report 2025 FY p.17
+2025,Chinese Mainland,place_rank,Urban Parks,10,HKTB Visitor Profile Report 2025 FY p.17
+2025,Philippines,mean_age,Mean age,34.7,HKTB Visitor Profile Report 2026 H1 p.18
+2025,Philippines,age_group,0-15,13,HKTB Visitor Profile Report 2026 H1 p.18
+2025,Philippines,age_group,16-25,12,HKTB Visitor Profile Report 2026 H1 p.18
+2025,Philippines,age_group,26-35,30,HKTB Visitor Profile Report 2026 H1 p.18
+2025,Philippines,age_group,36-45,20,HKTB Visitor Profile Report 2026 H1 p.18
+2025,Philippines,age_group,46-55,12,HKTB Visitor Profile Report 2026 H1 p.18
+2025,Philippines,age_group,56-65,8,HKTB Visitor Profile Report 2026 H1 p.18
+2025,Philippines,age_group,66+,4,HKTB Visitor Profile Report 2026 H1 p.18
+2026-H1,Philippines,mean_age,Mean age,34.6,HKTB Visitor Profile Report 2026 H1 p.18
+2026-H1,Philippines,age_group,0-15,14,HKTB Visitor Profile Report 2026 H1 p.18
+2026-H1,Philippines,age_group,16-25,12,HKTB Visitor Profile Report 2026 H1 p.18
+2026-H1,Philippines,age_group,26-35,30,HKTB Visitor Profile Report 2026 H1 p.18
+2026-H1,Philippines,age_group,36-45,20,HKTB Visitor Profile Report 2026 H1 p.18
+2026-H1,Philippines,age_group,46-55,12,HKTB Visitor Profile Report 2026 H1 p.18
+2026-H1,Philippines,age_group,56-65,8,HKTB Visitor Profile Report 2026 H1 p.18
+2026-H1,Philippines,age_group,66+,4,HKTB Visitor Profile Report 2026 H1 p.18
+2025,Philippines,first_timer_pct,First-time visitors,41,HKTB Visitor Profile Report 2026 H1 p.19
+2025,Philippines,companion,With companion,71,HKTB Visitor Profile Report 2026 H1 p.19
+2025,Philippines,companion,With family members,50,HKTB Visitor Profile Report 2026 H1 p.19
+2025,Philippines,companion,With kids,13,HKTB Visitor Profile Report 2026 H1 p.19
+2025,Philippines,avg_nights,Average nights,3,HKTB Visitor Profile Report 2026 H1 p.19
+2025,Philippines,per_capita_overnight_hkd,Per capita spending,6000,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,first_timer_pct,First-time visitors,40,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,companion,With companion,77,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,companion,With family members,55,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,companion,With kids,15,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,avg_nights,Average nights,3.2,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,per_capita_overnight_hkd,Per capita spending,5600,HKTB Visitor Profile Report 2026 H1 p.19
+2025,Philippines,origin_region,Greater Manila,64,HKTB Visitor Profile Report 2026 H1 p.19
+2025,Philippines,origin_region,Batangas,11,HKTB Visitor Profile Report 2026 H1 p.19
+2025,Philippines,origin_region,Davao,6,HKTB Visitor Profile Report 2026 H1 p.19
+2025,Philippines,origin_region,Cebu,5,HKTB Visitor Profile Report 2026 H1 p.19
+2025,Philippines,origin_region,San Fernando,5,HKTB Visitor Profile Report 2026 H1 p.19
+2025,Philippines,origin_region,Baguio,4,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,origin_region,Greater Manila,66,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,origin_region,Batangas,14,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,origin_region,Cebu,6,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,origin_region,San Fernando,4,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,origin_region,Davao,3,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,origin_region,Baguio,2,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,place_rank,Hong Kong Disneyland,1,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,place_rank,The Peak,3,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,place_rank,Ngong Ping 360,5,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,place_rank,Ocean Park,6,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,place_rank,Old Town Central,7,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,place_rank,Hong Kong Museum of Art,8,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,place_rank,West Kowloon Cultural District,9,HKTB Visitor Profile Report 2026 H1 p.19
+2026-H1,Philippines,place_rank,Urban Parks,10,HKTB Visitor Profile Report 2026 H1 p.19
+2025,Philippines,place_rank,Hong Kong Disneyland,1,HKTB Visitor Profile Report 2025 FY p.19
+2025,Philippines,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2025 FY p.19
+2025,Philippines,place_rank,The Peak,3,HKTB Visitor Profile Report 2025 FY p.19
+2025,Philippines,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2025 FY p.19
+2025,Philippines,place_rank,Ngong Ping 360,5,HKTB Visitor Profile Report 2025 FY p.19
+2025,Philippines,place_rank,Ocean Park,6,HKTB Visitor Profile Report 2025 FY p.19
+2025,Philippines,place_rank,Hong Kong Museum of Art,7,HKTB Visitor Profile Report 2025 FY p.19
+2025,Philippines,place_rank,Old Town Central,8,HKTB Visitor Profile Report 2025 FY p.19
+2025,Philippines,place_rank,West Kowloon Cultural District,9,HKTB Visitor Profile Report 2025 FY p.19
+2025,Philippines,place_rank,Madame Tussaud’s Hong Kong,10,HKTB Visitor Profile Report 2025 FY p.19
+2025,Thailand,mean_age,Mean age,37.6,HKTB Visitor Profile Report 2026 H1 p.20
+2025,Thailand,age_group,0-15,7,HKTB Visitor Profile Report 2026 H1 p.20
+2025,Thailand,age_group,16-25,10,HKTB Visitor Profile Report 2026 H1 p.20
+2025,Thailand,age_group,26-35,31,HKTB Visitor Profile Report 2026 H1 p.20
+2025,Thailand,age_group,36-45,24,HKTB Visitor Profile Report 2026 H1 p.20
+2025,Thailand,age_group,46-55,14,HKTB Visitor Profile Report 2026 H1 p.20
+2025,Thailand,age_group,56-65,9,HKTB Visitor Profile Report 2026 H1 p.20
+2025,Thailand,age_group,66+,5,HKTB Visitor Profile Report 2026 H1 p.20
+2026-H1,Thailand,mean_age,Mean age,37.7,HKTB Visitor Profile Report 2026 H1 p.20
+2026-H1,Thailand,age_group,0-15,7,HKTB Visitor Profile Report 2026 H1 p.20
+2026-H1,Thailand,age_group,16-25,9,HKTB Visitor Profile Report 2026 H1 p.20
+2026-H1,Thailand,age_group,26-35,31,HKTB Visitor Profile Report 2026 H1 p.20
+2026-H1,Thailand,age_group,36-45,26,HKTB Visitor Profile Report 2026 H1 p.20
+2026-H1,Thailand,age_group,46-55,14,HKTB Visitor Profile Report 2026 H1 p.20
+2026-H1,Thailand,age_group,56-65,8,HKTB Visitor Profile Report 2026 H1 p.20
+2026-H1,Thailand,age_group,66+,5,HKTB Visitor Profile Report 2026 H1 p.20
+2025,Thailand,first_timer_pct,First-time visitors,30,HKTB Visitor Profile Report 2026 H1 p.21
+2025,Thailand,companion,With companion,66,HKTB Visitor Profile Report 2026 H1 p.21
+2025,Thailand,companion,With family members,40,HKTB Visitor Profile Report 2026 H1 p.21
+2025,Thailand,companion,With kids,6,HKTB Visitor Profile Report 2026 H1 p.21
+2025,Thailand,avg_nights,Average nights,3.8,HKTB Visitor Profile Report 2026 H1 p.21
+2025,Thailand,per_capita_overnight_hkd,Per capita spending,6900,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,first_timer_pct,First-time visitors,27,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,companion,With companion,66,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,companion,With family members,40,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,companion,With kids,5,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,avg_nights,Average nights,3.7,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,per_capita_overnight_hkd,Per capita spending,6900,HKTB Visitor Profile Report 2026 H1 p.21
+2025,Thailand,origin_region,Bangkok,83,HKTB Visitor Profile Report 2026 H1 p.21
+2025,Thailand,origin_region,Chiang Mai,6,HKTB Visitor Profile Report 2026 H1 p.21
+2025,Thailand,origin_region,Phuket,3,HKTB Visitor Profile Report 2026 H1 p.21
+2025,Thailand,origin_region,Samut Prakan,3,HKTB Visitor Profile Report 2026 H1 p.21
+2025,Thailand,origin_region,Chon Buri,2,HKTB Visitor Profile Report 2026 H1 p.21
+2025,Thailand,origin_region,Nakhon Sawan,1,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,origin_region,Bangkok,79,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,origin_region,Chiang Mai,5,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,origin_region,Chon Buri,4,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,origin_region,Phuket,2,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,origin_region,Samut Prakan,2,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,origin_region,Chiang Rai,1,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,place_rank,Che Kung Temple / Tin Hau Temple / Other Temples,1,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,place_rank,Wong Tai Sin Temple,3,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,place_rank,Beaches,4,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,place_rank,Repulse Bay,5,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,place_rank,Hong Kong Disneyland,6,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,place_rank,The Peak,7,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,place_rank,Ngong Ping 360,8,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,place_rank,Old Town Central,9,HKTB Visitor Profile Report 2026 H1 p.21
+2026-H1,Thailand,place_rank,Temple Street / Ladies' Market,10,HKTB Visitor Profile Report 2026 H1 p.21
+2025,Thailand,place_rank,Hong Kong Disneyland,1,HKTB Visitor Profile Report 2025 FY p.21
+2025,Thailand,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2025 FY p.21
+2025,Thailand,place_rank,Che Kung Temple / Tin Hau Temple / Other Temples,3,HKTB Visitor Profile Report 2025 FY p.21
+2025,Thailand,place_rank,The Peak,4,HKTB Visitor Profile Report 2025 FY p.21
+2025,Thailand,place_rank,Wong Tai Sin Temple,5,HKTB Visitor Profile Report 2025 FY p.21
+2025,Thailand,place_rank,Beaches,6,HKTB Visitor Profile Report 2025 FY p.21
+2025,Thailand,place_rank,Repulse Bay,7,HKTB Visitor Profile Report 2025 FY p.21
+2025,Thailand,place_rank,Ngong Ping 360,8,HKTB Visitor Profile Report 2025 FY p.21
+2025,Thailand,place_rank,Old Town Central,9,HKTB Visitor Profile Report 2025 FY p.21
+2025,Thailand,place_rank,Temple Street / Ladies' Market,10,HKTB Visitor Profile Report 2025 FY p.21
+2025,Singapore,mean_age,Mean age,41.8,HKTB Visitor Profile Report 2026 H1 p.22
+2025,Singapore,age_group,0-15,11,HKTB Visitor Profile Report 2026 H1 p.22
+2025,Singapore,age_group,16-25,8,HKTB Visitor Profile Report 2026 H1 p.22
+2025,Singapore,age_group,26-35,15,HKTB Visitor Profile Report 2026 H1 p.22
+2025,Singapore,age_group,36-45,19,HKTB Visitor Profile Report 2026 H1 p.22
+2025,Singapore,age_group,46-55,20,HKTB Visitor Profile Report 2026 H1 p.22
+2025,Singapore,age_group,56-65,15,HKTB Visitor Profile Report 2026 H1 p.22
+2025,Singapore,age_group,66+,12,HKTB Visitor Profile Report 2026 H1 p.22
+2026-H1,Singapore,mean_age,Mean age,42.8,HKTB Visitor Profile Report 2026 H1 p.22
+2026-H1,Singapore,age_group,0-15,9,HKTB Visitor Profile Report 2026 H1 p.22
+2026-H1,Singapore,age_group,16-25,8,HKTB Visitor Profile Report 2026 H1 p.22
+2026-H1,Singapore,age_group,26-35,16,HKTB Visitor Profile Report 2026 H1 p.22
+2026-H1,Singapore,age_group,36-45,19,HKTB Visitor Profile Report 2026 H1 p.22
+2026-H1,Singapore,age_group,46-55,20,HKTB Visitor Profile Report 2026 H1 p.22
+2026-H1,Singapore,age_group,56-65,16,HKTB Visitor Profile Report 2026 H1 p.22
+2026-H1,Singapore,age_group,66+,12,HKTB Visitor Profile Report 2026 H1 p.22
+2025,Singapore,first_timer_pct,First-time visitors,7,HKTB Visitor Profile Report 2026 H1 p.23
+2025,Singapore,companion,With companion,51,HKTB Visitor Profile Report 2026 H1 p.23
+2025,Singapore,companion,With family members,38,HKTB Visitor Profile Report 2026 H1 p.23
+2025,Singapore,companion,With kids,5,HKTB Visitor Profile Report 2026 H1 p.23
+2025,Singapore,avg_nights,Average nights,3.1,HKTB Visitor Profile Report 2026 H1 p.23
+2025,Singapore,per_capita_overnight_hkd,Per capita spending,7400,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,first_timer_pct,First-time visitors,7,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,companion,With companion,42,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,companion,With family members,29,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,companion,With kids,2,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,avg_nights,Average nights,3.1,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,per_capita_overnight_hkd,Per capita spending,6900,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,place_rank,Temple Street / Ladies' Market,2,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,place_rank,The Peak,3,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,place_rank,Old Town Central,4,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,place_rank,Hong Kong Disneyland,5,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,place_rank,Hiking Trail / Country Park,6,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,place_rank,West Kowloon Cultural District,7,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,place_rank,Wong Tai Sin Temple,8,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,place_rank,Lan Kwai Fong,9,HKTB Visitor Profile Report 2026 H1 p.23
+2026-H1,Singapore,place_rank,Urban Parks,10,HKTB Visitor Profile Report 2026 H1 p.23
+2025,Singapore,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2025 FY p.23
+2025,Singapore,place_rank,Temple Street / Ladies' Market,2,HKTB Visitor Profile Report 2025 FY p.23
+2025,Singapore,place_rank,The Peak,3,HKTB Visitor Profile Report 2025 FY p.23
+2025,Singapore,place_rank,Hong Kong Disneyland,4,HKTB Visitor Profile Report 2025 FY p.23
+2025,Singapore,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2025 FY p.23
+2025,Singapore,place_rank,Ngong Ping 360,6,HKTB Visitor Profile Report 2025 FY p.23
+2025,Singapore,place_rank,West Kowloon Cultural District,7,HKTB Visitor Profile Report 2025 FY p.23
+2025,Singapore,place_rank,Lan Kwai Fong,8,HKTB Visitor Profile Report 2025 FY p.23
+2025,Singapore,place_rank,Hiking Trail / Country Park,9,HKTB Visitor Profile Report 2025 FY p.23
+2025,Singapore,place_rank,Ocean Park,10,HKTB Visitor Profile Report 2025 FY p.23
+2025,Malaysia,mean_age,Mean age,39.3,HKTB Visitor Profile Report 2026 H1 p.24
+2025,Malaysia,age_group,0-15,8,HKTB Visitor Profile Report 2026 H1 p.24
+2025,Malaysia,age_group,16-25,11,HKTB Visitor Profile Report 2026 H1 p.24
+2025,Malaysia,age_group,26-35,24,HKTB Visitor Profile Report 2026 H1 p.24
+2025,Malaysia,age_group,36-45,20,HKTB Visitor Profile Report 2026 H1 p.24
+2025,Malaysia,age_group,46-55,17,HKTB Visitor Profile Report 2026 H1 p.24
+2025,Malaysia,age_group,56-65,12,HKTB Visitor Profile Report 2026 H1 p.24
+2025,Malaysia,age_group,66+,8,HKTB Visitor Profile Report 2026 H1 p.24
+2026-H1,Malaysia,mean_age,Mean age,39.3,HKTB Visitor Profile Report 2026 H1 p.24
+2026-H1,Malaysia,age_group,0-15,8,HKTB Visitor Profile Report 2026 H1 p.24
+2026-H1,Malaysia,age_group,16-25,11,HKTB Visitor Profile Report 2026 H1 p.24
+2026-H1,Malaysia,age_group,26-35,25,HKTB Visitor Profile Report 2026 H1 p.24
+2026-H1,Malaysia,age_group,36-45,20,HKTB Visitor Profile Report 2026 H1 p.24
+2026-H1,Malaysia,age_group,46-55,17,HKTB Visitor Profile Report 2026 H1 p.24
+2026-H1,Malaysia,age_group,56-65,12,HKTB Visitor Profile Report 2026 H1 p.24
+2026-H1,Malaysia,age_group,66+,8,HKTB Visitor Profile Report 2026 H1 p.24
+2025,Malaysia,first_timer_pct,First-time visitors,27,HKTB Visitor Profile Report 2026 H1 p.25
+2025,Malaysia,companion,With companion,55,HKTB Visitor Profile Report 2026 H1 p.25
+2025,Malaysia,companion,With family members,39,HKTB Visitor Profile Report 2026 H1 p.25
+2025,Malaysia,companion,With kids,3,HKTB Visitor Profile Report 2026 H1 p.25
+2025,Malaysia,avg_nights,Average nights,3.1,HKTB Visitor Profile Report 2026 H1 p.25
+2025,Malaysia,per_capita_overnight_hkd,Per capita spending,5700,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,first_timer_pct,First-time visitors,25,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,companion,With companion,51,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,companion,With family members,29,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,companion,With kids,5,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,avg_nights,Average nights,3,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,per_capita_overnight_hkd,Per capita spending,5700,HKTB Visitor Profile Report 2026 H1 p.25
+2025,Malaysia,origin_region,Kuala Lumpur,53,HKTB Visitor Profile Report 2026 H1 p.25
+2025,Malaysia,origin_region,Johore Bahru,9,HKTB Visitor Profile Report 2026 H1 p.25
+2025,Malaysia,origin_region,George Town (Pinang),9,HKTB Visitor Profile Report 2026 H1 p.25
+2025,Malaysia,origin_region,Kelang,8,HKTB Visitor Profile Report 2026 H1 p.25
+2025,Malaysia,origin_region,Kuching,5,HKTB Visitor Profile Report 2026 H1 p.25
+2025,Malaysia,origin_region,Kota Kinabalu,5,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,origin_region,Kuala Lumpur,50,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,origin_region,Johore Bahru,13,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,origin_region,Kelang,11,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,origin_region,George Town (Pinang),6,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,origin_region,Butterworth,5,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,origin_region,Ipoh,4,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,place_rank,Temple Street / Ladies' Market,2,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,place_rank,Hong Kong Disneyland,3,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,place_rank,The Peak,4,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,place_rank,Hong Kong Observation Wheel,6,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,place_rank,Urban Parks,7,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,place_rank,Kai Tak Sports Park,8,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,place_rank,Wong Tai Sin Temple,9,HKTB Visitor Profile Report 2026 H1 p.25
+2026-H1,Malaysia,place_rank,West Kowloon Cultural District,10,HKTB Visitor Profile Report 2026 H1 p.25
+2025,Malaysia,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2025 FY p.25
+2025,Malaysia,place_rank,Temple Street / Ladies' Market,2,HKTB Visitor Profile Report 2025 FY p.25
+2025,Malaysia,place_rank,The Peak,3,HKTB Visitor Profile Report 2025 FY p.25
+2025,Malaysia,place_rank,Hong Kong Disneyland,4,HKTB Visitor Profile Report 2025 FY p.25
+2025,Malaysia,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2025 FY p.25
+2025,Malaysia,place_rank,West Kowloon Cultural District,6,HKTB Visitor Profile Report 2025 FY p.25
+2025,Malaysia,place_rank,Wong Tai Sin Temple,7,HKTB Visitor Profile Report 2025 FY p.25
+2025,Malaysia,place_rank,Ngong Ping 360,8,HKTB Visitor Profile Report 2025 FY p.25
+2025,Malaysia,place_rank,Hong Kong Observation Wheel,9,HKTB Visitor Profile Report 2025 FY p.25
+2025,Malaysia,place_rank,Lan Kwai Fong,10,HKTB Visitor Profile Report 2025 FY p.25
+2025,Indonesia,mean_age,Mean age,37.5,HKTB Visitor Profile Report 2026 H1 p.26
+2025,Indonesia,age_group,0-15,11,HKTB Visitor Profile Report 2026 H1 p.26
+2025,Indonesia,age_group,16-25,12,HKTB Visitor Profile Report 2026 H1 p.26
+2025,Indonesia,age_group,26-35,22,HKTB Visitor Profile Report 2026 H1 p.26
+2025,Indonesia,age_group,36-45,22,HKTB Visitor Profile Report 2026 H1 p.26
+2025,Indonesia,age_group,46-55,15,HKTB Visitor Profile Report 2026 H1 p.26
+2025,Indonesia,age_group,56-65,9,HKTB Visitor Profile Report 2026 H1 p.26
+2025,Indonesia,age_group,66+,8,HKTB Visitor Profile Report 2026 H1 p.26
+2026-H1,Indonesia,mean_age,Mean age,37.2,HKTB Visitor Profile Report 2026 H1 p.26
+2026-H1,Indonesia,age_group,0-15,11,HKTB Visitor Profile Report 2026 H1 p.26
+2026-H1,Indonesia,age_group,16-25,14,HKTB Visitor Profile Report 2026 H1 p.26
+2026-H1,Indonesia,age_group,26-35,23,HKTB Visitor Profile Report 2026 H1 p.26
+2026-H1,Indonesia,age_group,36-45,21,HKTB Visitor Profile Report 2026 H1 p.26
+2026-H1,Indonesia,age_group,46-55,15,HKTB Visitor Profile Report 2026 H1 p.26
+2026-H1,Indonesia,age_group,56-65,9,HKTB Visitor Profile Report 2026 H1 p.26
+2026-H1,Indonesia,age_group,66+,8,HKTB Visitor Profile Report 2026 H1 p.26
+2025,Indonesia,first_timer_pct,First-time visitors,44,HKTB Visitor Profile Report 2026 H1 p.27
+2025,Indonesia,companion,With companion,67,HKTB Visitor Profile Report 2026 H1 p.27
+2025,Indonesia,companion,With family members,50,HKTB Visitor Profile Report 2026 H1 p.27
+2025,Indonesia,companion,With kids,15,HKTB Visitor Profile Report 2026 H1 p.27
+2025,Indonesia,avg_nights,Average nights,3.4,HKTB Visitor Profile Report 2026 H1 p.27
+2025,Indonesia,per_capita_overnight_hkd,Per capita spending,5800,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,first_timer_pct,First-time visitors,39,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,companion,With companion,60,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,companion,With family members,44,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,companion,With kids,8,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,avg_nights,Average nights,3.3,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,per_capita_overnight_hkd,Per capita spending,4800,HKTB Visitor Profile Report 2026 H1 p.27
+2025,Indonesia,origin_region,Jakarta,54,HKTB Visitor Profile Report 2026 H1 p.27
+2025,Indonesia,origin_region,Surabaya,11,HKTB Visitor Profile Report 2026 H1 p.27
+2025,Indonesia,origin_region,Bali,7,HKTB Visitor Profile Report 2026 H1 p.27
+2025,Indonesia,origin_region,Medan,6,HKTB Visitor Profile Report 2026 H1 p.27
+2025,Indonesia,origin_region,Bandung,5,HKTB Visitor Profile Report 2026 H1 p.27
+2025,Indonesia,origin_region,Pontianak,3,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,origin_region,Jakarta,62,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,origin_region,Surabaya,8,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,origin_region,Bali,7,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,origin_region,Pontianak,7,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,origin_region,Bandung,5,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,origin_region,Medan,4,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,place_rank,The Peak,2,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,place_rank,Hong Kong Disneyland,3,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,place_rank,Ngong Ping 360,6,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,place_rank,Urban Parks,7,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,place_rank,Hong Kong Museum of Art,8,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,place_rank,Ocean Park,9,HKTB Visitor Profile Report 2026 H1 p.27
+2026-H1,Indonesia,place_rank,Beaches,10,HKTB Visitor Profile Report 2026 H1 p.27
+2025,Indonesia,place_rank,Hong Kong Disneyland,1,HKTB Visitor Profile Report 2025 FY p.27
+2025,Indonesia,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2025 FY p.27
+2025,Indonesia,place_rank,The Peak,3,HKTB Visitor Profile Report 2025 FY p.27
+2025,Indonesia,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2025 FY p.27
+2025,Indonesia,place_rank,Ngong Ping 360,5,HKTB Visitor Profile Report 2025 FY p.27
+2025,Indonesia,place_rank,Hong Kong Museum of Art,6,HKTB Visitor Profile Report 2025 FY p.27
+2025,Indonesia,place_rank,Old Town Central,7,HKTB Visitor Profile Report 2025 FY p.27
+2025,Indonesia,place_rank,Ocean Park,8,HKTB Visitor Profile Report 2025 FY p.27
+2025,Indonesia,place_rank,West Kowloon Cultural District,9,HKTB Visitor Profile Report 2025 FY p.27
+2025,Indonesia,place_rank,Hong Kong Observation Wheel,10,HKTB Visitor Profile Report 2025 FY p.27
+2025,India,mean_age,Mean age,37.2,HKTB Visitor Profile Report 2026 H1 p.28
+2025,India,age_group,0-15,10,HKTB Visitor Profile Report 2026 H1 p.28
+2025,India,age_group,16-25,8,HKTB Visitor Profile Report 2026 H1 p.28
+2025,India,age_group,26-35,25,HKTB Visitor Profile Report 2026 H1 p.28
+2025,India,age_group,36-45,29,HKTB Visitor Profile Report 2026 H1 p.28
+2025,India,age_group,46-55,17,HKTB Visitor Profile Report 2026 H1 p.28
+2025,India,age_group,56-65,8,HKTB Visitor Profile Report 2026 H1 p.28
+2025,India,age_group,66+,3,HKTB Visitor Profile Report 2026 H1 p.28
+2026-H1,India,mean_age,Mean age,36.7,HKTB Visitor Profile Report 2026 H1 p.28
+2026-H1,India,age_group,0-15,11,HKTB Visitor Profile Report 2026 H1 p.28
+2026-H1,India,age_group,16-25,8,HKTB Visitor Profile Report 2026 H1 p.28
+2026-H1,India,age_group,26-35,24,HKTB Visitor Profile Report 2026 H1 p.28
+2026-H1,India,age_group,36-45,29,HKTB Visitor Profile Report 2026 H1 p.28
+2026-H1,India,age_group,46-55,16,HKTB Visitor Profile Report 2026 H1 p.28
+2026-H1,India,age_group,56-65,8,HKTB Visitor Profile Report 2026 H1 p.28
+2026-H1,India,age_group,66+,4,HKTB Visitor Profile Report 2026 H1 p.28
+2025,India,first_timer_pct,First-time visitors,55,HKTB Visitor Profile Report 2026 H1 p.29
+2025,India,companion,With companion,43,HKTB Visitor Profile Report 2026 H1 p.29
+2025,India,companion,With family members,34,HKTB Visitor Profile Report 2026 H1 p.29
+2025,India,companion,With kids,12,HKTB Visitor Profile Report 2026 H1 p.29
+2025,India,avg_nights,Average nights,3.9,HKTB Visitor Profile Report 2026 H1 p.29
+2025,India,per_capita_overnight_hkd,Per capita spending,7600,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,first_timer_pct,First-time visitors,41,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,companion,With companion,42,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,companion,With family members,29,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,companion,With kids,10,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,avg_nights,Average nights,3.8,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,per_capita_overnight_hkd,Per capita spending,8800,HKTB Visitor Profile Report 2026 H1 p.29
+2025,India,origin_region,Delhi,28,HKTB Visitor Profile Report 2026 H1 p.29
+2025,India,origin_region,Mumbai,24,HKTB Visitor Profile Report 2026 H1 p.29
+2025,India,origin_region,Bangalore,13,HKTB Visitor Profile Report 2026 H1 p.29
+2025,India,origin_region,Chennai,10,HKTB Visitor Profile Report 2026 H1 p.29
+2025,India,origin_region,Pune,10,HKTB Visitor Profile Report 2026 H1 p.29
+2025,India,origin_region,Ahmadabad,4,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,origin_region,Mumbai,25,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,origin_region,Delhi,21,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,origin_region,Bangalore,19,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,origin_region,Chennai,12,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,origin_region,Hyderabad,8,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,origin_region,Ahmadabad,7,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,place_rank,The Peak,1,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,place_rank,Hong Kong Disneyland,3,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,place_rank,Ngong Ping 360,5,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,place_rank,Ocean Park,6,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,place_rank,Old Town Central,7,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,place_rank,Urban Parks,8,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,place_rank,Hong Kong Observation Wheel,9,HKTB Visitor Profile Report 2026 H1 p.29
+2026-H1,India,place_rank,HK Convention & Exhibition Centre,10,HKTB Visitor Profile Report 2026 H1 p.29
+2025,India,place_rank,The Peak,1,HKTB Visitor Profile Report 2025 FY p.29
+2025,India,place_rank,Hong Kong Disneyland,2,HKTB Visitor Profile Report 2025 FY p.29
+2025,India,place_rank,Tsim Sha Tsui,3,HKTB Visitor Profile Report 2025 FY p.29
+2025,India,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2025 FY p.29
+2025,India,place_rank,Ngong Ping 360,5,HKTB Visitor Profile Report 2025 FY p.29
+2025,India,place_rank,Ocean Park,6,HKTB Visitor Profile Report 2025 FY p.29
+2025,India,place_rank,Old Town Central,7,HKTB Visitor Profile Report 2025 FY p.29
+2025,India,place_rank,Hong Kong Observation Wheel,8,HKTB Visitor Profile Report 2025 FY p.29
+2025,India,place_rank,West Kowloon Cultural District,9,HKTB Visitor Profile Report 2025 FY p.29
+2025,India,place_rank,Hong Kong Museum of Art,10,HKTB Visitor Profile Report 2025 FY p.29
+2025,Taiwan,mean_age,Mean age,39,HKTB Visitor Profile Report 2026 H1 p.30
+2025,Taiwan,age_group,0-15,8,HKTB Visitor Profile Report 2026 H1 p.30
+2025,Taiwan,age_group,16-25,11,HKTB Visitor Profile Report 2026 H1 p.30
+2025,Taiwan,age_group,26-35,24,HKTB Visitor Profile Report 2026 H1 p.30
+2025,Taiwan,age_group,36-45,20,HKTB Visitor Profile Report 2026 H1 p.30
+2025,Taiwan,age_group,46-55,19,HKTB Visitor Profile Report 2026 H1 p.30
+2025,Taiwan,age_group,56-65,12,HKTB Visitor Profile Report 2026 H1 p.30
+2025,Taiwan,age_group,66+,6,HKTB Visitor Profile Report 2026 H1 p.30
+2026-H1,Taiwan,mean_age,Mean age,40,HKTB Visitor Profile Report 2026 H1 p.30
+2026-H1,Taiwan,age_group,0-15,8,HKTB Visitor Profile Report 2026 H1 p.30
+2026-H1,Taiwan,age_group,16-25,10,HKTB Visitor Profile Report 2026 H1 p.30
+2026-H1,Taiwan,age_group,26-35,23,HKTB Visitor Profile Report 2026 H1 p.30
+2026-H1,Taiwan,age_group,36-45,20,HKTB Visitor Profile Report 2026 H1 p.30
+2026-H1,Taiwan,age_group,46-55,20,HKTB Visitor Profile Report 2026 H1 p.30
+2026-H1,Taiwan,age_group,56-65,13,HKTB Visitor Profile Report 2026 H1 p.30
+2026-H1,Taiwan,age_group,66+,7,HKTB Visitor Profile Report 2026 H1 p.30
+2025,Taiwan,first_timer_pct,First-time visitors,22,HKTB Visitor Profile Report 2026 H1 p.31
+2025,Taiwan,companion,With companion,53,HKTB Visitor Profile Report 2026 H1 p.31
+2025,Taiwan,companion,With family members,31,HKTB Visitor Profile Report 2026 H1 p.31
+2025,Taiwan,companion,With kids,5,HKTB Visitor Profile Report 2026 H1 p.31
+2025,Taiwan,avg_nights,Average nights,2.6,HKTB Visitor Profile Report 2026 H1 p.31
+2025,Taiwan,per_capita_overnight_hkd,Per capita spending,5500,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,first_timer_pct,First-time visitors,18,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,companion,With companion,48,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,companion,With family members,31,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,companion,With kids,6,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,avg_nights,Average nights,2.6,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,per_capita_overnight_hkd,Per capita spending,5100,HKTB Visitor Profile Report 2026 H1 p.31
+2025,Taiwan,origin_region,Taipei,38,HKTB Visitor Profile Report 2026 H1 p.31
+2025,Taiwan,origin_region,Kaohsiung,12,HKTB Visitor Profile Report 2026 H1 p.31
+2025,Taiwan,origin_region,Taichung,12,HKTB Visitor Profile Report 2026 H1 p.31
+2025,Taiwan,origin_region,New Taipei,11,HKTB Visitor Profile Report 2026 H1 p.31
+2025,Taiwan,origin_region,Taoyuan,9,HKTB Visitor Profile Report 2026 H1 p.31
+2025,Taiwan,origin_region,Tainan,6,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,origin_region,Taipei,40,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,origin_region,Kaohsiung,11,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,origin_region,New Taipei,11,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,origin_region,Taichung,11,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,origin_region,Taoyuan,9,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,origin_region,Tainan,6,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,place_rank,Old Town Central,2,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,place_rank,The Peak,4,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,place_rank,Hong Kong Disneyland,5,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,place_rank,West Kowloon Cultural District,6,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,place_rank,Hong Kong Observation Wheel,7,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,place_rank,Urban Parks,8,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,place_rank,Lan Kwai Fong,9,HKTB Visitor Profile Report 2026 H1 p.31
+2026-H1,Taiwan,place_rank,Wong Tai Sin Temple,10,HKTB Visitor Profile Report 2026 H1 p.31
+2025,Taiwan,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2025 FY p.31
+2025,Taiwan,place_rank,The Peak,2,HKTB Visitor Profile Report 2025 FY p.31
+2025,Taiwan,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2025 FY p.31
+2025,Taiwan,place_rank,Hong Kong Disneyland,4,HKTB Visitor Profile Report 2025 FY p.31
+2025,Taiwan,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2025 FY p.31
+2025,Taiwan,place_rank,Lan Kwai Fong,6,HKTB Visitor Profile Report 2025 FY p.31
+2025,Taiwan,place_rank,West Kowloon Cultural District,7,HKTB Visitor Profile Report 2025 FY p.31
+2025,Taiwan,place_rank,Hong Kong Observation Wheel,8,HKTB Visitor Profile Report 2025 FY p.31
+2025,Taiwan,place_rank,Ngong Ping 360,9,HKTB Visitor Profile Report 2025 FY p.31
+2025,Taiwan,place_rank,Wong Tai Sin Temple,10,HKTB Visitor Profile Report 2025 FY p.31
+2025,South Korea,mean_age,Mean age,38.6,HKTB Visitor Profile Report 2026 H1 p.32
+2025,South Korea,age_group,0-15,7,HKTB Visitor Profile Report 2026 H1 p.32
+2025,South Korea,age_group,16-25,15,HKTB Visitor Profile Report 2026 H1 p.32
+2025,South Korea,age_group,26-35,23,HKTB Visitor Profile Report 2026 H1 p.32
+2025,South Korea,age_group,36-45,18,HKTB Visitor Profile Report 2026 H1 p.32
+2025,South Korea,age_group,46-55,18,HKTB Visitor Profile Report 2026 H1 p.32
+2025,South Korea,age_group,56-65,13,HKTB Visitor Profile Report 2026 H1 p.32
+2025,South Korea,age_group,66+,6,HKTB Visitor Profile Report 2026 H1 p.32
+2026-H1,South Korea,mean_age,Mean age,39.5,HKTB Visitor Profile Report 2026 H1 p.32
+2026-H1,South Korea,age_group,0-15,7,HKTB Visitor Profile Report 2026 H1 p.32
+2026-H1,South Korea,age_group,16-25,15,HKTB Visitor Profile Report 2026 H1 p.32
+2026-H1,South Korea,age_group,26-35,21,HKTB Visitor Profile Report 2026 H1 p.32
+2026-H1,South Korea,age_group,36-45,17,HKTB Visitor Profile Report 2026 H1 p.32
+2026-H1,South Korea,age_group,46-55,19,HKTB Visitor Profile Report 2026 H1 p.32
+2026-H1,South Korea,age_group,56-65,15,HKTB Visitor Profile Report 2026 H1 p.32
+2026-H1,South Korea,age_group,66+,6,HKTB Visitor Profile Report 2026 H1 p.32
+2025,South Korea,first_timer_pct,First-time visitors,50,HKTB Visitor Profile Report 2026 H1 p.33
+2025,South Korea,companion,With companion,67,HKTB Visitor Profile Report 2026 H1 p.33
+2025,South Korea,companion,With family members,38,HKTB Visitor Profile Report 2026 H1 p.33
+2025,South Korea,companion,With kids,5,HKTB Visitor Profile Report 2026 H1 p.33
+2025,South Korea,avg_nights,Average nights,2.2,HKTB Visitor Profile Report 2026 H1 p.33
+2025,South Korea,per_capita_overnight_hkd,Per capita spending,4600,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,first_timer_pct,First-time visitors,50,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,companion,With companion,58,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,companion,With family members,32,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,companion,With kids,4,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,avg_nights,Average nights,2.2,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,per_capita_overnight_hkd,Per capita spending,4200,HKTB Visitor Profile Report 2026 H1 p.33
+2025,South Korea,origin_region,Seoul,78,HKTB Visitor Profile Report 2026 H1 p.33
+2025,South Korea,origin_region,Incheon,7,HKTB Visitor Profile Report 2026 H1 p.33
+2025,South Korea,origin_region,Busan,3,HKTB Visitor Profile Report 2026 H1 p.33
+2025,South Korea,origin_region,Taejeon,2,HKTB Visitor Profile Report 2026 H1 p.33
+2025,South Korea,origin_region,Taegu,2,HKTB Visitor Profile Report 2026 H1 p.33
+2025,South Korea,origin_region,Gwangju,2,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,origin_region,Seoul,73,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,origin_region,Incheon,8,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,origin_region,Gwangju,5,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,origin_region,Busan,5,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,origin_region,Taejeon,4,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,origin_region,Taegu,1,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,place_rank,The Peak,2,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,place_rank,Lan Kwai Fong,4,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,place_rank,Hong Kong Disneyland,6,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,place_rank,Urban Parks,7,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,place_rank,West Kowloon Cultural District,8,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,place_rank,Beaches,9,HKTB Visitor Profile Report 2026 H1 p.33
+2026-H1,South Korea,place_rank,HK Convention & Exhibition Centre,10,HKTB Visitor Profile Report 2026 H1 p.33
+2025,South Korea,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2025 FY p.33
+2025,South Korea,place_rank,The Peak,2,HKTB Visitor Profile Report 2025 FY p.33
+2025,South Korea,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2025 FY p.33
+2025,South Korea,place_rank,Hong Kong Disneyland,4,HKTB Visitor Profile Report 2025 FY p.33
+2025,South Korea,place_rank,Lan Kwai Fong,5,HKTB Visitor Profile Report 2025 FY p.33
+2025,South Korea,place_rank,Old Town Central,6,HKTB Visitor Profile Report 2025 FY p.33
+2025,South Korea,place_rank,West Kowloon Cultural District,7,HKTB Visitor Profile Report 2025 FY p.33
+2025,South Korea,place_rank,Urban Parks,8,HKTB Visitor Profile Report 2025 FY p.33
+2025,South Korea,place_rank,Beaches,9,HKTB Visitor Profile Report 2025 FY p.33
+2025,South Korea,place_rank,Hong Kong Observation Wheel,10,HKTB Visitor Profile Report 2025 FY p.33
+2025,Japan,mean_age,Mean age,37.9,HKTB Visitor Profile Report 2026 H1 p.34
+2025,Japan,age_group,0-15,6,HKTB Visitor Profile Report 2026 H1 p.34
+2025,Japan,age_group,16-25,20,HKTB Visitor Profile Report 2026 H1 p.34
+2025,Japan,age_group,26-35,22,HKTB Visitor Profile Report 2026 H1 p.34
+2025,Japan,age_group,36-45,16,HKTB Visitor Profile Report 2026 H1 p.34
+2025,Japan,age_group,46-55,18,HKTB Visitor Profile Report 2026 H1 p.34
+2025,Japan,age_group,56-65,12,HKTB Visitor Profile Report 2026 H1 p.34
+2025,Japan,age_group,66+,5,HKTB Visitor Profile Report 2026 H1 p.34
+2026-H1,Japan,mean_age,Mean age,38.5,HKTB Visitor Profile Report 2026 H1 p.34
+2026-H1,Japan,age_group,0-15,6,HKTB Visitor Profile Report 2026 H1 p.34
+2026-H1,Japan,age_group,16-25,19,HKTB Visitor Profile Report 2026 H1 p.34
+2026-H1,Japan,age_group,26-35,21,HKTB Visitor Profile Report 2026 H1 p.34
+2026-H1,Japan,age_group,36-45,16,HKTB Visitor Profile Report 2026 H1 p.34
+2026-H1,Japan,age_group,46-55,18,HKTB Visitor Profile Report 2026 H1 p.34
+2026-H1,Japan,age_group,56-65,13,HKTB Visitor Profile Report 2026 H1 p.34
+2026-H1,Japan,age_group,66+,6,HKTB Visitor Profile Report 2026 H1 p.34
+2025,Japan,first_timer_pct,First-time visitors,38,HKTB Visitor Profile Report 2026 H1 p.35
+2025,Japan,companion,With companion,49,HKTB Visitor Profile Report 2026 H1 p.35
+2025,Japan,companion,With family members,29,HKTB Visitor Profile Report 2026 H1 p.35
+2025,Japan,companion,With kids,4,HKTB Visitor Profile Report 2026 H1 p.35
+2025,Japan,avg_nights,Average nights,2.4,HKTB Visitor Profile Report 2026 H1 p.35
+2025,Japan,per_capita_overnight_hkd,Per capita spending,4300,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,first_timer_pct,First-time visitors,39,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,companion,With companion,41,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,companion,With family members,21,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,companion,With kids,2,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,avg_nights,Average nights,2.3,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,per_capita_overnight_hkd,Per capita spending,3900,HKTB Visitor Profile Report 2026 H1 p.35
+2025,Japan,origin_region,Tokyo,37,HKTB Visitor Profile Report 2026 H1 p.35
+2025,Japan,origin_region,Osaka,12,HKTB Visitor Profile Report 2026 H1 p.35
+2025,Japan,origin_region,Kanagawa,9,HKTB Visitor Profile Report 2026 H1 p.35
+2025,Japan,origin_region,Chiba,8,HKTB Visitor Profile Report 2026 H1 p.35
+2025,Japan,origin_region,Aichi,6,HKTB Visitor Profile Report 2026 H1 p.35
+2025,Japan,origin_region,Saitama,5,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,origin_region,Tokyo,41,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,origin_region,Osaka,12,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,origin_region,Kanagawa,10,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,origin_region,Chiba,7,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,origin_region,Aichi,6,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,origin_region,Saitama,4,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,place_rank,Hong Kong Disneyland,2,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,place_rank,The Peak,3,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,place_rank,Urban Parks,4,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,place_rank,West Kowloon Cultural District,6,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,place_rank,Temple Street / Ladies' Market,7,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,place_rank,Wong Tai Sin Temple,8,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,place_rank,HK Convention & Exhibition Centre,9,HKTB Visitor Profile Report 2026 H1 p.35
+2026-H1,Japan,place_rank,Sha Tin / Happy Valley Racecourse,10,HKTB Visitor Profile Report 2026 H1 p.35
+2025,Japan,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2025 FY p.35
+2025,Japan,place_rank,Hong Kong Disneyland,2,HKTB Visitor Profile Report 2025 FY p.35
+2025,Japan,place_rank,The Peak,3,HKTB Visitor Profile Report 2025 FY p.35
+2025,Japan,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2025 FY p.35
+2025,Japan,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2025 FY p.35
+2025,Japan,place_rank,West Kowloon Cultural District,6,HKTB Visitor Profile Report 2025 FY p.35
+2025,Japan,place_rank,Urban Parks,7,HKTB Visitor Profile Report 2025 FY p.35
+2025,Japan,place_rank,Wong Tai Sin Temple,8,HKTB Visitor Profile Report 2025 FY p.35
+2025,Japan,place_rank,Ocean Park,9,HKTB Visitor Profile Report 2025 FY p.35
+2025,Japan,place_rank,Che Kung Temple / Tin Hau Temple / Other Temples,10,HKTB Visitor Profile Report 2025 FY p.35
+2025,USA,mean_age,Mean age,41.2,HKTB Visitor Profile Report 2026 H1 p.36
+2025,USA,age_group,0-15,15,HKTB Visitor Profile Report 2026 H1 p.36
+2025,USA,age_group,16-25,9,HKTB Visitor Profile Report 2026 H1 p.36
+2025,USA,age_group,26-35,14,HKTB Visitor Profile Report 2026 H1 p.36
+2025,USA,age_group,36-45,15,HKTB Visitor Profile Report 2026 H1 p.36
+2025,USA,age_group,46-55,16,HKTB Visitor Profile Report 2026 H1 p.36
+2025,USA,age_group,56-65,16,HKTB Visitor Profile Report 2026 H1 p.36
+2025,USA,age_group,66+,15,HKTB Visitor Profile Report 2026 H1 p.36
+2026-H1,USA,mean_age,Mean age,41.6,HKTB Visitor Profile Report 2026 H1 p.36
+2026-H1,USA,age_group,0-15,13,HKTB Visitor Profile Report 2026 H1 p.36
+2026-H1,USA,age_group,16-25,10,HKTB Visitor Profile Report 2026 H1 p.36
+2026-H1,USA,age_group,26-35,14,HKTB Visitor Profile Report 2026 H1 p.36
+2026-H1,USA,age_group,36-45,15,HKTB Visitor Profile Report 2026 H1 p.36
+2026-H1,USA,age_group,46-55,16,HKTB Visitor Profile Report 2026 H1 p.36
+2026-H1,USA,age_group,56-65,16,HKTB Visitor Profile Report 2026 H1 p.36
+2026-H1,USA,age_group,66+,15,HKTB Visitor Profile Report 2026 H1 p.36
+2025,USA,first_timer_pct,First-time visitors,35,HKTB Visitor Profile Report 2026 H1 p.37
+2025,USA,companion,With companion,37,HKTB Visitor Profile Report 2026 H1 p.37
+2025,USA,companion,With family members,30,HKTB Visitor Profile Report 2026 H1 p.37
+2025,USA,companion,With kids,4,HKTB Visitor Profile Report 2026 H1 p.37
+2025,USA,avg_nights,Average nights,3.6,HKTB Visitor Profile Report 2026 H1 p.37
+2025,USA,per_capita_overnight_hkd,Per capita spending,7800,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,first_timer_pct,First-time visitors,40,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,companion,With companion,34,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,companion,With family members,26,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,companion,With kids,2,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,avg_nights,Average nights,3.5,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,per_capita_overnight_hkd,Per capita spending,6700,HKTB Visitor Profile Report 2026 H1 p.37
+2025,USA,origin_region,San Francisco,12,HKTB Visitor Profile Report 2026 H1 p.37
+2025,USA,origin_region,New York City,10,HKTB Visitor Profile Report 2026 H1 p.37
+2025,USA,origin_region,Los Angeles,10,HKTB Visitor Profile Report 2026 H1 p.37
+2025,USA,origin_region,Chicago,7,HKTB Visitor Profile Report 2026 H1 p.37
+2025,USA,origin_region,Seattle,4,HKTB Visitor Profile Report 2026 H1 p.37
+2025,USA,origin_region,Dallas,4,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,origin_region,San Francisco,11,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,origin_region,New York City,10,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,origin_region,Los Angeles,8,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,origin_region,Chicago,6,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,origin_region,Seattle,6,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,origin_region,San Jose Area,4,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,place_rank,The Peak,2,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,place_rank,Urban Parks,4,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,place_rank,West Kowloon Cultural District,6,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,place_rank,Ngong Ping 360,7,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,place_rank,Hong Kong Disneyland,8,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,place_rank,Stanley / Stanley Market,9,HKTB Visitor Profile Report 2026 H1 p.37
+2026-H1,USA,place_rank,Hiking Trail / Country Park,10,HKTB Visitor Profile Report 2026 H1 p.37
+2025,USA,place_rank,The Peak,1,HKTB Visitor Profile Report 2025 FY p.37
+2025,USA,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2025 FY p.37
+2025,USA,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2025 FY p.37
+2025,USA,place_rank,Ngong Ping 360,4,HKTB Visitor Profile Report 2025 FY p.37
+2025,USA,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2025 FY p.37
+2025,USA,place_rank,Hong Kong Disneyland,6,HKTB Visitor Profile Report 2025 FY p.37
+2025,USA,place_rank,Hiking Trail / Country Park,7,HKTB Visitor Profile Report 2025 FY p.37
+2025,USA,place_rank,West Kowloon Cultural District,8,HKTB Visitor Profile Report 2025 FY p.37
+2025,USA,place_rank,Urban Parks,9,HKTB Visitor Profile Report 2025 FY p.37
+2025,USA,place_rank,Hong Kong Museum of Art,10,HKTB Visitor Profile Report 2025 FY p.37
+2025,Canada,mean_age,Mean age,41.5,HKTB Visitor Profile Report 2026 H1 p.38
+2025,Canada,age_group,0-15,14,HKTB Visitor Profile Report 2026 H1 p.38
+2025,Canada,age_group,16-25,9,HKTB Visitor Profile Report 2026 H1 p.38
+2025,Canada,age_group,26-35,16,HKTB Visitor Profile Report 2026 H1 p.38
+2025,Canada,age_group,36-45,14,HKTB Visitor Profile Report 2026 H1 p.38
+2025,Canada,age_group,46-55,15,HKTB Visitor Profile Report 2026 H1 p.38
+2025,Canada,age_group,56-65,17,HKTB Visitor Profile Report 2026 H1 p.38
+2025,Canada,age_group,66+,16,HKTB Visitor Profile Report 2026 H1 p.38
+2026-H1,Canada,mean_age,Mean age,41.2,HKTB Visitor Profile Report 2026 H1 p.38
+2026-H1,Canada,age_group,0-15,12,HKTB Visitor Profile Report 2026 H1 p.38
+2026-H1,Canada,age_group,16-25,10,HKTB Visitor Profile Report 2026 H1 p.38
+2026-H1,Canada,age_group,26-35,16,HKTB Visitor Profile Report 2026 H1 p.38
+2026-H1,Canada,age_group,36-45,15,HKTB Visitor Profile Report 2026 H1 p.38
+2026-H1,Canada,age_group,46-55,14,HKTB Visitor Profile Report 2026 H1 p.38
+2026-H1,Canada,age_group,56-65,17,HKTB Visitor Profile Report 2026 H1 p.38
+2026-H1,Canada,age_group,66+,14,HKTB Visitor Profile Report 2026 H1 p.38
+2025,Canada,first_timer_pct,First-time visitors,29,HKTB Visitor Profile Report 2026 H1 p.39
+2025,Canada,companion,With companion,39,HKTB Visitor Profile Report 2026 H1 p.39
+2025,Canada,companion,With family members,33,HKTB Visitor Profile Report 2026 H1 p.39
+2025,Canada,companion,With kids,3,HKTB Visitor Profile Report 2026 H1 p.39
+2025,Canada,avg_nights,Average nights,4.5,HKTB Visitor Profile Report 2026 H1 p.39
+2025,Canada,per_capita_overnight_hkd,Per capita spending,8400,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,first_timer_pct,First-time visitors,34,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,companion,With companion,40,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,companion,With family members,37,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,companion,With kids,5,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,avg_nights,Average nights,4,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,per_capita_overnight_hkd,Per capita spending,5800,HKTB Visitor Profile Report 2026 H1 p.39
+2025,Canada,origin_region,Toronto,44,HKTB Visitor Profile Report 2026 H1 p.39
+2025,Canada,origin_region,Vancouver,19,HKTB Visitor Profile Report 2026 H1 p.39
+2025,Canada,origin_region,Montreal,8,HKTB Visitor Profile Report 2026 H1 p.39
+2025,Canada,origin_region,Calgary,7,HKTB Visitor Profile Report 2026 H1 p.39
+2025,Canada,origin_region,Victoria,4,HKTB Visitor Profile Report 2026 H1 p.39
+2025,Canada,origin_region,Edmonton,3,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,origin_region,Toronto,39,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,origin_region,Vancouver,23,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,origin_region,Calgary,12,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,origin_region,Edmonton,7,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,origin_region,Montreal,6,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,origin_region,Mississauga,2,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,place_rank,The Peak,2,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,place_rank,Urban Parks,3,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,place_rank,Hong Kong Disneyland,5,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,place_rank,Old Town Central,6,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,place_rank,West Kowloon Cultural District,7,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,place_rank,Ngong Ping 360,8,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,place_rank,Hiking Trail / Country Park,9,HKTB Visitor Profile Report 2026 H1 p.39
+2026-H1,Canada,place_rank,Outlying Islands,10,HKTB Visitor Profile Report 2026 H1 p.39
+2025,Canada,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2025 FY p.39
+2025,Canada,place_rank,The Peak,2,HKTB Visitor Profile Report 2025 FY p.39
+2025,Canada,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2025 FY p.39
+2025,Canada,place_rank,Old Town Central,4,HKTB Visitor Profile Report 2025 FY p.39
+2025,Canada,place_rank,Ngong Ping 360,5,HKTB Visitor Profile Report 2025 FY p.39
+2025,Canada,place_rank,Urban Parks,6,HKTB Visitor Profile Report 2025 FY p.39
+2025,Canada,place_rank,Hong Kong Disneyland,7,HKTB Visitor Profile Report 2025 FY p.39
+2025,Canada,place_rank,Hiking Trail / Country Park,8,HKTB Visitor Profile Report 2025 FY p.39
+2025,Canada,place_rank,West Kowloon Cultural District,9,HKTB Visitor Profile Report 2025 FY p.39
+2025,Canada,place_rank,Beaches,10,HKTB Visitor Profile Report 2025 FY p.39
+2025,United Kingdom,mean_age,Mean age,41.7,HKTB Visitor Profile Report 2026 H1 p.40
+2025,United Kingdom,age_group,0-15,9,HKTB Visitor Profile Report 2026 H1 p.40
+2025,United Kingdom,age_group,16-25,11,HKTB Visitor Profile Report 2026 H1 p.40
+2025,United Kingdom,age_group,26-35,18,HKTB Visitor Profile Report 2026 H1 p.40
+2025,United Kingdom,age_group,36-45,16,HKTB Visitor Profile Report 2026 H1 p.40
+2025,United Kingdom,age_group,46-55,17,HKTB Visitor Profile Report 2026 H1 p.40
+2025,United Kingdom,age_group,56-65,18,HKTB Visitor Profile Report 2026 H1 p.40
+2025,United Kingdom,age_group,66+,11,HKTB Visitor Profile Report 2026 H1 p.40
+2026-H1,United Kingdom,mean_age,Mean age,42.2,HKTB Visitor Profile Report 2026 H1 p.40
+2026-H1,United Kingdom,age_group,0-15,8,HKTB Visitor Profile Report 2026 H1 p.40
+2026-H1,United Kingdom,age_group,16-25,11,HKTB Visitor Profile Report 2026 H1 p.40
+2026-H1,United Kingdom,age_group,26-35,19,HKTB Visitor Profile Report 2026 H1 p.40
+2026-H1,United Kingdom,age_group,36-45,16,HKTB Visitor Profile Report 2026 H1 p.40
+2026-H1,United Kingdom,age_group,46-55,16,HKTB Visitor Profile Report 2026 H1 p.40
+2026-H1,United Kingdom,age_group,56-65,18,HKTB Visitor Profile Report 2026 H1 p.40
+2026-H1,United Kingdom,age_group,66+,12,HKTB Visitor Profile Report 2026 H1 p.40
+2025,United Kingdom,first_timer_pct,First-time visitors,43,HKTB Visitor Profile Report 2026 H1 p.41
+2025,United Kingdom,companion,With companion,45,HKTB Visitor Profile Report 2026 H1 p.41
+2025,United Kingdom,companion,With family members,37,HKTB Visitor Profile Report 2026 H1 p.41
+2025,United Kingdom,companion,With kids,3,HKTB Visitor Profile Report 2026 H1 p.41
+2025,United Kingdom,avg_nights,Average nights,4.6,HKTB Visitor Profile Report 2026 H1 p.41
+2025,United Kingdom,per_capita_overnight_hkd,Per capita spending,7700,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,first_timer_pct,First-time visitors,36,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,companion,With companion,43,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,companion,With family members,36,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,companion,With kids,0.4,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,avg_nights,Average nights,4.2,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,per_capita_overnight_hkd,Per capita spending,7000,HKTB Visitor Profile Report 2026 H1 p.41
+2025,United Kingdom,origin_region,Greater London,31,HKTB Visitor Profile Report 2026 H1 p.41
+2025,United Kingdom,origin_region,Bristol,8,HKTB Visitor Profile Report 2026 H1 p.41
+2025,United Kingdom,origin_region,Birmingham,5,HKTB Visitor Profile Report 2026 H1 p.41
+2025,United Kingdom,origin_region,Greater Manchester,5,HKTB Visitor Profile Report 2026 H1 p.41
+2025,United Kingdom,origin_region,Liverpool,5,HKTB Visitor Profile Report 2026 H1 p.41
+2025,United Kingdom,origin_region,Essex,4,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,origin_region,Greater London,32,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,origin_region,Birmingham,7,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,origin_region,Greater Manchester,6,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,origin_region,Edinburgh,6,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,origin_region,Bristol,5,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,origin_region,Kent,4,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,place_rank,The Peak,1,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,place_rank,Urban Parks,4,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,place_rank,Hiking Trail / Country Park,6,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,place_rank,Ngong Ping 360,7,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,place_rank,Beaches,8,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,place_rank,Lan Kwai Fong,9,HKTB Visitor Profile Report 2026 H1 p.41
+2026-H1,United Kingdom,place_rank,Outlying Islands,10,HKTB Visitor Profile Report 2026 H1 p.41
+2025,United Kingdom,place_rank,The Peak,1,HKTB Visitor Profile Report 2025 FY p.41
+2025,United Kingdom,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2025 FY p.41
+2025,United Kingdom,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2025 FY p.41
+2025,United Kingdom,place_rank,Ngong Ping 360,4,HKTB Visitor Profile Report 2025 FY p.41
+2025,United Kingdom,place_rank,Urban Parks,5,HKTB Visitor Profile Report 2025 FY p.41
+2025,United Kingdom,place_rank,Old Town Central,6,HKTB Visitor Profile Report 2025 FY p.41
+2025,United Kingdom,place_rank,Beaches,7,HKTB Visitor Profile Report 2025 FY p.41
+2025,United Kingdom,place_rank,Lan Kwai Fong,8,HKTB Visitor Profile Report 2025 FY p.41
+2025,United Kingdom,place_rank,Che Kung Temple / Tin Hau Temple / Other Temples,9,HKTB Visitor Profile Report 2025 FY p.41
+2025,United Kingdom,place_rank,Hiking Trail / Country Park,10,HKTB Visitor Profile Report 2025 FY p.41
+2025,Germany,mean_age,Mean age,42.3,HKTB Visitor Profile Report 2026 H1 p.42
+2025,Germany,age_group,0-15,6,HKTB Visitor Profile Report 2026 H1 p.42
+2025,Germany,age_group,16-25,12,HKTB Visitor Profile Report 2026 H1 p.42
+2025,Germany,age_group,26-35,19,HKTB Visitor Profile Report 2026 H1 p.42
+2025,Germany,age_group,36-45,17,HKTB Visitor Profile Report 2026 H1 p.42
+2025,Germany,age_group,46-55,17,HKTB Visitor Profile Report 2026 H1 p.42
+2025,Germany,age_group,56-65,19,HKTB Visitor Profile Report 2026 H1 p.42
+2025,Germany,age_group,66+,10,HKTB Visitor Profile Report 2026 H1 p.42
+2026-H1,Germany,mean_age,Mean age,43.4,HKTB Visitor Profile Report 2026 H1 p.42
+2026-H1,Germany,age_group,0-15,5,HKTB Visitor Profile Report 2026 H1 p.42
+2026-H1,Germany,age_group,16-25,12,HKTB Visitor Profile Report 2026 H1 p.42
+2026-H1,Germany,age_group,26-35,19,HKTB Visitor Profile Report 2026 H1 p.42
+2026-H1,Germany,age_group,36-45,16,HKTB Visitor Profile Report 2026 H1 p.42
+2026-H1,Germany,age_group,46-55,16,HKTB Visitor Profile Report 2026 H1 p.42
+2026-H1,Germany,age_group,56-65,20,HKTB Visitor Profile Report 2026 H1 p.42
+2026-H1,Germany,age_group,66+,13,HKTB Visitor Profile Report 2026 H1 p.42
+2025,Germany,first_timer_pct,First-time visitors,54,HKTB Visitor Profile Report 2026 H1 p.43
+2025,Germany,companion,With companion,35,HKTB Visitor Profile Report 2026 H1 p.43
+2025,Germany,companion,With family members,28,HKTB Visitor Profile Report 2026 H1 p.43
+2025,Germany,companion,With kids,2,HKTB Visitor Profile Report 2026 H1 p.43
+2025,Germany,avg_nights,Average nights,3.2,HKTB Visitor Profile Report 2026 H1 p.43
+2025,Germany,per_capita_overnight_hkd,Per capita spending,6600,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,first_timer_pct,First-time visitors,47,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,companion,With companion,34,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,companion,With family members,29,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,companion,With kids,1,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,avg_nights,Average nights,3,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,per_capita_overnight_hkd,Per capita spending,5200,HKTB Visitor Profile Report 2026 H1 p.43
+2025,Germany,origin_region,Berlin,16,HKTB Visitor Profile Report 2026 H1 p.43
+2025,Germany,origin_region,Munchen (Munich),10,HKTB Visitor Profile Report 2026 H1 p.43
+2025,Germany,origin_region,Frankfurt,9,HKTB Visitor Profile Report 2026 H1 p.43
+2025,Germany,origin_region,Stuttgart,8,HKTB Visitor Profile Report 2026 H1 p.43
+2025,Germany,origin_region,Hamburg,7,HKTB Visitor Profile Report 2026 H1 p.43
+2025,Germany,origin_region,Koln (Cologne),6,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,origin_region,Berlin,16,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,origin_region,Munchen (Munich),13,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,origin_region,Hamburg,9,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,origin_region,Frankfurt,9,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,origin_region,Stuttgart,7,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,origin_region,Koln (Cologne),6,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,place_rank,The Peak,1,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,place_rank,Urban Parks,4,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,place_rank,Hiking Trail / Country Park,6,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,place_rank,West Kowloon Cultural District,7,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,place_rank,Stanley / Stanley Market,8,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,place_rank,Beaches,9,HKTB Visitor Profile Report 2026 H1 p.43
+2026-H1,Germany,place_rank,Ngong Ping 360,10,HKTB Visitor Profile Report 2026 H1 p.43
+2025,Germany,place_rank,The Peak,1,HKTB Visitor Profile Report 2025 FY p.43
+2025,Germany,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2025 FY p.43
+2025,Germany,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2025 FY p.43
+2025,Germany,place_rank,Old Town Central,4,HKTB Visitor Profile Report 2025 FY p.43
+2025,Germany,place_rank,Hiking Trail / Country Park,5,HKTB Visitor Profile Report 2025 FY p.43
+2025,Germany,place_rank,West Kowloon Cultural District,6,HKTB Visitor Profile Report 2025 FY p.43
+2025,Germany,place_rank,Beaches,7,HKTB Visitor Profile Report 2025 FY p.43
+2025,Germany,place_rank,Urban Parks,8,HKTB Visitor Profile Report 2025 FY p.43
+2025,Germany,place_rank,Ngong Ping 360,9,HKTB Visitor Profile Report 2025 FY p.43
+2025,Germany,place_rank,Lan Kwai Fong,10,HKTB Visitor Profile Report 2025 FY p.43
+2025,France,mean_age,Mean age,40.6,HKTB Visitor Profile Report 2026 H1 p.44
+2025,France,age_group,0-15,7,HKTB Visitor Profile Report 2026 H1 p.44
+2025,France,age_group,16-25,14,HKTB Visitor Profile Report 2026 H1 p.44
+2025,France,age_group,26-35,20,HKTB Visitor Profile Report 2026 H1 p.44
+2025,France,age_group,36-45,17,HKTB Visitor Profile Report 2026 H1 p.44
+2025,France,age_group,46-55,18,HKTB Visitor Profile Report 2026 H1 p.44
+2025,France,age_group,56-65,14,HKTB Visitor Profile Report 2026 H1 p.44
+2025,France,age_group,66+,11,HKTB Visitor Profile Report 2026 H1 p.44
+2026-H1,France,mean_age,Mean age,41.3,HKTB Visitor Profile Report 2026 H1 p.44
+2026-H1,France,age_group,0-15,6,HKTB Visitor Profile Report 2026 H1 p.44
+2026-H1,France,age_group,16-25,13,HKTB Visitor Profile Report 2026 H1 p.44
+2026-H1,France,age_group,26-35,21,HKTB Visitor Profile Report 2026 H1 p.44
+2026-H1,France,age_group,36-45,17,HKTB Visitor Profile Report 2026 H1 p.44
+2026-H1,France,age_group,46-55,17,HKTB Visitor Profile Report 2026 H1 p.44
+2026-H1,France,age_group,56-65,14,HKTB Visitor Profile Report 2026 H1 p.44
+2026-H1,France,age_group,66+,12,HKTB Visitor Profile Report 2026 H1 p.44
+2025,France,first_timer_pct,First-time visitors,48,HKTB Visitor Profile Report 2026 H1 p.45
+2025,France,companion,With companion,35,HKTB Visitor Profile Report 2026 H1 p.45
+2025,France,companion,With family members,25,HKTB Visitor Profile Report 2026 H1 p.45
+2025,France,companion,With kids,3,HKTB Visitor Profile Report 2026 H1 p.45
+2025,France,avg_nights,Average nights,3.7,HKTB Visitor Profile Report 2026 H1 p.45
+2025,France,per_capita_overnight_hkd,Per capita spending,7000,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,first_timer_pct,First-time visitors,48,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,companion,With companion,37,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,companion,With family members,22,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,companion,With kids,0,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,avg_nights,Average nights,3.7,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,per_capita_overnight_hkd,Per capita spending,6000,HKTB Visitor Profile Report 2026 H1 p.45
+2025,France,origin_region,Paris,35,HKTB Visitor Profile Report 2026 H1 p.45
+2025,France,origin_region,Lyon,8,HKTB Visitor Profile Report 2026 H1 p.45
+2025,France,origin_region,Marseille,5,HKTB Visitor Profile Report 2026 H1 p.45
+2025,France,origin_region,Toulouse,5,HKTB Visitor Profile Report 2026 H1 p.45
+2025,France,origin_region,Hauts-De-Seine,5,HKTB Visitor Profile Report 2026 H1 p.45
+2025,France,origin_region,Lille,4,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,origin_region,Paris,33,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,origin_region,Lyon,8,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,origin_region,Bordeaux,8,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,origin_region,Nice,7,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,origin_region,Lille,5,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,origin_region,Hauts-De-Seine,4,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,place_rank,The Peak,1,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,place_rank,Urban Parks,4,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,place_rank,Old Town Central,5,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,place_rank,Hiking Trail / Country Park,6,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,place_rank,West Kowloon Cultural District,7,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,place_rank,Ngong Ping 360,8,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,place_rank,Beaches,9,HKTB Visitor Profile Report 2026 H1 p.45
+2026-H1,France,place_rank,Outlying Islands,10,HKTB Visitor Profile Report 2026 H1 p.45
+2025,France,place_rank,The Peak,1,HKTB Visitor Profile Report 2025 FY p.45
+2025,France,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2025 FY p.45
+2025,France,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2025 FY p.45
+2025,France,place_rank,Old Town Central,4,HKTB Visitor Profile Report 2025 FY p.45
+2025,France,place_rank,Hiking Trail / Country Park,5,HKTB Visitor Profile Report 2025 FY p.45
+2025,France,place_rank,Beaches,6,HKTB Visitor Profile Report 2025 FY p.45
+2025,France,place_rank,Outlying Islands,7,HKTB Visitor Profile Report 2025 FY p.45
+2025,France,place_rank,Ngong Ping 360,8,HKTB Visitor Profile Report 2025 FY p.45
+2025,France,place_rank,West Kowloon Cultural District,9,HKTB Visitor Profile Report 2025 FY p.45
+2025,France,place_rank,Urban Parks,10,HKTB Visitor Profile Report 2025 FY p.45
+2025,Australia,mean_age,Mean age,39.6,HKTB Visitor Profile Report 2026 H1 p.46
+2025,Australia,age_group,0-15,16,HKTB Visitor Profile Report 2026 H1 p.46
+2025,Australia,age_group,16-25,9,HKTB Visitor Profile Report 2026 H1 p.46
+2025,Australia,age_group,26-35,13,HKTB Visitor Profile Report 2026 H1 p.46
+2025,Australia,age_group,36-45,18,HKTB Visitor Profile Report 2026 H1 p.46
+2025,Australia,age_group,46-55,16,HKTB Visitor Profile Report 2026 H1 p.46
+2025,Australia,age_group,56-65,15,HKTB Visitor Profile Report 2026 H1 p.46
+2025,Australia,age_group,66+,12,HKTB Visitor Profile Report 2026 H1 p.46
+2026-H1,Australia,mean_age,Mean age,39.4,HKTB Visitor Profile Report 2026 H1 p.46
+2026-H1,Australia,age_group,0-15,16,HKTB Visitor Profile Report 2026 H1 p.46
+2026-H1,Australia,age_group,16-25,10,HKTB Visitor Profile Report 2026 H1 p.46
+2026-H1,Australia,age_group,26-35,13,HKTB Visitor Profile Report 2026 H1 p.46
+2026-H1,Australia,age_group,36-45,18,HKTB Visitor Profile Report 2026 H1 p.46
+2026-H1,Australia,age_group,46-55,16,HKTB Visitor Profile Report 2026 H1 p.46
+2026-H1,Australia,age_group,56-65,14,HKTB Visitor Profile Report 2026 H1 p.46
+2026-H1,Australia,age_group,66+,12,HKTB Visitor Profile Report 2026 H1 p.46
+2025,Australia,first_timer_pct,First-time visitors,32,HKTB Visitor Profile Report 2026 H1 p.47
+2025,Australia,companion,With companion,50,HKTB Visitor Profile Report 2026 H1 p.47
+2025,Australia,companion,With family members,41,HKTB Visitor Profile Report 2026 H1 p.47
+2025,Australia,companion,With kids,9,HKTB Visitor Profile Report 2026 H1 p.47
+2025,Australia,avg_nights,Average nights,3.6,HKTB Visitor Profile Report 2026 H1 p.47
+2025,Australia,per_capita_overnight_hkd,Per capita spending,7400,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,first_timer_pct,First-time visitors,27,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,companion,With companion,52,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,companion,With family members,42,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,companion,With kids,6,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,avg_nights,Average nights,3.5,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,per_capita_overnight_hkd,Per capita spending,7500,HKTB Visitor Profile Report 2026 H1 p.47
+2025,Australia,origin_region,New South Wales,35,HKTB Visitor Profile Report 2026 H1 p.47
+2025,Australia,origin_region,Victoria,26,HKTB Visitor Profile Report 2026 H1 p.47
+2025,Australia,origin_region,Queensland,18,HKTB Visitor Profile Report 2026 H1 p.47
+2025,Australia,origin_region,Western Australia,11,HKTB Visitor Profile Report 2026 H1 p.47
+2025,Australia,origin_region,South Australia,4,HKTB Visitor Profile Report 2026 H1 p.47
+2025,Australia,origin_region,Tasmania,3,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,origin_region,New South Wales,39,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,origin_region,Victoria,28,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,origin_region,Queensland,19,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,origin_region,Western Australia,7,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,origin_region,South Australia,7,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,origin_region,Tasmania Australia Capital,1,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,place_rank,The Peak,2,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,place_rank,Urban Parks,4,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,place_rank,Ngong Ping 360,5,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,place_rank,Old Town Central,6,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,place_rank,Hong Kong Disneyland,7,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,place_rank,Beaches,8,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,place_rank,West Kowloon Cultural District,9,HKTB Visitor Profile Report 2026 H1 p.47
+2026-H1,Australia,place_rank,Hiking Trail / Country Park,10,HKTB Visitor Profile Report 2026 H1 p.47
+2025,Australia,place_rank,Tsim Sha Tsui,1,HKTB Visitor Profile Report 2025 FY p.47
+2025,Australia,place_rank,The Peak,2,HKTB Visitor Profile Report 2025 FY p.47
+2025,Australia,place_rank,Temple Street / Ladies' Market,3,HKTB Visitor Profile Report 2025 FY p.47
+2025,Australia,place_rank,Ngong Ping 360,4,HKTB Visitor Profile Report 2025 FY p.47
+2025,Australia,place_rank,Hong Kong Disneyland,5,HKTB Visitor Profile Report 2025 FY p.47
+2025,Australia,place_rank,Old Town Central,6,HKTB Visitor Profile Report 2025 FY p.47
+2025,Australia,place_rank,Urban Parks,7,HKTB Visitor Profile Report 2025 FY p.47
+2025,Australia,place_rank,West Kowloon Cultural District,8,HKTB Visitor Profile Report 2025 FY p.47
+2025,Australia,place_rank,Beaches,9,HKTB Visitor Profile Report 2025 FY p.47
+2025,Australia,place_rank,Stanley / Stanley Market,10,HKTB Visitor Profile Report 2025 FY p.47
+2025,Middle East,mean_age,Mean age,37.9,HKTB Visitor Profile Report 2026 H1 p.48
+2025,Middle East,age_group,0-15,8,HKTB Visitor Profile Report 2026 H1 p.48
+2025,Middle East,age_group,16-25,11,HKTB Visitor Profile Report 2026 H1 p.48
+2025,Middle East,age_group,26-35,25,HKTB Visitor Profile Report 2026 H1 p.48
+2025,Middle East,age_group,36-45,26,HKTB Visitor Profile Report 2026 H1 p.48
+2025,Middle East,age_group,46-55,16,HKTB Visitor Profile Report 2026 H1 p.48
+2025,Middle East,age_group,56-65,9,HKTB Visitor Profile Report 2026 H1 p.48
+2025,Middle East,age_group,66+,5,HKTB Visitor Profile Report 2026 H1 p.48
+2026-H1,Middle East,mean_age,Mean age,39,HKTB Visitor Profile Report 2026 H1 p.48
+2026-H1,Middle East,age_group,0-15,6,HKTB Visitor Profile Report 2026 H1 p.48
+2026-H1,Middle East,age_group,16-25,11,HKTB Visitor Profile Report 2026 H1 p.48
+2026-H1,Middle East,age_group,26-35,25,HKTB Visitor Profile Report 2026 H1 p.48
+2026-H1,Middle East,age_group,36-45,26,HKTB Visitor Profile Report 2026 H1 p.48
+2026-H1,Middle East,age_group,46-55,16,HKTB Visitor Profile Report 2026 H1 p.48
+2026-H1,Middle East,age_group,56-65,9,HKTB Visitor Profile Report 2026 H1 p.48
+2026-H1,Middle East,age_group,66+,6,HKTB Visitor Profile Report 2026 H1 p.48
+2025,Middle East,first_timer_pct,First-time visitors,54,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,companion,With companion,37,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,companion,With family members,20,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,companion,With kids,8,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,avg_nights,Average nights,4.2,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,per_capita_overnight_hkd,Per capita spending,11300,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,first_timer_pct,First-time visitors,54,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,companion,With companion,19,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,companion,With family members,5,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,companion,With kids,0,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,avg_nights,Average nights,4.1,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,per_capita_overnight_hkd,Per capita spending,11400,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,GCC (subtotal),35,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,Saudi Arabia,17,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,United Arab Emirates,8,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,Kuwait,4,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,Qatar,3,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,Oman,2,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,Bahrain,1,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,Non-GCC (subtotal),65,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,Turkey,30,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,Israel,20,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,Egypt,8,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,Jordan,4,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,origin_region,Iran,2,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,GCC (subtotal),23,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,Saudi Arabia,12,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,United Arab Emirates,5,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,Kuwait,2,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,Qatar,2,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,Oman,2,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,Bahrain,1,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,Non-GCC (subtotal),77,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,Turkey,41,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,Israel,21,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,Egypt,9,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,Jordan,4,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,origin_region,Iran,1,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,place_rank,The Peak,1,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,place_rank,Urban Parks,3,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,place_rank,Temple Street / Ladies' Market,4,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,place_rank,Hong Kong Disneyland,5,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,place_rank,Old Town Central,6,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,place_rank,West Kowloon Cultural District,7,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,place_rank,Lan Kwai Fong,8,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,place_rank,Wong Tai Sin Temple,9,HKTB Visitor Profile Report 2026 H1 p.49
+2026-H1,Middle East,place_rank,Outlying Islands,10,HKTB Visitor Profile Report 2026 H1 p.49
+2025,Middle East,place_rank,The Peak,1,HKTB Visitor Profile Report 2025 FY p.49
+2025,Middle East,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2025 FY p.49
+2025,Middle East,place_rank,Urban Parks,3,HKTB Visitor Profile Report 2025 FY p.49
+2025,Middle East,place_rank,Hong Kong Disneyland,4,HKTB Visitor Profile Report 2025 FY p.49
+2025,Middle East,place_rank,Ocean Park,5,HKTB Visitor Profile Report 2025 FY p.49
+2025,Middle East,place_rank,Temple Street / Ladies' Market,6,HKTB Visitor Profile Report 2025 FY p.49
+2025,Middle East,place_rank,Hong Kong Observation Wheel,7,HKTB Visitor Profile Report 2025 FY p.49
+2025,Middle East,place_rank,Old Town Central,8,HKTB Visitor Profile Report 2025 FY p.49
+2025,Middle East,place_rank,"Museums (Maritime, Science, Space, History)",9,HKTB Visitor Profile Report 2025 FY p.49
+2025,Middle East,place_rank,Hong Kong Museum of Art,10,HKTB Visitor Profile Report 2025 FY p.49
+2025,Russia,mean_age,Mean age,34.8,HKTB Visitor Profile Report 2026 H1 p.50
+2025,Russia,age_group,0-15,9,HKTB Visitor Profile Report 2026 H1 p.50
+2025,Russia,age_group,16-25,14,HKTB Visitor Profile Report 2026 H1 p.50
+2025,Russia,age_group,26-35,29,HKTB Visitor Profile Report 2026 H1 p.50
+2025,Russia,age_group,36-45,28,HKTB Visitor Profile Report 2026 H1 p.50
+2025,Russia,age_group,46-55,13,HKTB Visitor Profile Report 2026 H1 p.50
+2025,Russia,age_group,56-65,6,HKTB Visitor Profile Report 2026 H1 p.50
+2025,Russia,age_group,66+,2,HKTB Visitor Profile Report 2026 H1 p.50
+2026-H1,Russia,mean_age,Mean age,34.4,HKTB Visitor Profile Report 2026 H1 p.50
+2026-H1,Russia,age_group,0-15,10,HKTB Visitor Profile Report 2026 H1 p.50
+2026-H1,Russia,age_group,16-25,14,HKTB Visitor Profile Report 2026 H1 p.50
+2026-H1,Russia,age_group,26-35,28,HKTB Visitor Profile Report 2026 H1 p.50
+2026-H1,Russia,age_group,36-45,28,HKTB Visitor Profile Report 2026 H1 p.50
+2026-H1,Russia,age_group,46-55,13,HKTB Visitor Profile Report 2026 H1 p.50
+2026-H1,Russia,age_group,56-65,5,HKTB Visitor Profile Report 2026 H1 p.50
+2026-H1,Russia,age_group,66+,2,HKTB Visitor Profile Report 2026 H1 p.50
+2025,Russia,first_timer_pct,First-time visitors,52,HKTB Visitor Profile Report 2026 H1 p.51
+2025,Russia,companion,With companion,39,HKTB Visitor Profile Report 2026 H1 p.51
+2025,Russia,companion,With family members,31,HKTB Visitor Profile Report 2026 H1 p.51
+2025,Russia,companion,With kids,6,HKTB Visitor Profile Report 2026 H1 p.51
+2025,Russia,avg_nights,Average nights,3.3,HKTB Visitor Profile Report 2026 H1 p.51
+2025,Russia,per_capita_overnight_hkd,Per capita spending,8600,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,first_timer_pct,First-time visitors,68,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,companion,With companion,42,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,companion,With family members,34,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,companion,With kids,2,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,avg_nights,Average nights,3,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,per_capita_overnight_hkd,Per capita spending,6600,HKTB Visitor Profile Report 2026 H1 p.51
+2025,Russia,origin_region,Central Federal District,57,HKTB Visitor Profile Report 2026 H1 p.51
+2025,Russia,origin_region,North West Federal District,13,HKTB Visitor Profile Report 2026 H1 p.51
+2025,Russia,origin_region,Ural Federal District,7,HKTB Visitor Profile Report 2026 H1 p.51
+2025,Russia,origin_region,Far East Federal District,7,HKTB Visitor Profile Report 2026 H1 p.51
+2025,Russia,origin_region,Privolzhsky (Volga) Federal District,4,HKTB Visitor Profile Report 2026 H1 p.51
+2025,Russia,origin_region,South Federal District,4,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,origin_region,Central Federal District,55,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,origin_region,North West Federal District,8,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,origin_region,Siberian Federal District,8,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,origin_region,Privolzhsky (Volga) Federal District,7,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,origin_region,South Federal District,6,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,origin_region,Ural Federal District,4,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,place_rank,The Peak,1,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,place_rank,Tsim Sha Tsui,2,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,place_rank,Urban Parks,3,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,place_rank,Old Town Central,4,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,place_rank,West Kowloon Cultural District,5,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,place_rank,Temple Street / Ladies' Market,6,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,place_rank,Hiking Trail / Country Park,7,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,place_rank,Beaches,8,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,place_rank,Hong Kong Museum of Art,9,HKTB Visitor Profile Report 2026 H1 p.51
+2026-H1,Russia,place_rank,Hong Kong Disneyland,10,HKTB Visitor Profile Report 2026 H1 p.51

@@ -18,9 +18,10 @@ Only official, openly published data is used:
 * World Bank API (UN Tourism-sourced) - 2019 arrivals & receipts baselines.
 
 Datasets with no open API (hotel occupancy/ADR, government arrival targets,
-Thailand monthly arrivals, UN Tourism Asia-Pacific trend, trip purpose / age
-profile, attraction sentiment) are read from optional CSVs in data/manual/.
-When a manual file is empty the dashboard shows the item as "data pending".
+Thailand monthly arrivals, UN Tourism Asia-Pacific trend, HKTB visitor profile)
+are read from optional CSVs in data/manual/. When a manual file is empty the
+dashboard shows the item as "data pending". HKTB's monthly visitor arrival
+workbooks (data/*all countries visitor type.xlsx) supply arrivals by nationality.
 
 Every successful live fetch is normalised and written back to data/raw/ so the
 --offline mode always reproduces the latest known data.
@@ -173,14 +174,274 @@ MANUAL_INPUTS = {
         "UN Tourism Asia & the Pacific inbound recovery vs 2019",
         "UN Tourism Dashboard (Tableau) - no public API / download"),
     "visitor_profile.csv": (
-        ["year", "dimension", "category", "share_pct", "source"], "Visitor Persona",
-        "Trip purpose (leisure / MICE / business) and age brackets",
-        "HKTB Visitor Profile Report - PDF only"),
-    "attraction_sentiment.csv": (
-        ["attraction", "mentions", "sentiment_score", "recommend_pct", "source"], "Visitor Persona",
-        "Visitor feedback & recommendation sentiment by attraction",
-        "Survey / review data - not published as open data"),
+        ["period", "market", "dimension", "category", "value", "source"], "Visitor Persona",
+        "HKTB visitor profile: age, companions, trip purpose, spending, satisfaction, places visited",
+        "HKTB Visitor Profile Report (2025 FY / 2026 H1) - PDF only"),
 }
+
+# HKTB monthly visitor arrival statistics (local workbooks, June editions) - nationality detail
+HKTB_ARRIVALS_GLOB = "*all countries visitor type.xlsx"
+# The 18 source markets profiled in the HKTB Visitor Profile Report -> dashboard origin segment
+HKTB_MARKETS = {
+    "Chinese Mainland": "Mainland",
+    "Philippines": "Short-haul", "Thailand": "Short-haul", "Singapore": "Short-haul", "Malaysia": "Short-haul",
+    "Indonesia": "Short-haul", "India": "Short-haul", "Taiwan": "Short-haul", "South Korea": "Short-haul",
+    "Japan": "Short-haul",
+    "USA": "Long-haul", "Canada": "Long-haul", "United Kingdom": "Long-haul", "Germany": "Long-haul",
+    "France": "Long-haul", "Australia": "Long-haul", "Russia": "Long-haul",
+    "Middle East": "Emerging",
+}
+# Segment rows in the workbook tables (for the segment age / gender profile)
+HKTB_SEGMENT_ROWS = {
+    "Total": "All markets", "Chinese Mainland": "Mainland",
+    "Short Haul Markets (Exclude Chinese Mainland)": "Short-haul", "Long Haul Markets": "Long-haul",
+}
+# The Jun 2025 edition labels Mainland rows without "Chinese"
+HKTB_NAME_ALIASES = {
+    "Mainland": "Chinese Mainland",
+    "Short Haul Markets (Exclude Mainland)": "Short Haul Markets (Exclude Chinese Mainland)",
+}
+AGE_COLUMNS = [("K", "0-15"), ("L", "16-25"), ("M", "26-35"), ("N", "36-45"), ("O", "46-55"), ("P", "56-65"), ("Q", "66+")]
+APPENDIX_MONTH_COLUMNS = [("F", 1), ("J", 2), ("N", 3), ("Y", 4), ("AC", 5), ("AG", 6)]
+
+# 2027 market playbooks: which strategic pillars apply to each HKTB source market, with market-specific
+# initiatives. KPI specs are (metric, change) pairs; baselines are computed from the HKTB data and the
+# 2027 targets are proposed changes on those baselines:
+#   ("growth", +pct)      arrivals growth target vs Jan-Jun 2026 YoY baseline
+#   ("overnight", +pp)    overnight share of arrivals (Jan-Jun 2026)
+#   ("nights", +n)        average nights of overnight visitors (H1 2026)
+#   ("spend", +ratio)     spend per overnight visitor (H1 2026)
+#   ("first", +pp)        first-time visitors (H1 2026)
+#   ("family", +pp)       overnight visitors travelling with family (H1 2026)
+#   ("multi", +pp)        multi-destination trips, HKTB segment level (2025)
+#   ("place", name, txt)  rank of a place among top-10 places visited (H1 2026)
+MARKET_PLAYBOOKS = [
+    {"market": "Chinese Mainland", "primary": "gba",
+     "headline": "Turn the same-day majority into overnight stays and draw more visitors from beyond Guangdong.",
+     "plays": [
+         {"pillar": "gba", "initiatives": [
+             "'Stay the night' bundles sold at West Kowloon HSR and HZMB: evening event ticket + hotel + next-day attraction pass.",
+             "Weekday hotel and night-time offers (harbour cruise, night markets) for Greater Bay Area day-trippers on Xiaohongshu and Douyin.",
+             "Rewards for multi-entry permit holders who come back for a second and third overnight trip."],
+          "kpis": [("overnight", 3), ("nights", 0.2)]},
+         {"pillar": "mega-events", "initiatives": [
+             "Market the Kai Tak concert and sports calendar in Shanghai, Beijing, Zhejiang and Jiangsu, where visitors arrive by air or HSR and stay longer.",
+             "Event-ticket presales bundled with HSR fares from non-Guangdong cities."],
+          "kpis": [("place", "Kai Tak Sports Park", "Top 5"), ("first", 3)]},
+         {"pillar": "high-value", "initiatives": [
+             "Broaden the basket beyond shopping: dining, culture (WestK, Palace Museum) and wellness for repeat visitors.",
+             "Corporate MICE and incentive groups from tier-1 cities at HKCEC and AsiaWorld-Expo."],
+          "kpis": [("spend", 0.05)]},
+     ]},
+    {"market": "Taiwan", "primary": "mega-events",
+     "headline": "Loyal repeat visitors on short trips: give them new events and neighbourhoods to come back for.",
+     "plays": [
+         {"pillar": "mega-events", "initiatives": [
+             "Cantopop concerts and cultural festivals sold as long-weekend packages with Taiwanese airlines.",
+             "Fresh CityWalk content for repeat visitors (Sham Shui Po, Tai O, Sai Kung) on Taiwanese travel media."],
+          "kpis": [("nights", 0.2), ("overnight", 3)]},
+         {"pillar": "gba", "initiatives": [
+             "Hong Kong + Macao / Shenzhen combination itineraries for visitors who have 'done' Hong Kong.",
+             "Single ticket for ferry / HZMB transfers bundled with Hong Kong hotels."],
+          "kpis": [("multi", 3), ("growth", 5)]},
+     ]},
+    {"market": "Philippines", "primary": "mega-events",
+     "headline": "A family-heavy, Disneyland-led market that slipped in 2026: family events and value bundles.",
+     "plays": [
+         {"pillar": "mega-events", "initiatives": [
+             "School-holiday family festivals bundled with Hong Kong Disneyland and Ocean Park tickets.",
+             "Concerts by Filipino and international artists at Kai Tak with fan travel packages from Manila."],
+          "kpis": [("growth", 8), ("family", 3)]},
+         {"pillar": "gba", "initiatives": [
+             "Hong Kong + Macao family itineraries with the ferry or HZMB transfer included.",
+             "Off-peak weekday hotel deals with Philippine low-cost carriers to fill shoulder months."],
+          "kpis": [("multi", 3), ("nights", 0.2)]},
+     ]},
+    {"market": "USA", "primary": "high-value",
+     "headline": "A growing long-haul market whose spend per visitor is falling: raise the value of each trip.",
+     "plays": [
+         {"pillar": "high-value", "initiatives": [
+             "Stopover packages with transpacific carriers through HKIA (free night, attraction pass).",
+             "Bid for association congresses and corporate MICE from US headquarters."],
+          "kpis": [("spend", 0.05), ("nights", 0.3)]},
+         {"pillar": "gba", "initiatives": [
+             "Sell Hong Kong as the gateway to Asia: Greater Bay Area and Macao add-ons priced into transpacific fares.",
+             "Promote 144-hour visa-free transit routing via HKIA to Mainland cities."],
+          "kpis": [("multi", 3), ("growth", 8)]},
+     ]},
+    {"market": "South Korea", "primary": "mega-events",
+     "headline": "Short, first-time trips from Seoul and falling arrivals: use K-culture and events to restart growth.",
+     "plays": [
+         {"pillar": "mega-events", "initiatives": [
+             "K-pop concerts and e-sports tournaments at Kai Tak with fan packages on Korean OTAs.",
+             "Night-time content (harbour, night markets, rooftop bars) for young first-timers on Korean social channels."],
+          "kpis": [("growth", 10), ("nights", 0.3)]},
+         {"pillar": "high-value", "initiatives": [
+             "Café, dessert and photo-spot CityWalk trails designed to add a third night.",
+             "Weekend fare + hotel deals with Korean low-cost carriers."],
+          "kpis": [("spend", 0.05), ("overnight", 3)]},
+     ]},
+    {"market": "Japan", "primary": "high-value",
+     "headline": "The lowest spend per visitor of the 18 markets, among the shortest stays, and falling arrivals: give Japanese visitors reasons to stay longer.",
+     "plays": [
+         {"pillar": "high-value", "initiatives": [
+             "Gourmet and 'retro Hong Kong' itineraries (Cantonese dining, neon streets, film locations) with Japanese travel media and agents.",
+             "Three-night packages around Golden Week, Obon and Silver Week holidays."],
+          "kpis": [("nights", 0.3), ("spend", 0.08)]},
+         {"pillar": "mega-events", "initiatives": [
+             "Anime, J-pop and e-sports events at Kai Tak and AsiaWorld-Expo marketed to fans in Tokyo and Osaka.",
+             "Hong Kong Sevens and marathon packages for Japanese sports travellers."],
+          "kpis": [("growth", 10), ("first", 3)]},
+         {"pillar": "gba", "initiatives": [
+             "Hong Kong + Macao / Shenzhen four-day itineraries for repeat visitors looking for something new.",
+             "Japanese-language guides and simplified ticketing for HZMB and ferry transfers."],
+          "kpis": [("multi", 3)]},
+     ]},
+    {"market": "Thailand", "primary": "mega-events",
+     "headline": "Long stays and temple-led itineraries: build festival and faith-based culture products.",
+     "plays": [
+         {"pillar": "mega-events", "initiatives": [
+             "Temple and festival trails (Wong Tai Sin, Che Kung, Tin Hau, Cheung Chau Bun Festival) promoted in Bangkok.",
+             "Thai-language event packages around Songkran and year-end holidays."],
+          "kpis": [("growth", 8), ("first", 3)]},
+         {"pillar": "gba", "initiatives": [
+             "Hong Kong + Macao / Guangzhou itineraries for second-time visitors.",
+             "Partner with Thai agents on multi-city fares that route through HKIA."],
+          "kpis": [("multi", 3), ("spend", 0.05)]},
+     ]},
+    {"market": "Australia", "primary": "high-value",
+     "headline": "A fast-growing long-haul market with above-average spend: turn stopovers into stays and use sport as the hook.",
+     "plays": [
+         {"pillar": "high-value", "initiatives": [
+             "Stopover campaigns on Europe-bound routes via HKIA (two-night packages).",
+             "Hiking, beaches and outlying-island itineraries for active travellers."],
+          "kpis": [("spend", 0.05), ("nights", 0.2)]},
+         {"pillar": "mega-events", "initiatives": [
+             "Hong Kong Sevens and Kai Tak events packaged for Australian sports fans.",
+             "Clockenflap and food festivals marketed to young couples travelling together."],
+          "kpis": [("growth", 10), ("first", 3)]},
+     ]},
+    {"market": "Singapore", "primary": "high-value",
+     "headline": "Older, loyal repeat visitors with few first-timers: premium experiences and new reasons to return.",
+     "plays": [
+         {"pillar": "high-value", "initiatives": [
+             "Premium dining, art (M+, Art Basel) and wellness weekends for repeat visitors.",
+             "Position Hong Kong for regional MICE from Singapore-based Asia headquarters."],
+          "kpis": [("spend", 0.05), ("nights", 0.2)]},
+         {"pillar": "mega-events", "initiatives": [
+             "Art Basel, Clockenflap and Sevens weekend packages.",
+             "Campaigns aimed at younger Singaporeans to bring in new first-time visitors."],
+          "kpis": [("first", 3), ("growth", 5)]},
+     ]},
+    {"market": "India", "primary": "high-value",
+     "headline": "High-spending, long-staying visitors from Mumbai, Delhi and Bangalore: MICE, incentives and celebrations.",
+     "plays": [
+         {"pillar": "high-value", "initiatives": [
+             "Incentive and MICE groups from corporates in Mumbai, Delhi and Bangalore.",
+             "Destination-wedding and celebration packages with hotels and venues."],
+          "kpis": [("spend", 0.05), ("growth", 10)]},
+         {"pillar": "gba", "initiatives": [
+             "Hong Kong + Macao + Shenzhen multi-city packages for first-time leisure visitors.",
+             "Vegetarian and Indian-dining guides bundled into itineraries."],
+          "kpis": [("multi", 3), ("nights", 0.2)]},
+     ]},
+    {"market": "Malaysia", "primary": "mega-events",
+     "headline": "A steady, flat-growth market: concerts, food festivals and heritage to lift demand.",
+     "plays": [
+         {"pillar": "mega-events", "initiatives": [
+             "Concerts and food festivals packaged with Malaysian low-cost carriers.",
+             "Cantonese food-heritage trails promoted in Kuala Lumpur, Johor Bahru and Penang."],
+          "kpis": [("growth", 5), ("nights", 0.2)]},
+         {"pillar": "gba", "initiatives": [
+             "Hong Kong + Macao + Guangdong ancestral-hometown itineraries.",
+             "Rail and ferry passes bundled with Hong Kong hotel stays."],
+          "kpis": [("multi", 3), ("spend", 0.05)]},
+     ]},
+    {"market": "Canada", "primary": "gba",
+     "headline": "A fast-growing, long-staying market centred on Toronto and Vancouver, but spend per visitor fell in 2026.",
+     "plays": [
+         {"pillar": "gba", "initiatives": [
+             "Heritage trips into Guangdong combined with Hong Kong stays for Toronto and Vancouver families.",
+             "Multi-city fares (Hong Kong + Greater Bay Area + Asia) with Canadian carriers."],
+          "kpis": [("multi", 3), ("growth", 10)]},
+         {"pillar": "high-value", "initiatives": [
+             "'Homecoming' packages built around food, culture and family gatherings.",
+             "Off-peak promotions to spread long stays away from Christmas and Lunar New Year peaks."],
+          "kpis": [("spend", 0.08), ("first", 3)]},
+     ]},
+    {"market": "United Kingdom", "primary": "high-value",
+     "headline": "Long stays and solid spend: stopovers, culture and nightlife.",
+     "plays": [
+         {"pillar": "high-value", "initiatives": [
+             "Stopover packages on routes to Australia and Southeast Asia.",
+             "Culture and nightlife itineraries (WestK, Old Town Central, Lan Kwai Fong)."],
+          "kpis": [("spend", 0.05), ("growth", 8)]},
+         {"pillar": "gba", "initiatives": [
+             "Multi-destination Asia itineraries starting or ending in Hong Kong.",
+             "Promote 144-hour visa-free transit into the Greater Bay Area."],
+          "kpis": [("multi", 3), ("nights", 0.2)]},
+     ]},
+    {"market": "Indonesia", "primary": "mega-events",
+     "headline": "A family market that fell sharply in 2026: rebuild with family and Muslim-friendly products.",
+     "plays": [
+         {"pillar": "mega-events", "initiatives": [
+             "Family theme-park bundles timed to Indonesian school holidays and Lebaran.",
+             "Muslim-friendly dining and prayer-room guide covering events and attractions."],
+          "kpis": [("growth", 10), ("family", 3)]},
+         {"pillar": "gba", "initiatives": [
+             "Hong Kong + Macao packages through agents in Jakarta and Surabaya.",
+             "Ferry / HZMB transfers bundled at a single price."],
+          "kpis": [("multi", 3), ("spend", 0.05)]},
+     ]},
+    {"market": "Russia", "primary": "high-value",
+     "headline": "A surging market made up mostly of first-timers: convert curiosity into longer stays and repeat visits.",
+     "plays": [
+         {"pillar": "high-value", "initiatives": [
+             "Winter-sun and city-break packages via direct and Gulf-hub flights.",
+             "Russian-language visitor information at major attractions and hotels."],
+          "kpis": [("spend", 0.05), ("nights", 0.3)]},
+         {"pillar": "mega-events", "initiatives": [
+             "New Year and winter festival packages.",
+             "Repeat-visit offers for first-time visitors (second-trip discounts with partner hotels)."],
+          "kpis": [("growth", 15), ("overnight", 3)]},
+     ]},
+    {"market": "Germany", "primary": "high-value",
+     "headline": "A fast-growing, first-timer market with short stays and below-average spend.",
+     "plays": [
+         {"pillar": "high-value", "initiatives": [
+             "Link trade-fair travellers (Frankfurt, Munich) to HKCEC and AsiaWorld-Expo exhibitions.",
+             "Hiking and Geopark packages (Dragon's Back, Sai Kung) that add nights."],
+          "kpis": [("nights", 0.3), ("spend", 0.08)]},
+         {"pillar": "gba", "initiatives": [
+             "Hong Kong as the start of Greater Bay Area and Southeast Asia round trips.",
+             "German-language multi-destination itineraries with tour operators."],
+          "kpis": [("multi", 3), ("growth", 8)]},
+     ]},
+    {"market": "France", "primary": "high-value",
+     "headline": "Culture-led first-timers with growing arrivals: art, design and gastronomy.",
+     "plays": [
+         {"pillar": "high-value", "initiatives": [
+             "Art and design itineraries (M+, Palace Museum, PMQ, Tai Kwun) with French media partners.",
+             "Gastronomy weeks pairing Hong Kong and French chefs."],
+          "kpis": [("spend", 0.05), ("nights", 0.2)]},
+         {"pillar": "gba", "initiatives": [
+             "Hong Kong + Macao + Guangzhou cultural-heritage circuits.",
+             "Multi-destination Asia itineraries through French tour operators."],
+          "kpis": [("multi", 3), ("first", 3)]},
+     ]},
+    {"market": "Middle East", "primary": "high-value",
+     "headline": "The highest spend per visitor of all markets: luxury, Muslim-friendly and MICE.",
+     "plays": [
+         {"pillar": "high-value", "initiatives": [
+             "Luxury retail, family and Muslim-friendly hotel packages promoted in Saudi Arabia and the UAE.",
+             "Expand halal-certified dining and prayer facilities at major attractions."],
+          "kpis": [("spend", 0.05), ("growth", 15)]},
+         {"pillar": "gba", "initiatives": [
+             "Hong Kong + Macao + Greater Bay Area itineraries sold with Gulf carriers.",
+             "Turkish- and Arabic-language trip planning content."],
+          "kpis": [("multi", 3), ("nights", 0.2)]},
+     ]},
+]
 
 log = logging.getLogger("tourism")
 
@@ -307,6 +568,126 @@ def load_manual(registry):
             registry.pending.append({"id": fname[:-4], "tab": tab, "item": desc, "source": where,
                                      "file": "data/manual/" + fname, "columns": cols})
     return out
+
+
+def load_hktb_arrivals(registry):
+    """Arrivals by nationality from HKTB's monthly workbooks: Jan-Jun by market, visitor type, gender and age."""
+    files = sorted((ROOT / "data").glob(HKTB_ARRIVALS_GLOB))
+    monthly, h1 = [], []
+    for path in files:
+        year = re.match(r"\d{4}", path.name).group(0)
+        sheets = read_xlsx(path.read_bytes())
+
+        def rows_by_name(sheet):
+            out = {}
+            for row in sheets.get(sheet, {}).values():
+                name = re.sub(r"\s+", " ", row.get("E", "")).strip()
+                name = HKTB_NAME_ALIASES.get(name, name)
+                if name and name not in out:
+                    out[name] = row
+            return out
+
+        appendix, table4, table9 = rows_by_name("Appendix"), rows_by_name("Table 4"), rows_by_name("Table 9")
+        total_by_month = {m: num(appendix["Total"].get(c)) for c, m in APPENDIX_MONTH_COLUMNS}
+        for col, m in APPENDIX_MONTH_COLUMNS:
+            month = "{}-{:02d}".format(year, m)
+            if total_by_month[m] is None:
+                continue
+            named = 0
+            for market in HKTB_MARKETS:
+                value = int(num(appendix[market][col]))
+                named += value
+                monthly.append({"month": month, "market": market, "arrivals": value})
+            monthly.append({"month": month, "market": "Other markets", "arrivals": int(total_by_month[m]) - named})
+        for name, row4 in table4.items():
+            label = name if name in HKTB_MARKETS else HKTB_SEGMENT_ROWS.get(name)
+            if not label:
+                continue
+            row9 = table9.get(name, {})
+            h1.append({
+                "period": "{}-H1".format(year), "market": label,
+                "arrivals": int(num(row4["F"])), "same_day": int(num(row4["J"])), "overnight": int(num(row4["N"])),
+                "male_pct": round(num(row9.get("G")), 1) if row9.get("G") else None,
+                "mean_age": round(num(row9.get("T")), 1) if row9.get("T") else None,
+                "age": {label_: round(num(row9[c]), 1) for c, label_ in AGE_COLUMNS if row9.get(c)},
+            })
+    if files:
+        registry.add("hktb_arrivals_nationality", "HKTB: Visitor arrival statistics by nationality (monthly workbooks)",
+                     "data/" + HKTB_ARRIVALS_GLOB, "manual",
+                     "Jan-Jun 2025 & Jan-Jun 2026 editions: monthly arrivals, same-day/overnight, gender and age by market.")
+    return monthly, h1
+
+
+def build_market_playbooks(profile_rows, market_h1):
+    """Market playbooks for the 2027 pillars: HKTB-data baselines with proposed 2027 targets."""
+    def pv(period, market, dimension, category=None):
+        for r in profile_rows:
+            if r["period"] == period and r["market"] == market and r["dimension"] == dimension \
+                    and (category is None or r["category"] == category) and r["value"] not in ("", None):
+                return float(r["value"])
+        return None
+
+    def h1(period, market):
+        return next((r for r in market_h1 if r["period"] == period and r["market"] == market), None)
+
+    def places(market):
+        rows = [r for r in profile_rows if r["period"] == "2026-H1" and r["market"] == market and r["dimension"] == "place_rank"]
+        return [r["category"] for r in sorted(rows, key=lambda r: float(r["value"]))]
+
+    playbooks = []
+    for spec in MARKET_PLAYBOOKS:
+        m = spec["market"]
+        now, before = h1("2026-H1", m), h1("2025-H1", m)
+        yoy = round((now["arrivals"] / before["arrivals"] - 1) * 100, 1) if now and before else None
+        overnight = round(now["overnight"] / now["arrivals"] * 100, 1) if now else None
+        segment = HKTB_MARKETS[m] if HKTB_MARKETS[m] != "Emerging" else "Long-haul"
+        top_places = places(m)
+
+        def kpi(spec_kpi):
+            kind, *args = spec_kpi
+            if kind == "growth":
+                return {"metric": "Arrivals growth (YoY)", "baseline": "{:+.1f}% (Jan-Jun 2026)".format(yoy) if yoy is not None else "n/a",
+                        "target_2027": "{:+.0f}%".format(args[0])}
+            if kind == "overnight":
+                base = math.floor(overnight + 0.5)
+                return {"metric": "Overnight share of arrivals", "baseline": "{}%".format(base),
+                        "target_2027": "{}%".format(base + args[0])}
+            if kind == "nights":
+                v = pv("2026-H1", m, "avg_nights")
+                return {"metric": "Average nights (overnight visitors)", "baseline": "{:.1f}".format(v), "target_2027": "{:.1f}".format(v + args[0])}
+            if kind == "spend":
+                v = pv("2026-H1", m, "per_capita_overnight_hkd")
+                return {"metric": "Spend per overnight visitor", "baseline": "HK${:,.0f}".format(v),
+                        "target_2027": "HK${:,.0f}".format(round(v * (1 + args[0]), -2))}
+            if kind == "first":
+                v = pv("2026-H1", m, "first_timer_pct")
+                return {"metric": "First-time visitors", "baseline": "{:.0f}%".format(v), "target_2027": "{:.0f}%".format(v + args[0])}
+            if kind == "family":
+                v = pv("2026-H1", m, "companion", "With family members")
+                return {"metric": "Overnight visitors travelling with family", "baseline": "{:.0f}%".format(v),
+                        "target_2027": "{:.0f}%".format(v + args[0])}
+            if kind == "multi":
+                v = pv("2025", segment, "itinerary", "Multi-destination")
+                return {"metric": "Multi-destination trips ({} segment)".format(segment), "baseline": "{:.0f}% (2025)".format(v),
+                        "target_2027": "{:.0f}%".format(v + args[0])}
+            if kind == "place":
+                name, target = args
+                rank = top_places.index(name) + 1 if name in top_places else None
+                return {"metric": "{}: rank among places visited".format(name),
+                        "baseline": "#{}".format(rank) if rank else "Not in top 10", "target_2027": target}
+            raise ValueError("unknown KPI kind " + kind)
+
+        playbooks.append({
+            "market": m, "origin": HKTB_MARKETS[m], "primary": spec["primary"], "headline": spec["headline"],
+            "facts": {
+                "arrivals_h1_2026": now["arrivals"] if now else None, "yoy_pct": yoy, "overnight_pct": overnight,
+                "nights": pv("2026-H1", m, "avg_nights"), "spend_hkd": pv("2026-H1", m, "per_capita_overnight_hkd"),
+                "first_timer_pct": pv("2026-H1", m, "first_timer_pct"), "mean_age": pv("2026-H1", m, "mean_age"),
+                "top_places": top_places[:3],
+            },
+            "plays": [{"pillar": p["pillar"], "initiatives": p["initiatives"], "kpis": [kpi(k) for k in p["kpis"]]} for p in spec["plays"]],
+        })
+    return playbooks
 
 
 def read_xlsx(data):
@@ -677,6 +1058,7 @@ def build_outputs(registry):
                             "https://data.worldbank.org/indicator/ST.INT.ARVL", refresh_world_bank, "worldbank_2019.csv",
                             "Pre-pandemic baseline; World Bank series end in 2020.")
     manual = load_manual(registry)
+    market_monthly, market_h1 = load_hktb_arrivals(registry)
 
     # ---- Core derived tables -------------------------------------------------
     ratios, per_capita = build_overnight_ratios(spending)
@@ -810,11 +1192,12 @@ def build_outputs(registry):
         "length_of_stay": los,
         "visitor_type_annual": [{"year": r["year"], "visitor_type": r["visitor_type"], "arrivals": int(r["arrivals"])}
                                 for r in vtypes if r["arrivals"]],
-        "visitor_profile": [{"year": r["year"], "dimension": r["dimension"], "category": r["category"],
-                             "share_pct": num(r["share_pct"])} for r in manual["visitor_profile.csv"]],
-        "attraction_sentiment": [{"attraction": r["attraction"], "mentions": num(r["mentions"]),
-                                  "sentiment_score": num(r["sentiment_score"]), "recommend_pct": num(r["recommend_pct"])}
-                                 for r in manual["attraction_sentiment.csv"]],
+        "markets": [{"market": m, "origin": o} for m, o in HKTB_MARKETS.items()],
+        "market_monthly": market_monthly,
+        "market_h1": market_h1,
+        "visitor_profile": [{"period": r["period"], "market": r["market"], "dimension": r["dimension"],
+                             "category": r["category"], "value": num(r["value"])}
+                            for r in manual["visitor_profile.csv"]],
     }
 
     # ---- 3. hotel_sector_performance.json (Revenue Analysis) --------------------
@@ -1075,7 +1458,12 @@ def build_outputs(registry):
         },
     ]
 
-    strategy = {"model": model, "series": series, "annual": annual, "scenarios": scenarios, "pillars": pillars}
+    playbooks = build_market_playbooks(manual["visitor_profile.csv"], market_h1) if manual["visitor_profile.csv"] and market_h1 else []
+    for p in pillars:
+        p["focus_markets"] = [b["market"] for b in playbooks if b["primary"] == p["id"]]
+
+    strategy = {"model": model, "series": series, "annual": annual, "scenarios": scenarios, "pillars": pillars,
+                "market_playbooks": playbooks}
     return {
         "kpi_summary.json": kpi,
         "visitor_demographics.json": demographics,

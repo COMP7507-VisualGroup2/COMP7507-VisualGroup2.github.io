@@ -203,6 +203,12 @@ export default function MethodologyPage() {
           <li><strong>Long-haul:</strong> The Americas, Europe, Australia, New Zealand & South Pacific.</li>
           <li><strong>Emerging:</strong> Middle East, Africa and not-identified.</li>
           <li>
+            <strong>HKTB source markets (Visitor Persona):</strong> the 18 markets profiled in the HKTB Visitor Profile Report. Mainland; short-haul
+            Philippines, Thailand, Singapore, Malaysia, Indonesia, India, Taiwan, South Korea, Japan; long-haul USA, Canada, UK, Germany, France,
+            Australia, Russia; emerging Middle East. HKTB&apos;s short-haul / long-haul segment figures exclude the Mainland and follow HKTB&apos;s own
+            grouping. Values marked &quot;*&quot; (under 0.5%) in the reports are shown as &quot;&lt;0.5%&quot;.
+          </li>
+          <li>
             <strong>Ports:</strong> ImmD control points grouped into HKIA Airport, West Kowloon HSR, HZMB, Land Control Points (Lo Wu, Lok Ma
             Chau, Shenzhen Bay, Heung Yuen Wai, etc.) and Ferries & Cruise. ImmD counts visitor entries (trips), which differ slightly from
             C&SD visitor arrivals.

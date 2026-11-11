@@ -1,19 +1,51 @@
 import { strategy } from '@/lib/data';
+import { ORIGIN_COLORS } from '@/lib/theme';
 import type { Pillar } from '@/lib/types';
 
-const ACCENTS = ['#005F73', '#CA6702', '#0A9396'];
+export const PILLAR_ACCENTS = ['#005F73', '#CA6702', '#0A9396'];
 
-export default function StrategyPillars() {
+export default function StrategyPillars({ onSelectMarket, activeMarket }: { onSelectMarket?: (m: string) => void; activeMarket?: string }) {
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       {strategy.pillars.map((p, i) => (
-        <PillarCard key={p.id} pillar={p} accent={ACCENTS[i % ACCENTS.length]} />
+        <PillarCard key={p.id} pillar={p} accent={PILLAR_ACCENTS[i % PILLAR_ACCENTS.length]} onSelectMarket={onSelectMarket} activeMarket={activeMarket} />
       ))}
     </div>
   );
 }
 
-function PillarCard({ pillar, accent }: { pillar: Pillar; accent: string }) {
+function PillarCard({
+  pillar,
+  accent,
+  onSelectMarket,
+  activeMarket,
+}: {
+  pillar: Pillar;
+  accent: string;
+  onSelectMarket?: (m: string) => void;
+  activeMarket?: string;
+}) {
+  const playbooks = strategy.market_playbooks ?? [];
+  const focus = pillar.focus_markets ?? [];
+  const supporting = playbooks.filter((b) => !focus.includes(b.market) && b.plays.some((p) => p.pillar === pillar.id)).map((b) => b.market);
+  const chip = (m: string, lead: boolean) => {
+    const origin = playbooks.find((b) => b.market === m)?.origin;
+    return (
+      <button
+        key={m}
+        type="button"
+        onClick={() => onSelectMarket?.(m)}
+        className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium transition hover:border-slate-400 ${
+          activeMarket === m ? 'border-slate-800 bg-slate-800 text-canvas' : lead ? 'border-slate-300 bg-canvas text-slate-800' : 'border-slate-200 bg-slate-50 text-slate-600'
+        }`}
+        title={`Open the ${m} playbook`}
+      >
+        {origin && <span className="h-1.5 w-1.5 rounded-full" style={{ background: ORIGIN_COLORS[origin] }} />}
+        {m}
+      </button>
+    );
+  };
+
   return (
     <article className="flex flex-col rounded-2xl border border-slate-200/80 bg-canvas shadow-card">
       <header className="rounded-t-2xl p-4 text-canvas sm:p-5" style={{ background: accent }}>
@@ -33,7 +65,20 @@ function PillarCard({ pillar, accent }: { pillar: Pillar; accent: string }) {
           ))}
         </ul>
 
-        <Accordion title="Key initiatives" defaultOpen>
+        {(focus.length > 0 || supporting.length > 0) && (
+          <div className="mb-3 rounded-xl bg-slate-50 p-3">
+            <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Lead markets</p>
+            <div className="flex flex-wrap gap-1.5">{focus.map((m) => chip(m, true))}</div>
+            {supporting.length > 0 && (
+              <>
+                <p className="mb-1.5 mt-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Also supports</p>
+                <div className="flex flex-wrap gap-1.5">{supporting.map((m) => chip(m, false))}</div>
+              </>
+            )}
+          </div>
+        )}
+
+        <Accordion title="Key initiatives (all markets)" defaultOpen>
           <ol className="space-y-2">
             {pillar.initiatives.map((x, idx) => (
               <li key={x} className="flex gap-2 text-sm leading-snug text-slate-700">
@@ -49,7 +94,7 @@ function PillarCard({ pillar, accent }: { pillar: Pillar; accent: string }) {
           </ol>
         </Accordion>
 
-        <Accordion title="2027 KPI targets">
+        <Accordion title="2027 KPI targets (all markets)">
           <table className="w-full text-xs">
             <thead className="text-slate-500">
               <tr>

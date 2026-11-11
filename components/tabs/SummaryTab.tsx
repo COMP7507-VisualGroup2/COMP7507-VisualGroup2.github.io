@@ -10,7 +10,7 @@ import YoyLineChart from '../charts/YoyLineChart';
 import { kpiSummary, strategy } from '@/lib/data';
 import { useFilters } from '@/lib/filters-context';
 import { describeSegment } from '@/lib/filters';
-import { formatCompact, formatHkd, formatPct } from '@/lib/format';
+import { formatHkd, formatPct } from '@/lib/format';
 import { headlineInsights } from '@/lib/insights';
 
 export default function SummaryTab() {
@@ -40,8 +40,8 @@ export default function SummaryTab() {
     {
       href: '/outlook-2027/',
       title: '2027 Outlook',
-      metric: formatCompact(strategy.scenarios.base.arrivals, 1),
-      caption: 'Base-case 2027 arrivals',
+      metric: `${strategy.pillars.length} × ${strategy.market_playbooks?.length ?? 0}`,
+      caption: 'Pillars × market playbooks',
     },
   ];
 

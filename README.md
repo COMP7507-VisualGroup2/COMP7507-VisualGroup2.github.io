@@ -7,10 +7,10 @@ COMP7507 Group 2. A static Next.js + Tailwind dashboard evaluating Hong Kong inb
 | Route | Tab | Contents |
 | --- | --- | --- |
 | `/` | 1. Summary (KPI tracking & consolidation) | KPI cards (arrivals, length of stay, per-capita spend, hotel sector, tourism share of GDP/jobs), bullet graph vs prior year / 2019 / target, YoY lines, sector revenue (BRI), takeaways |
-| `/visitor-persona/` | 2. Visitor Persona | Choropleth world map, origin mix, ports of entry (HSR vs air vs land vs sea), overnight vs same-day + length of stay, trip purpose / age / sentiment (pending) |
+| `/visitor-persona/` | 2. Visitor Persona | Choropleth world map, origin mix (segments or 18 HKTB markets), ports of entry (HSR vs air vs land vs sea), overnight vs same-day + length of stay, then an HKTB visitor profile (2025 / H1 2026): age, companions, trip purpose, stay pattern, multi-destination trips, spending mix and shopping basket, market yield map, satisfaction, top places, and a persona card for each of 18 source markets |
 | `/revenue/` | 3. Revenue Analysis | Per-capita spend by market, high-yield vs volume scatter, value added by category, hotel supply & accommodation receipts, BRI heatmap |
 | `/competitors/` | 4. Competitor Analysis | HK vs Singapore vs Japan recovery / arrivals / share, receipts benchmark, value-added treemap & employment scatter |
-| `/outlook-2027/` | 5. 2027 Outlook | Seasonal-trend forecast with scenarios + 3 strategic pillars |
+| `/outlook-2027/` | 5. 2027 Outlook | 3 strategic pillars (with lead markets) + a playbook for each of the 18 HKTB source markets: key initiatives and 2027 KPI targets against Jan–Jun 2026 baselines, plus a pillar coverage matrix |
 | `/methodology/` | Methodology | Sources, formulas, forecast model, data-pending list |
 
 The global filters (granularity, date range, origin, visitor type) are shared across tabs and persist for the browser session.
@@ -31,11 +31,18 @@ The global filters (granularity, date range, origin, visitor type) are shared ac
 | Japan arrivals | JNTO monthly workbook |
 | 2019 arrivals & receipts baselines | World Bank (UN Tourism data) |
 
+### HKTB published data (Visitor Persona, **Manual input** badge)
+
+| Dataset | Source |
+| --- | --- |
+| Visitor profile: age, companions, trip purpose, nights, spending mix, shopping, satisfaction, places visited (segments + 18 markets) | HKTB Visitor Profile Report 2025 FY / 2026 H1 (PDF) → `data/manual/visitor_profile.csv` |
+| Monthly arrivals, same-day / overnight split, gender and age by nationality (Jan–Jun 2025, Jan–Jun 2026) | HKTB visitor arrival statistics workbooks → `data/*all countries visitor type.xlsx` (parsed by the pipeline) |
+
 ### Data pending (`data/manual/`)
 
 These proposal items have no open data. Each has a CSV template; fill it from the published report, re-run the pipeline, and the chart appears with a **Manual input** badge:
 
-`hotel_occupancy_monthly.csv`, `arrival_targets.csv`, `thailand_arrivals_monthly.csv`, `un_tourism_apac_monthly.csv`, `visitor_profile.csv` (trip purpose / age), `attraction_sentiment.csv`.
+`hotel_occupancy_monthly.csv`, `arrival_targets.csv`, `thailand_arrivals_monthly.csv`, `un_tourism_apac_monthly.csv`.
 
 ## Palette
 
