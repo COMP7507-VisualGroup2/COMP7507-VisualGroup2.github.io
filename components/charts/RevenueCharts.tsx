@@ -135,9 +135,9 @@ export function YieldVolumeScatter({ filters, period }: { filters: Filters; peri
                 );
               }}
             />
-            <Scatter data={points} fillOpacity={0.8} label={{ dataKey: 'short', position: 'top', fontSize: 9, fill: COLORS.ink }}>
+            <Scatter data={points} fillOpacity={0.8} label={{ dataKey: 'short', position: 'top', fontSize: 9, fill: COLORS.ink}}>
               {points.map((p) => (
-                <Cell key={p.market} fill={ORIGIN_COLORS[p.origin] ?? COLORS.steel} stroke={COLORS.canvas} />
+                <Cell key={p.market} fill={ORIGIN_COLORS[p.origin] ?? COLORS.steel} className="text-[#53636e]"/>
               ))}
             </Scatter>
           </ScatterChart>

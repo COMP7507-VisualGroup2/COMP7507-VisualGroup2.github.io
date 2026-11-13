@@ -14,7 +14,7 @@ export const TABS = [
   { href: '/', label: 'Executive summary', short: 'Summary', title: 'Inbound tourism, at a glance.', description: 'A half-year performance review against 2026 government targets.' },
   { href: '/visitor-persona/', label: 'Visitor Persona', short: 'Persona', title: 'Visitor profiles by origin market.', description: 'Explore source-market personas, arrivals, travel patterns, spending and visitor experience.' },
   { href: '/revenue/', label: 'Revenue Analysis', short: 'Revenue', title: 'Economic yield across visitor markets.', description: 'Compare per-capita spend, market-area expenditure and estimated market value from the Jan–Jun 2025/2026 source data.' },
-  { href: '/outlook-2027/', label: '2027 Outlook', short: '2027', title: '2027 Outlook: Market Promotion Plan', description: 'Three strategy pillars and proposed 2027 targets for 18 HKTB source markets.' },
+  { href: '/outlook-2027/', label: '2026 H2 Outlook', short: '2027', title: '2026 H2 Outlook: Market Promotion Plan', description: 'Three strategy pillars and proposed 2026 H2 targets for 18 HKTB source markets.' },
 ];
 
 const MONTH_ABBR = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
