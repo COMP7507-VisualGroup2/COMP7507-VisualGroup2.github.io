@@ -30,14 +30,6 @@ export const VISITOR_TYPE_COLORS: Record<VisitorType, string> = {
   'Same-day': COLORS.accent,
 };
 
-export const PORT_COLORS: Record<string, string> = {
-  'HKIA Airport': COLORS.brandDeep,
-  'West Kowloon HSR': COLORS.brand,
-  HZMB: COLORS.brandLight,
-  'Land Control Points': COLORS.accent,
-  'Ferries & Cruise': COLORS.accentDeep,
-};
-
 /** Ordered categorical series colours. */
 export const SERIES = [COLORS.brandDeep, COLORS.accent, COLORS.brand, COLORS.accentDeep, COLORS.brandLight, COLORS.steelDeep];
 

@@ -1,6 +1,6 @@
 import { demographics } from './data';
 import { COLORS, ORIGIN_COLORS } from './theme';
-import type { MarketH1, Origin, ProfilePeriod } from './types';
+import type { Filters, MarketH1, Origin, ProfilePeriod } from './types';
 
 /** Helpers for the HKTB Visitor Profile data (data/manual/visitor_profile.csv + HKTB arrival workbooks). */
 
@@ -36,6 +36,24 @@ const SHORT_NAMES: Record<string, string> = {
   'South Korea': 'S. Korea',
   'Middle East': 'Mid. East',
 };
+/** HKTB source markets inside each TEAIT market area (the sidebar "Country" filter). */
+export const AREA_MARKETS: Record<string, string[]> = {
+  'Mainland China': ['Chinese Mainland'],
+  'Macau SAR': [],
+  Taiwan: ['Taiwan'],
+  'North Asia': ['Japan', 'South Korea'],
+  'South & Southeast Asia': ['Philippines', 'Thailand', 'Singapore', 'Malaysia', 'Indonesia', 'India'],
+  'The Americas': ['USA', 'Canada'],
+  'Europe, Africa & the Middle East': ['United Kingdom', 'Germany', 'France', 'Russia', 'Middle East'],
+  'Australia, NZ & South Pacific': ['Australia'],
+};
+
+/** Whether an HKTB source market passes the sidebar's visitor-market and country filters. */
+export function marketInFilter(market: string, f: Pick<Filters, 'origin' | 'region'>): boolean {
+  if (f.origin !== 'All' && MARKET_ORIGIN[market] !== f.origin) return false;
+  return f.region === 'All' || (AREA_MARKETS[f.region] ?? []).includes(market);
+}
+
 export const shortMarket = (m: string) => SHORT_NAMES[m] ?? m;
 
 export const AGE_GROUPS = ['0-15', '16-25', '26-35', '36-45', '46-55', '56-65', '66+'];

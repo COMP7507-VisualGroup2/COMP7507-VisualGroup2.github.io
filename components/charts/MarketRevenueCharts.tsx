@@ -4,9 +4,9 @@ import { useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { formatCompact, formatHkd, formatHkdMillions, formatPct } from '@/lib/format';
 import { SPEND_CATEGORIES, marketEconomics, segmentSpendByCategory } from '@/lib/markets';
-import { PERIOD_LABEL, shortMarket } from '@/lib/persona';
+import { marketInFilter, shortMarket } from '@/lib/persona';
 import { AXIS_TICK, COLORS, SERIES, TOOLTIP_STYLE } from '@/lib/theme';
-import type { Origin, ProfilePeriod } from '@/lib/types';
+import type { Filters, ProfilePeriod } from '@/lib/types';
 
 const ROW = 30;
 
@@ -19,21 +19,21 @@ function HideMainland({ checked, onChange }: { checked: boolean; onChange: (v: b
   );
 }
 
-const useRows = (period: ProfilePeriod, origin: Origin | 'All', hideMainland: boolean) =>
+const useRows = (period: ProfilePeriod, filters: Filters, hideMainland: boolean) =>
   useMemo(
-    () => marketEconomics(period).filter((r) => (origin === 'All' || r.origin === origin) && !(hideMainland && r.origin === 'Mainland')),
-    [period, origin, hideMainland],
+    () => marketEconomics(period).filter((r) => marketInFilter(r.market, filters) && !(hideMainland && r.origin === 'Mainland')),
+    [period, filters, hideMainland],
   );
 
 /** Share of overnight visitors against share of estimated overnight spend: who earns more than their headcount. */
-export function MarketShareChart({ period, origin }: { period: ProfilePeriod; origin: Origin | 'All' }) {
+export function MarketShareChart({ period, filters }: { period: ProfilePeriod; filters: Filters }) {
   const [hideMainland, setHideMainland] = useState(false);
-  const rows = useRows(period, origin, hideMainland);
+  const rows = useRows(period, filters, hideMainland);
   const data = useMemo(() => rows.filter((r) => r.spend !== null).sort((a, b) => (b.spend ?? 0) - (a.spend ?? 0)).map((r) => ({ ...r, name: shortMarket(r.market) })), [rows]);
 
   return (
     <div>
-      {(origin === 'All' || origin === 'Mainland') && <HideMainland checked={hideMainland} onChange={setHideMainland} />}
+      {(filters.origin === 'All' || filters.origin === 'Mainland') && filters.region === 'All' && <HideMainland checked={hideMainland} onChange={setHideMainland} />}
       <ResponsiveContainer width="100%" height={60 + data.length * ROW}>
         <BarChart data={data} layout="vertical" margin={{ top: 0, right: 16, left: 4, bottom: 0 }} barCategoryGap={6}>
           <CartesianGrid stroke={COLORS.grid} horizontal={false} />
@@ -67,9 +67,9 @@ export function MarketShareChart({ period, origin }: { period: ProfilePeriod; or
 }
 
 /** Why estimated spend moved: more visitors (volume) or a different spend per head (yield). */
-export function MarketDriversChart({ period, origin }: { period: ProfilePeriod; origin: Origin | 'All' }) {
+export function MarketDriversChart({ period, filters }: { period: ProfilePeriod; filters: Filters }) {
   const [hideMainland, setHideMainland] = useState(false);
-  const rows = useRows(period, origin, hideMainland);
+  const rows = useRows(period, filters, hideMainland);
   const data = useMemo(
     () =>
       rows
@@ -88,7 +88,7 @@ export function MarketDriversChart({ period, origin }: { period: ProfilePeriod; 
   }
   return (
     <div>
-      {(origin === 'All' || origin === 'Mainland') && <HideMainland checked={hideMainland} onChange={setHideMainland} />}
+      {(filters.origin === 'All' || filters.origin === 'Mainland') && filters.region === 'All' && <HideMainland checked={hideMainland} onChange={setHideMainland} />}
       <ResponsiveContainer width="100%" height={60 + data.length * ROW}>
         <BarChart data={data} layout="vertical" stackOffset="sign" margin={{ top: 0, right: 16, left: 4, bottom: 0 }} barCategoryGap={6}>
           <CartesianGrid stroke={COLORS.grid} horizontal={false} />
@@ -122,9 +122,9 @@ export function MarketDriversChart({ period, origin }: { period: ProfilePeriod; 
 }
 
 /** Where the money goes: estimated overnight spend (HK$) by category for each HKTB segment. */
-export function SegmentCategoryChart({ period }: { period: ProfilePeriod }) {
-  const data = useMemo(() => segmentSpendByCategory(period), [period]);
-  if (!data.length) return <p className="text-sm text-slate-600">Not published for {PERIOD_LABEL[period]}.</p>;
+export function SegmentCategoryChart({ year }: { year: string }) {
+  const data = useMemo(() => segmentSpendByCategory(year), [year]);
+  if (!data.length) return <div className="chart-empty">Not published for Jan–Jun {year}.</div>;
   return (
     <ResponsiveContainer width="100%" height={220}>
       <BarChart data={data} layout="vertical" margin={{ top: 0, right: 16, left: 4, bottom: 0 }} barCategoryGap={14}>

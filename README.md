@@ -1,55 +1,41 @@
 # Hong Kong Inbound Tourism Evaluation & Market Promotion Planning
 
-COMP7507 Group 2. A static Next.js + Tailwind dashboard evaluating Hong Kong inbound tourism (Jan 2025 – 2026 YTD). Its structure follows Part C of the project proposal, plus a 2027 outlook. Data comes from a dependency-free Python pipeline that uses **official open data only**, and the site deploys to GitHub Pages.
-
-## Tabs
+COMP7507 Group 2. A static Next.js + Tailwind dashboard evaluating Hong Kong inbound tourism (Jan 2025 – 2026 YTD). Its structure follows Part C of the project proposal, plus a 2027 outlook. Layout and Executive summary follow the COMP7507 Group Project v3 design. Data comes from a dependency-free Python pipeline that## Tabs
 
 | Route | Tab | Contents |
 | --- | --- | --- |
-| `/` | 1. Summary (KPI tracking & consolidation) | KPI cards (arrivals, length of stay, per-capita spend, hotel sector, tourism share of GDP/jobs), bullet graph vs prior year / 2019 / target, YoY lines, sector revenue (BRI), source-market movers and concentration (HKTB), takeaways |
-| `/visitor-persona/` | 2. Visitor Persona | Choropleth world map, origin mix (segments or 18 HKTB markets), ports of entry (HSR vs air vs land vs sea), overnight vs same-day + length of stay, then an HKTB visitor profile (2025 / H1 2026): age, companions, trip purpose, stay pattern, multi-destination trips, spending mix and shopping basket, market yield map, satisfaction, top places, and a persona card for each of 18 source markets |
-| `/revenue/` | 3. Revenue Analysis | Per-capita spend by market, high-yield vs volume scatter, value added by category, estimated overnight spend by source market (share vs visitors, volume vs yield, spend by category), hotel supply & accommodation receipts, BRI heatmap |
-| `/outlook-2027/` | 5. 2027 Outlook | 3 strategic pillars (with lead markets) + a playbook for each of the 18 HKTB source markets: key initiatives and 2027 KPI targets against Jan–Jun 2026 baselines, plus a pillar coverage matrix |
-| `/methodology/` | Methodology | Sources, formulas, forecast model, data-pending list |
+| `/` | Executive summary | v3 KPI gauges against the 2025 / 2026 government targets (visitors, expenditure, average stay, spend per overnight visitor); inbound visitor growth, revenue growth, average stay and quarterly overnight spend charts; source-market movers |
+| `/visitor-persona/` | Visitor Persona | Zoomable map and monthly mix of the 18 HKTB source markets, then the HKTB visitor profile (2025 / H1 2026): market personas, age, companions, trip purpose, stay pattern, multi-destination trips, spending mix and shopping, market yield map, satisfaction and top places |
+| `/revenue/` | Revenue Analysis | H1 tourism expenditure KPIs, per-capita spend by TEAIT market area, high-yield vs volume scatter, estimated overnight spend by source market (share vs visitors, volume vs yield), overnight spending by category |
+| `/outlook-2027/` | 2027 Outlook | 3 strategic pillars (with lead markets) + a playbook for each of the 18 HKTB source markets, plus a pillar coverage matrix |
 
-The global filters (granularity, date range, origin, visitor type) are shared across tabs and persist for the browser session.
+The v3 sidebar filters (visitor market, country / market area, visitor type, Jan 2025 – Jun 2026 period, trip purpose, entry channel) are shared across tabs and persist for the browser session. As in v3, trip purpose and entry channel only add context notes.
 
-## Data sources (all live, snapshotted to `data/raw/`)
- 
-| Dataset | Source |
+## Data sources (`data/`)
+
+| Dataset | File |
 | --- | --- |
-| Visitor arrivals by region (monthly) | C&SD 650-80001 |
-| Visitor spending & per-capita spend by market | C&SD 650-80003 / 650-80004 |
-| Overnight vs same-day, length of stay | C&SD 650-80005 |
-| Business Receipts Indices | C&SD 660-69001 / 660-69002 |
-| Tourism value added & employment by sub-industry | C&SD 655-82101 |
-| Visitor entries by control point | DATA.GOV.HK / Immigration Department |
-| Hotel room supply | DATA.GOV.HK / CSTB |
+| HKTB Tourism Expenditure Associated to Inbound Tourism (Jan–Jun 2025 / 2026): spending by visitor type, market area and category | `Inbound tourism expediture 06 2026.xls` (TEAIT releases `TEAIT *.xls` kept for reference) |
+| Quarterly spend per overnight visitor and market-area overnight visitors | `Average spend per overnight visitors.xlsx` |
+| HKTB visitor arrival statistics by nationality (Jan–Jun 2025 / 2026) | `*all countries visitor type.xlsx`, `visitor_type_h1.csv` |
+| Monthly arrivals by region, monthly length of stay | `Visitor arrivals by nationalityregion.csv`, `Lenght of stay.csv` (supplied with v3) |
+| 2025 / 2026 government targets | `2025 KPI.csv`, `2026 KPI.csv` |
+| HKTB Visitor Profile Report 2025 FY / 2026 H1 | `manual/visitor_profile.csv` (transcribed from the PDFs) |
 
-### HKTB published data (Visitor Persona, **Manual input** badge)
-
-| Dataset | Source |
-| --- | --- |
-| Visitor profile: age, companions, trip purpose, nights, spending mix, shopping, satisfaction, places visited (segments + 18 markets) | HKTB Visitor Profile Report 2025 FY / 2026 H1 (PDF) → `data/manual/visitor_profile.csv` |
-| Monthly arrivals, same-day / overnight split, gender and age by nationality (Jan–Jun 2025, Jan–Jun 2026) | HKTB visitor arrival statistics workbooks → `data/*all countries visitor type.xlsx` (parsed by the pipeline) |
-
-### Data pending (`data/manual/`)
-
-These proposal items have no open data. Each has a CSV template; fill it from the published report, re-run the pipeline, and the chart appears with a **Manual input** badge:
+hart appears with a **Manual input** badge:
 
 `hotel_occupancy_monthly.csv`, `arrival_targets.csv`.
 
 ## Palette
 
-Hong Kong Tourism branding: Victoria Harbour Teal `#005F73` / `#0A9396`, crisp slate-white backgrounds, festive accents `#CA6702` / `#EE9B00` (see `tailwind.config.ts`, `lib/theme.ts`).
+v3 look: navy sidebar and headings `#0a2540`, red accent rule `#de2910`, green / red growth colours (`app/v3.css`); charts keep the teal / amber series palette (`lib/theme.ts`).
 
 ## Local development
 
 Requires Python ≥ 3.8 (standard library only) and Node.js 20.
 
 ```bash
-python3 scripts/process_tourism_data.py            # refresh JSON (live, snapshot fallback)
-python3 scripts/process_tourism_data.py --offline  # data/raw snapshots only
+python3 scripts/process_tourism_data.py   # rebuild public/data/*.json from data/
 npm install
 npm run dev        # http://localhost:3000
 npm run build      # static export to out/
@@ -61,4 +47,4 @@ npm run build      # static export to out/
 2. **Settings → Pages → Source = GitHub Actions**.
 3. For a project site (`<user>.github.io/<repo>`), add the repository variable `BASE_PATH=/<repo>`.
 
-The workflow re-runs the pipeline on every push, every Monday and on manual dispatch.
+The workflow rebuilds the JSON from `data/` and redeploys on every push and on manual dispatch.

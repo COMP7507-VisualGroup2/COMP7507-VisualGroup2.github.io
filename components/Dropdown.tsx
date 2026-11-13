@@ -14,9 +14,11 @@ interface Props<T extends string> {
   label: string;
   align?: 'left' | 'right';
   className?: string;
+  /** 'dark' matches the v3 sidebar selects. */
+  variant?: 'light' | 'dark';
 }
 
-export default function Dropdown<T extends string>({ value, options, onChange, label, align = 'left', className = '' }: Props<T>) {
+export default function Dropdown<T extends string>({ value, options, onChange, label, align = 'left', className = '', variant = 'light' }: Props<T>) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -87,15 +89,17 @@ export default function Dropdown<T extends string>({ value, options, onChange, l
         aria-activedescendant={open ? `${id}-opt-${active}` : undefined}
         onClick={() => (open ? setOpen(false) : show())}
         onKeyDown={onKeyDown}
-        className={`flex w-full min-w-[7rem] items-center justify-between gap-2 rounded-lg border bg-canvas px-2.5 py-1.5 text-left text-xs font-medium text-slate-700 shadow-sm transition hover:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-100 ${
-          open ? 'border-brand-500 ring-2 ring-brand-100' : 'border-slate-200'
+        className={`flex w-full min-w-[7rem] items-center justify-between gap-2 text-left transition focus:outline-none ${
+          variant === 'dark'
+            ? `h-[34px] rounded-[5px] border bg-[#112e48] px-2.5 text-[13px] text-[#edf2f5] hover:border-[#84a1b5] focus:border-[#84a1b5] ${open ? 'border-[#84a1b5]' : 'border-[#2c465c]'}`
+            : `rounded-[5px] border bg-canvas px-2.5 py-1.5 text-xs font-medium text-[#0a2540] shadow-sm hover:border-[#afbec7] focus:ring-2 focus:ring-[#d9e8ef] ${open ? 'border-[#8caab9] ring-2 ring-[#d9e8ef]' : 'border-[#dfe5e8]'}`
         }`}
       >
         <span className="truncate">{selected?.label}</span>
         <svg
           aria-hidden
           viewBox="0 0 20 20"
-          className={`h-3.5 w-3.5 shrink-0 text-brand-700 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`h-3.5 w-3.5 shrink-0 transition-transform ${variant === 'dark' ? 'text-[#8ca0af]' : 'text-[#53636e]'} ${open ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
@@ -111,7 +115,7 @@ export default function Dropdown<T extends string>({ value, options, onChange, l
           id={`${id}-list`}
           role="listbox"
           aria-label={label}
-          className={`absolute z-30 mt-1 max-h-60 min-w-full overflow-auto rounded-xl border border-slate-200/80 bg-canvas p-1 shadow-card ${
+          className={`absolute z-30 mt-1 max-h-60 min-w-full overflow-auto rounded-[7px] border border-[#e1e7ea] bg-canvas p-1 shadow-[0_8px_24px_rgba(10,37,64,0.12)] ${
             align === 'right' ? 'right-0' : 'left-0'
           }`}
         >
@@ -127,12 +131,12 @@ export default function Dropdown<T extends string>({ value, options, onChange, l
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => choose(i)}
                 className={`flex cursor-pointer items-center justify-between gap-3 whitespace-nowrap rounded-md px-2.5 py-1.5 text-xs ${
-                  i === active ? 'bg-brand-50 text-brand-900' : 'text-slate-700'
-                } ${isSelected ? 'font-semibold text-brand-800' : 'font-medium'}`}
+                  i === active ? 'bg-[#f3f7f8] text-[#0a2540]' : 'text-[#4a5b66]'
+                } ${isSelected ? 'font-semibold text-[#0a2540]' : 'font-medium'}`}
               >
                 {o.label}
                 {isSelected && (
-                  <svg aria-hidden viewBox="0 0 20 20" className="h-3.5 w-3.5 shrink-0 text-brand-600" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg aria-hidden viewBox="0 0 20 20" className="h-3.5 w-3.5 shrink-0 text-[#0a5c36]" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 10.5l4 4 8-9" />
                   </svg>
                 )}

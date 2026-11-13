@@ -17,10 +17,11 @@ import {
   marketH1,
   profile,
   profileValue,
+  marketInFilter,
   rankChange,
 } from '@/lib/persona';
 import { ORIGIN_COLORS } from '@/lib/theme';
-import type { Origin, ProfilePeriod } from '@/lib/types';
+import type { Filters, ProfilePeriod } from '@/lib/types';
 
 const COLUMNS = [
   { key: 'arrivals', label: 'Arrivals', fmt: (v: number) => formatCompact(v, v >= 1e6 ? 1 : 0) },
@@ -52,22 +53,22 @@ function marketMetrics(period: ProfilePeriod, market: string): Record<ColKey, nu
 /** Sortable heat table of the 18 HKTB markets; clicking a row opens its persona card. */
 export function MarketPersonaTable({
   period,
-  origin,
+  filters,
   selected,
   onSelect,
 }: {
   period: ProfilePeriod;
-  origin: Origin | 'All';
+  filters: Pick<Filters, 'origin' | 'region'>;
   selected: string;
   onSelect: (m: string) => void;
 }) {
   const [sort, setSort] = useState<ColKey>('arrivals');
   const rows = useMemo(
     () =>
-      MARKETS.filter((m) => origin === 'All' || m.origin === origin)
+      MARKETS.filter((m) => marketInFilter(m.market, filters))
         .map((m) => ({ market: m.market, origin: m.origin, values: marketMetrics(period, m.market) }))
         .sort((a, b) => (b.values[sort] ?? -Infinity) - (a.values[sort] ?? -Infinity)),
-    [period, origin, sort],
+    [period, filters, sort],
   );
   const fmt = Object.fromEntries(COLUMNS.map((c) => [c.key, c.fmt]));
 

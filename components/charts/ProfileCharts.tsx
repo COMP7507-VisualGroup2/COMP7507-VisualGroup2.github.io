@@ -37,9 +37,10 @@ import {
   rankChange,
   sameDayShare,
   shortMarket,
+  marketInFilter,
 } from '@/lib/persona';
 import { AXIS_TICK, COLORS, ORIGIN_COLORS, TOOLTIP_STYLE, VISITOR_TYPE_COLORS } from '@/lib/theme';
-import type { Origin, ProfilePeriod } from '@/lib/types';
+import type { Filters, Origin, ProfilePeriod } from '@/lib/types';
 
 type Row = Record<string, string | number | null>;
 
@@ -234,18 +235,18 @@ interface YieldPoint {
 /** 18 markets: nights stayed vs spend per overnight visitor; bubble = Jan-Jun overnight arrivals. Click selects a market. */
 export function MarketYieldScatter({
   period,
-  origin,
+  filters,
   selected,
   onSelect,
 }: {
   period: ProfilePeriod;
-  origin: Origin | 'All';
+  filters: Pick<Filters, 'origin' | 'region'>;
   selected: string;
   onSelect: (m: string) => void;
 }) {
   const points = useMemo<YieldPoint[]>(
     () =>
-      MARKETS.filter((m) => origin === 'All' || m.origin === origin)
+      MARKETS.filter((m) => marketInFilter(m.market, filters))
         .map((m) => ({
           market: m.market,
           short: shortMarket(m.market),
@@ -255,7 +256,7 @@ export function MarketYieldScatter({
           overnight: marketH1(period, m.market)?.overnight ?? 0,
         }))
         .filter((p) => Number.isFinite(p.nights) && Number.isFinite(p.spend)),
-    [period, origin],
+    [period, filters],
   );
   const avgNights = profileValue(period, 'All markets', 'avg_nights');
   const avgSpend = profileValue(period, 'All markets', 'per_capita_overnight_hkd');

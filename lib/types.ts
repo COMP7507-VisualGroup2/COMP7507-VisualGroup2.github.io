@@ -1,12 +1,12 @@
 export type Origin = 'Mainland' | 'Short-haul' | 'Long-haul' | 'Emerging';
+export type Segment = 'Mainland' | 'Short-haul' | 'Long-haul';
 export type VisitorType = 'Overnight' | 'Same-day';
-export type Granularity = 'month' | 'quarter' | 'year';
 
 export interface SourceInfo {
   id: string;
   name: string;
   url: string;
-  mode: 'live' | 'snapshot' | 'manual' | 'unavailable';
+  mode: 'supplied' | 'manual';
   note: string;
 }
 
@@ -22,85 +22,49 @@ export interface PendingItem {
 export interface Meta {
   generated_at: string;
   coverage: { start: string; end: string };
-  mode: 'live' | 'offline';
   sources: SourceInfo[];
   pending: PendingItem[];
 }
 
-type ByYear<T> = Record<string, T>;
-
-export interface BriRecord {
-  quarter: string;
-  industry: string;
-  index: number;
-  yoy_pct: number | null;
-}
-
-export interface KpiSummary {
-  meta: Meta;
-  period: { latest_month: string; ytd_months: string[]; ytd_label: string; compare_label: string };
-  arrivals: {
-    ytd: number;
-    ytd_prev: number;
-    yoy_pct: number;
-    full_year: ByYear<number>;
-    full_year_yoy_pct: number;
-    recovery_vs_2019_ytd_pct: number;
-    mainland_share_ytd_pct: number;
-  };
-  monthly: { month: string; arrivals: number; prior_year: number | null; baseline_2019: number | null }[];
-  targets: { year: string; target_arrivals: number | null; source: string }[];
-  length_of_stay: { year: string; nights: number }[];
-  spending: {
-    ytd_hkd_m: number;
-    ytd_prev_hkd_m: number;
-    ytd_yoy_pct: number;
-    ytd_is_estimate: boolean;
-    annual_hkd_m: ByYear<number>;
-    annual_by_type_hkd_m: ByYear<Record<VisitorType, number>>;
-    per_capita_hkd: ByYear<Record<VisitorType, number>>;
-    yield_per_visitor_hkd: ByYear<number>;
-  };
-  hotel: {
-    available: boolean;
-    accommodation_bri_latest: BriRecord | null;
-    rooms_pipeline: { year: string; rooms: number }[];
-  };
-  tourism_economy: {
-    year: string | null;
-    value_added_hkd_m: number | null;
-    gdp_share_pct: number | null;
-    employment: number | null;
-    employment_share_pct: number | null;
-    prev_year: string | null;
-    prev_employment: number | null;
-    prev_gdp_share_pct: number | null;
-    history: { year: string; gdp_share_pct: number | null; employment: number | null; value_added_hkd_m: number | null }[];
-  };
-}
-
-export interface ArrivalRecord {
-  month: string;
-  origin: Origin;
-  visitor_type: VisitorType;
+/** One TEAIT market area for a Jan-Jun period. Spend in HK$ million, per capita in HK$. */
+export interface AreaH1 {
+  area: string;
+  segment: Segment;
+  year: string;
   arrivals: number;
+  overnight_visitors: number | null;
   spend_hkd_m: number;
-  is_estimate: boolean;
+  overnight_spend_hkd_m: number;
+  same_day_spend_hkd_m: number;
+  overnight_per_capita_hkd: number;
+  same_day_per_capita_hkd: number;
 }
 
-export interface PortRecord {
-  month: string;
-  port: string;
-  mainland: number;
-  non_mainland: number;
-}
-
-export interface RegionMonth {
-  month: string;
-  region_code: string;
-  region: string;
-  origin: Origin;
-  arrivals: number;
+export interface SummaryData {
+  meta: Meta;
+  months: string[];
+  /** Monthly arrivals: 'All', each segment and each TEAIT market area. */
+  arrivals_monthly: Record<string, Record<string, number>>;
+  areas: { area: string; segment: Segment }[];
+  length_of_stay_monthly: Record<string, number>;
+  targets: Record<string, { arrivals: number; length_of_stay: number; overnight_per_capita_hkd: number; satisfaction: number; receipts_hkd_m: number }>;
+  segments_h1: Record<string, Record<Segment, { visitors: number; overnight: number; same_day: number }>>;
+  h1: Record<
+    string,
+    {
+      receipts_hkd_m: number;
+      destination_hkd_m: number;
+      overnight_spend_hkd_m: number;
+      same_day_spend_hkd_m: number;
+      overnight_visitors: number;
+      same_day_visitors: number;
+      overnight_per_capita_hkd: number;
+      same_day_per_capita_hkd: number;
+    }
+  >;
+  area_h1: AreaH1[];
+  spend_categories: { visitor_type: VisitorType; segment: string; category: string; year: string; spend_hkd_m: number }[];
+  quarterly_overnight_per_capita: { year: number; quarter: number; value: number }[];
 }
 
 /** HKTB Visitor Profile periods: 2025 full year and Jan-Jun 2026. */
@@ -129,77 +93,16 @@ export interface MarketH1 {
 
 export interface VisitorDemographics {
   meta: Meta;
-  months: string[];
-  origins: Origin[];
-  visitor_types: VisitorType[];
-  ports: string[];
-  segments: { origin: Origin; regions: string[] }[];
-  arrivals: ArrivalRecord[];
-  region_monthly: RegionMonth[];
-  port_arrivals: PortRecord[];
-  length_of_stay: { year: string; nights: number }[];
-  visitor_type_annual: { year: string; visitor_type: VisitorType; arrivals: number }[];
   markets: { market: string; origin: Origin }[];
   market_monthly: { month: string; market: string; arrivals: number }[];
   market_h1: MarketH1[];
   visitor_profile: ProfileRecord[];
 }
 
-export interface HotelMonth {
-  month: string;
-  occupancy_pct: number | null;
-  adr_hkd: number | null;
-  revpar_hkd: number | null;
-}
-
-export interface MarketSpending {
-  year: string;
-  market: string;
-  origin: Origin;
-  visitor_type: VisitorType;
-  spend_hkd_m: number;
-  per_capita_hkd: number;
-  visitors: number | null;
-}
-
-export interface TourismIndustry {
-  year: string;
-  code: string;
-  industry: string;
-  group: 'Total' | 'Inbound' | 'Outbound';
-  value_added_hkd_m: number | null;
-  va_share_gdp_pct: number | null;
-  employment: number | null;
-  emp_share_pct: number | null;
-}
-
-export interface RevenueData {
-  meta: Meta;
-  market_spending: MarketSpending[];
-  tourism_industries: TourismIndustry[];
-  hotel_monthly: HotelMonth[];
-  hotel_rooms_pipeline: { year: string; rooms: number }[];
-  bri_industries: string[];
-  bri_quarterly: BriRecord[];
-}
-
-export interface ForecastPoint {
-  month: string;
-  actual: number | null;
-  forecast: number | null;
-  lower: number | null;
-  upper: number | null;
-}
-
-export interface Scenario {
-  label: string;
-  arrivals: number;
-  yield_hkd: number;
-  spend_hkd_m: number;
-  arrivals_adj_pct: number;
-  yield_adj_pct: number;
-  description: string;
-  drivers: string[];
+export interface PillarKpi {
+  metric: string;
+  baseline: string;
+  target_2027: string;
 }
 
 export interface Pillar {
@@ -209,16 +112,10 @@ export interface Pillar {
   tagline: string;
   rationale: string[];
   initiatives: string[];
-  kpis: { metric: string; baseline: string; target_2027: string }[];
+  kpis: PillarKpi[];
   timeline: { phase: string; action: string }[];
   /** HKTB source markets whose playbook leads with this pillar. */
   focus_markets: string[];
-}
-
-export interface PillarKpi {
-  metric: string;
-  baseline: string;
-  target_2027: string;
 }
 
 /** 2027 playbook for one HKTB source market: data-driven baselines with proposed targets per pillar. */
@@ -240,38 +137,21 @@ export interface MarketPlaybook {
   plays: { pillar: string; initiatives: string[]; kpis: PillarKpi[] }[];
 }
 
-export interface StrategyForecast {
+export interface Strategy {
   meta: Meta;
-  model: {
-    method: string;
-    training_window: string;
-    observations: number;
-    slope_per_month: number;
-    annualised_trend_pct: number;
-    r_squared: number;
-    sigma: number;
-    confidence_level: number;
-    seasonal_index: Record<string, number>;
-  };
-  series: ForecastPoint[];
-  annual: {
-    year: string;
-    arrivals: number;
-    yield_hkd: number;
-    spend_hkd_m: number;
-    status: string;
-    arrivals_lower?: number;
-    arrivals_upper?: number;
-  }[];
-  scenarios: Record<'base' | 'upside' | 'downside', Scenario>;
   pillars: Pillar[];
   market_playbooks: MarketPlaybook[];
 }
 
+/** Global filters, as in the v3 sidebar. */
 export interface Filters {
-  granularity: Granularity;
+  /** Visitor market (segment). */
+  origin: Segment | 'All';
+  /** TEAIT market area ("Country" in the sidebar). */
+  region: string;
+  visitorType: VisitorType | 'All';
   start: string;
   end: string;
-  origin: Origin | 'All';
-  visitorType: VisitorType | 'All';
+  purpose: string;
+  channel: string;
 }

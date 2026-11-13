@@ -1,18 +1,20 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { demographics, kpiSummary } from './data';
+import { filterMonths } from './data';
 import type { Filters } from './types';
 
 export const DEFAULT_FILTERS: Filters = {
-  granularity: 'month',
-  start: demographics.months[0],
-  end: kpiSummary.period.latest_month,
   origin: 'All',
+  region: 'All',
   visitorType: 'All',
+  start: '2026-01',
+  end: filterMonths[filterMonths.length - 1],
+  purpose: 'All',
+  channel: 'All',
 };
 
-const STORAGE_KEY = 'hk-tourism-filters';
+const STORAGE_KEY = 'hk-tourism-filters-v3';
 
 interface Ctx {
   filters: Filters;

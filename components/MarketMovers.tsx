@@ -7,7 +7,7 @@ import { AnimatedBar, AnimatedNumber } from './motion';
 import { formatCompact, formatPct } from '@/lib/format';
 import { marketEconomics, totalArrivals } from '@/lib/markets';
 import { ORIGIN_COLORS } from '@/lib/theme';
-import { shortMarket } from '@/lib/persona';
+import { marketInFilter, shortMarket } from '@/lib/persona';
 import type { Filters } from '@/lib/types';
 
 const PERIOD = '2026-H1' as const;
@@ -28,7 +28,7 @@ export default function MarketMovers({ filters }: { filters: Filters }) {
     const econ = marketEconomics(PERIOD);
     const total = totalArrivals(PERIOD) ?? econ.reduce((a, r) => a + r.arrivals, 0);
     const byArrivals = [...econ].sort((a, b) => b.arrivals - a.arrivals);
-    const visible = byArrivals.filter((r) => filters.origin === 'All' || r.origin === filters.origin);
+    const visible = byArrivals.filter((r) => marketInFilter(r.market, filters));
     const growth = econ.filter((r) => r.growth !== null);
     const mainland = econ.find((r) => r.origin === 'Mainland');
     return {
@@ -40,7 +40,7 @@ export default function MarketMovers({ filters }: { filters: Filters }) {
       top3Share: (byArrivals.slice(0, 3).reduce((a, r) => a + r.arrivals, 0) / total) * 100,
       mainlandSpendShare: mainland?.spendShare ?? null,
     };
-  }, [filters.origin]);
+  }, [filters]);
 
   const max = d.top[0]?.arrivals ?? 1;
   const chip = (label: string, value: number | null, hint: string) => (

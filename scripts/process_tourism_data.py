@@ -1,148 +1,87 @@
 #!/usr/bin/env python3
 """Hong Kong Inbound Tourism Evaluation - data pipeline.
 
-Fetches, cleans and aggregates Hong Kong tourism data (Jan 2025 - 2026 YTD) and
-writes static JSON files consumed by the Next.js dashboard (Summary / Visitor Persona / Revenue / 2027 Outlook).
+Reads the project's local source files and writes the static JSON consumed by the
+Next.js dashboard (Executive summary / Visitor Persona / Revenue Analysis / 2027 Outlook).
+There is no live data fetching: every input is a file committed under data/.
 
-Only official, openly published data is used:
+Inputs (all in data/):
 
-* C&SD web-table API - visitor arrivals by region (650-80001), visitor spending
-  (650-80003 / 650-80004), length of stay (650-80005), Business Receipts Indices
-  (660-69001 / 660-69002) and value added & employment of Tourism (655-82101).
-* DATA.GOV.HK - Immigration Department daily passenger traffic by control point;
-  Culture, Sports and Tourism Bureau hotel room supply.
-
-Datasets with no open API (hotel occupancy/ADR, government arrival targets,
-HKTB visitor profile) are read from optional CSVs in data/manual/. When a manual file is empty the
-dashboard shows the item as "data pending". HKTB's monthly visitor arrival
-workbooks (data/*all countries visitor type.xlsx) supply arrivals by nationality.
-
-Every successful live fetch is normalised and written back to data/raw/ so the
---offline mode always reproduces the latest known data.
+* HKTB visitor arrival statistics by nationality - "*all countries visitor type.xlsx"
+  (Jan-Jun 2025 and Jan-Jun 2026 editions): monthly arrivals, overnight / same-day,
+  gender and age for the 18 HKTB source markets.
+* HKTB Total Tourism Expenditure Associated to Inbound Tourism (TEAIT) -
+  "Inbound tourism expediture 06 2026.xls": Jan-Jun 2025 and 2026 spending by visitor
+  type, market area and spending category.
+* "Average spend per overnight visitors.xlsx" - quarterly overnight spend per visitor and
+  market-area overnight visitor counts compiled from the TEAIT releases.
+* Monthly visitor arrivals by region ("Visitor arrivals by nationalityregion.csv"),
+  monthly length of stay ("Lenght of stay.csv"), Jan-Jun visitor types
+  ("visitor_type_h1.csv") and the 2025 / 2026 government targets ("2025 KPI.csv",
+  "2026 KPI.csv"), as supplied with the project.
+* HKTB Visitor Profile Report 2025 FY / 2026 H1, transcribed to data/manual/visitor_profile.csv.
 
 Usage
 -----
-    python3 scripts/process_tourism_data.py            # live with snapshot fallback
-    python3 scripts/process_tourism_data.py --offline  # snapshot CSVs only
+    python3 scripts/process_tourism_data.py
 
 Only the Python standard library is used (Python >= 3.8).
 """
 
 import argparse
 import csv
+import html
 import io
 import json
 import logging
 import math
 import re
-import statistics
-import urllib.request
+import struct
 import zipfile
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-RAW_DIR = ROOT / "data" / "raw"
-MANUAL_DIR = ROOT / "data" / "manual"
+DATA_DIR = ROOT / "data"
+MANUAL_DIR = DATA_DIR / "manual"
 DEFAULT_OUT = ROOT / "public" / "data"
 
-SCOPE_START = "2025-01"
-BASELINE_YEARS = ("2019", "2024")
-FORECAST_YEAR = 2027
+H1_YEARS = ("2025", "2026")
+DATA_END = "2026-06"  # latest month covered by every source (TEAIT, HKTB workbooks, length of stay)
+MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+SEGMENTS = ["Mainland", "Short-haul", "Long-haul"]
 
-CSD_API = "https://www.censtatd.gov.hk/api/get.php?id={table}&lang=en&full_series=1"
-CSD_TABLE_PAGE = "https://www.censtatd.gov.hk/en/web_table.html?id={table}"
-IMMD_CSV = (
-    "https://www.immd.gov.hk/opendata/eng/transport/immigration_clearance/"
-    "statistics_on_daily_passenger_traffic.csv"
-)
-CSTB_ROOMS_CSV = "https://www.tourism.gov.hk/datagovhk/hotelrooms/number_of_hotel_rooms_next_three_years_en.csv"
-HTTP_TIMEOUT = 60
-USER_AGENT = "Mozilla/5.0 (compatible; hk-tourism-dashboard/2.0)"
+ARRIVALS_CSV = "Visitor arrivals by nationalityregion.csv"
+LENGTH_OF_STAY_CSV = "Lenght of stay.csv"
+VISITOR_TYPE_CSV = "visitor_type_h1.csv"
+KPI_CSV = "{} KPI.csv"
+EXPENDITURE_XLS = "Inbound tourism expediture 06 2026.xls"
+QUARTERLY_XLSX = "Average spend per overnight visitors.xlsx"
 
-ORIGINS = ["Mainland", "Short-haul", "Long-haul", "Emerging"]
-VISITOR_TYPES = ["Overnight", "Same-day"]
-PORTS = ["HKIA Airport", "West Kowloon HSR", "HZMB", "Land Control Points", "Ferries & Cruise"]
+# Market areas used by the TEAIT expenditure tables, with the arrivals-CSV regions they combine
+AREA_SEGMENT = {
+    "Mainland China": "Mainland",
+    "Macau SAR": "Short-haul", "Taiwan": "Short-haul", "North Asia": "Short-haul", "South & Southeast Asia": "Short-haul",
+    "The Americas": "Long-haul", "Europe, Africa & the Middle East": "Long-haul", "Australia, NZ & South Pacific": "Long-haul",
+}
+REGION_AREA = {
+    "Chinese Mainland": "Mainland China", "Macao": "Macau SAR", "Taiwan": "Taiwan", "North Asia": "North Asia",
+    "South and Southeast Asia": "South & Southeast Asia", "The Americas": "The Americas",
+    "Europe": "Europe, Africa & the Middle East", "Africa": "Europe, Africa & the Middle East",
+    "Middle East": "Europe, Africa & the Middle East", "Australia, New Zealand and South Pacific": "Australia, NZ & South Pacific",
+}  # "Not identified" counts towards the total only
+SPEND_CATEGORY_TABLES = {
+    ("Overnight", "All markets"): "Overnight Visitor Spending by Spending Category - All Markets",
+    ("Overnight", "Mainland"): "Overnight Visitor Spending by Spending Category - Mainland China",
+    ("Overnight", "Long-haul"): "Overnight Visitor Spending by Spending Category - Long Haul Markets",
+    ("Overnight", "Short-haul"): "Overnight Visitor Spending by Spending Category - Short Haul Markets ( Exclude Mainland China )",
+    ("Same-day", "All markets"): "Same-day Visitor Spending by Spending Category - All Markets",
+    ("Same-day", "Mainland"): "Same-day Visitor Spending by Spending Category - Mainland China",
+}
 
-# C&SD 650-80001 region code -> dashboard origin segment
-REGION_GROUP = {
-    "CN": "Mainland",
-    "MA": "Short-haul", "TW": "Short-haul", "NA": "Short-haul", "SA": "Short-haul",
-    "AU": "Long-haul", "AM": "Long-haul", "EU": "Long-haul",
-    "ME": "Emerging", "AF": "Emerging", "NI": "Emerging",
-}
-REGION_LABEL = {
-    "CN": "Chinese Mainland", "MA": "Macao", "TW": "Taiwan", "NA": "North Asia",
-    "SA": "South & Southeast Asia", "AU": "Australia, NZ & South Pacific",
-    "AM": "The Americas", "EU": "Europe", "ME": "Middle East", "AF": "Africa",
-    "NI": "Not identified",
-}
-# C&SD 650-80003/4 spending region -> 650-80001 region codes it covers
-SPEND_REGION_CODES = {
-    "Chinese Mainland": ["CN"],
-    "Macao": ["MA"],
-    "Taiwan": ["TW"],
-    "North Asia": ["NA"],
-    "South and Southeast Asia": ["SA"],
-    "Australia, New Zealand and South Pacific": ["AU"],
-    "The Americas": ["AM"],
-    "Europe, Africa and the Middle East": ["EU", "AF", "ME", "NI"],
-}
-SPEND_REGION_LABEL = {
-    "Chinese Mainland": "Chinese Mainland", "Macao": "Macao", "Taiwan": "Taiwan", "North Asia": "North Asia",
-    "South and Southeast Asia": "South & SE Asia", "Australia, New Zealand and South Pacific": "Australia, NZ & S. Pacific",
-    "The Americas": "The Americas", "Europe, Africa and the Middle East": "Europe, Africa & Middle East",
-}
-# ImmD control point -> port-of-entry group
-PORT_GROUP = {
-    "Airport": "HKIA Airport",
-    "Express Rail Link West Kowloon": "West Kowloon HSR",
-    "Hong Kong-Zhuhai-Macao Bridge": "HZMB",
-    "China Ferry Terminal": "Ferries & Cruise",
-    "Macao Ferry Terminal": "Ferries & Cruise",
-    "Macau Ferry Terminal": "Ferries & Cruise",
-    "Tuen Mun Ferry Terminal": "Ferries & Cruise",
-    "Kai Tak Cruise Terminal": "Ferries & Cruise",
-    "Harbour Control": "Ferries & Cruise",
-}  # every other control point (Lo Wu, Shenzhen Bay, Heung Yuen Wai, ...) -> Land Control Points
-BRI_INDUSTRIES = [
-    "Tourism, convention and exhibition services",
-    "Accommodation services",
-    "Food services",
-    "Retail",
-    "Air transport",
-    "Land transport",
-]
-# C&SD 655-82101 Tourism codes -> (label, group)
-TOURISM_INDUSTRIES = {
-    "ind_KEY_IND_2": ("Tourism (total)", "Total"),
-    "ind_KEY_IND_2A": ("Inbound tourism", "Inbound"),
-    "ind_KEY_IND_2A1": ("Retail trade", "Inbound"),
-    "ind_KEY_IND_2A2": ("Accommodation services", "Inbound"),
-    "ind_KEY_IND_2A3": ("Food & beverage services", "Inbound"),
-    "ind_KEY_IND_2A4": ("Cross-boundary passenger transport (inbound)", "Inbound"),
-    "ind_KEY_IND_2A5": ("Other inbound services", "Inbound"),
-    "ind_KEY_IND_2B": ("Outbound tourism", "Outbound"),
-    "ind_KEY_IND_2B1": ("Travel agencies & reservation services", "Outbound"),
-    "ind_KEY_IND_2B2": ("Cross-boundary passenger transport (outbound)", "Outbound"),
-}
-INDUSTRY_MEASURES = {
-    "HK$ million": "value_added_hkd_m",
-    "% share in GDP": "va_share_gdp_pct",
-    "Number": "employment",
-    "% share in total employment": "emp_share_pct",
-}
-# Optional manual inputs: filename -> (columns, dashboard tab, description, where to obtain)
+# Manual inputs: filename -> (columns, dashboard tab, description, where to obtain)
 MANUAL_INPUTS = {
-    "hotel_occupancy_monthly.csv": (
-        ["month", "occupancy_pct", "adr_hkd", "source"], "Summary / Revenue",
-        "Hotel room occupancy rate & average achieved room rate",
-        "HKTB Hotel Room Occupancy Report (partnernet.hktb.com) - no open API"),
-    "arrival_targets.csv": (
-        ["year", "target_arrivals", "source"], "Summary",
-        "Official annual visitor arrival targets (bullet graph target marker)",
-        "HKSAR Budget / HKTB work plan - published as text only"),
     "visitor_profile.csv": (
         ["period", "market", "dimension", "category", "value", "source"], "Visitor Persona",
         "HKTB visitor profile: age, companions, trip purpose, spending, satisfaction, places visited",
@@ -420,101 +359,37 @@ log = logging.getLogger("tourism")
 # Helpers
 # --------------------------------------------------------------------------- #
 class SourceRegistry:
-    """Tracks provenance (live / snapshot / manual) for every dataset and pending items."""
+    """Tracks the provenance of every input file and any manual inputs still pending."""
 
-    def __init__(self, offline):
-        self.offline = offline
+    def __init__(self):
         self.items = []
         self.pending = []
 
     def add(self, sid, name, url, mode, note=""):
         self.items.append({"id": sid, "name": name, "url": url, "mode": mode, "note": note})
-        log.info("  %-24s %s", sid, mode.upper())
-
-
-def http_get_bytes(url):
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"})
-    with urllib.request.urlopen(req, timeout=HTTP_TIMEOUT) as resp:
-        return resp.read()
-
-
-def http_get(url):
-    return http_get_bytes(url).decode("utf-8-sig")
-
-
-def fetch_csd(table):
-    rows = json.loads(http_get(CSD_API.format(table=table))).get("dataSet")
-    if not rows:
-        raise ValueError("C&SD table {} returned no dataSet".format(table))
-    return rows
+        log.info("  %-28s %s", sid, mode.upper())
 
 
 def read_csv(path):
-    path = path if isinstance(path, Path) else RAW_DIR / path
-    with open(path, newline="", encoding="utf-8") as fh:
+    with open(path, newline="", encoding="utf-8-sig") as fh:
         return list(csv.DictReader(fh))
 
 
-def write_csv(name, fieldnames, rows):
-    with open(RAW_DIR / name, "w", newline="", encoding="utf-8") as fh:
-        writer = csv.DictWriter(fh, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
-
-
 def num(value):
-    return float(value) if value not in ("", None) else None
+    if value in ("", None):
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    cleaned = str(value).replace(",", "").strip()
+    return float(cleaned) if cleaned else None
 
 
-def pct_change(new, old):
-    return round((new - old) / old * 100, 2) if old else None
-
-
-def shift_year(month, years):
-    return "{:04d}-{}".format(int(month[:4]) + years, month[5:])
-
-
-def month_to_quarter(month):
-    return "{}-Q{}".format(month[:4], (int(month[5:]) - 1) // 3 + 1)
-
-
-def csd_period_to_month(period):
-    return "{}-{}".format(period[:4], period[4:6])
-
-
-def month_range(start, end):
-    y, m = int(start[:4]), int(start[5:])
-    out = []
-    while "{:04d}-{:02d}".format(y, m) <= end:
-        out.append("{:04d}-{:02d}".format(y, m))
-        m += 1
-        if m == 13:
-            y, m = y + 1, 1
-    return out
-
-
-def month_name(month):
-    return datetime.strptime(month, "%Y-%m").strftime("%b %Y")
-
-
-def load_with_fallback(registry, sid, name, url, fetch_fn, snapshot, note=""):
-    """Run fetch_fn (which refreshes the snapshot CSV); fall back to the snapshot on failure."""
-    if not registry.offline:
-        try:
-            fetch_fn()
-            registry.add(sid, name, url, "live", note)
-            return read_csv(snapshot)
-        except Exception as exc:  # noqa: BLE001 - any network/parse failure falls back
-            log.warning("  live fetch failed for %s (%s); using snapshot %s", sid, exc, snapshot)
-    if not (RAW_DIR / snapshot).exists():
-        registry.add(sid, name, url, "unavailable", note + " No snapshot available yet.")
-        return []
-    registry.add(sid, name, url, "snapshot", note)
-    return read_csv(snapshot)
+def clean(text):
+    return re.sub(r"\s+", " ", str(text)).strip()
 
 
 def load_manual(registry):
-    """Read optional manual CSVs; register empty ones as pending."""
+    """Read manual CSVs; register empty ones as pending."""
     MANUAL_DIR.mkdir(parents=True, exist_ok=True)
     out = {}
     for fname, (cols, tab, desc, where) in MANUAL_INPUTS.items():
@@ -531,6 +406,197 @@ def load_manual(registry):
             registry.pending.append({"id": fname[:-4], "tab": tab, "item": desc, "source": where,
                                      "file": "data/manual/" + fname, "columns": cols})
     return out
+
+
+def read_xls(data):
+    """Minimal BIFF8 (.xls) reader -> {sheet_name: {(row, col): value}} with strings and numbers."""
+    workbook = _ole_stream(data, ("Workbook", "Book"))
+    records, pos = [], 0
+    while pos + 4 <= len(workbook):
+        rid, size = struct.unpack_from("<HH", workbook, pos)
+        records.append((rid, workbook[pos + 4:pos + 4 + size]))
+        pos += 4 + size
+    sst, names, sheets, cells = [], [], {}, None
+    for i, (rid, body) in enumerate(records):
+        if rid == 0x85:  # BOUNDSHEET
+            length, wide = body[6], body[7] & 1
+            names.append(body[8:8 + length * (2 if wide else 1)].decode("utf-16-le" if wide else "latin-1"))
+        elif rid == 0xFC:  # SST (+ CONTINUE records)
+            chunks = [body]
+            j = i + 1
+            while j < len(records) and records[j][0] == 0x3C:
+                chunks.append(records[j][1])
+                j += 1
+            sst = _parse_sst(chunks)
+        elif rid == 0x809 and struct.unpack_from("<H", body, 2)[0] == 0x10:  # BOF of a worksheet
+            cells = sheets.setdefault(names[len(sheets)], {})
+        elif cells is None:
+            continue
+        elif rid == 0xFD:  # LABELSST
+            r, c, _, k = struct.unpack_from("<HHHI", body)
+            cells[(r, c)] = sst[k]
+        elif rid == 0x203:  # NUMBER
+            r, c, _, v = struct.unpack_from("<HHHd", body)
+            cells[(r, c)] = v
+        elif rid == 0x27E:  # RK
+            r, c, _, v = struct.unpack_from("<HHHI", body)
+            cells[(r, c)] = _rk(v)
+        elif rid == 0xBD:  # MULRK
+            r, c = struct.unpack_from("<HH", body)
+            for k in range((len(body) - 6) // 6):
+                cells[(r, c + k)] = _rk(struct.unpack_from("<I", body, 6 + k * 6)[0])
+        elif rid == 0x06 and body[12:14] != b"\xff\xff":  # FORMULA with a cached number
+            r, c = struct.unpack_from("<HH", body)
+            cells[(r, c)] = struct.unpack_from("<d", body, 6)[0]
+    return sheets
+
+
+def _ole_stream(data, wanted):
+    sector = 1 << struct.unpack_from("<H", data, 30)[0]
+    mini_sector = 1 << struct.unpack_from("<H", data, 32)[0]
+    n_fat, dir_start = struct.unpack_from("<II", data, 44)
+    mini_cutoff, mini_fat_start, _, difat_start, n_difat = struct.unpack_from("<IIIII", data, 56)
+    sec = lambda i: data[512 + i * sector:512 + (i + 1) * sector]  # noqa: E731
+    difat = list(struct.unpack_from("<109I", data, 76))
+    s = difat_start
+    for _ in range(n_difat):
+        block = sec(s)
+        difat += struct.unpack_from("<%dI" % (sector // 4 - 1), block)
+        s = struct.unpack_from("<I", block, sector - 4)[0]
+    fat = []
+    for f in difat[:n_fat]:
+        fat += struct.unpack_from("<%dI" % (sector // 4), sec(f))
+
+    def chain(start, table, read):
+        out, s = [], start
+        while s < 0xFFFFFFFA:
+            out.append(read(s))
+            s = table[s]
+        return b"".join(out)
+
+    directory = chain(dir_start, fat, sec)
+    entries = []
+    for i in range(len(directory) // 128):
+        e = directory[i * 128:(i + 1) * 128]
+        name_len = struct.unpack_from("<H", e, 64)[0]
+        entries.append((e[:max(name_len - 2, 0)].decode("utf-16-le"), *struct.unpack_from("<II", e, 116)))
+    for name, start, size in entries:
+        if name not in wanted:
+            continue
+        if size >= mini_cutoff:
+            return chain(start, fat, sec)[:size]
+        mini_fat = list(struct.unpack("<%dI" % (len(chain(mini_fat_start, fat, sec)) // 4), chain(mini_fat_start, fat, sec)))
+        mini = chain(entries[0][1], fat, sec)
+        return chain(start, mini_fat, lambda i: mini[i * mini_sector:(i + 1) * mini_sector])[:size]
+    raise ValueError("no workbook stream in .xls file")
+
+
+def _rk(v):
+    if v & 2:
+        x = float((v >> 2) - (1 << 30) if v & 0x80000000 else v >> 2)
+    else:
+        x = struct.unpack("<d", struct.pack("<Q", (v & 0xFFFFFFFC) << 32))[0]
+    return x / 100 if v & 1 else x
+
+
+def _parse_sst(chunks):
+    data, ci, pos = chunks[0], 0, 8
+    out = []
+    for _ in range(struct.unpack_from("<I", data, 4)[0]):
+        if pos >= len(data):
+            ci, pos = ci + 1, 0
+            data = chunks[ci]
+        length, flags = struct.unpack_from("<HB", data, pos)
+        pos += 3
+        runs = ext = 0
+        if flags & 8:
+            runs = struct.unpack_from("<H", data, pos)[0]
+            pos += 2
+        if flags & 4:
+            ext = struct.unpack_from("<I", data, pos)[0]
+            pos += 4
+        parts, wide, left = [], flags & 1, length
+        while left:
+            if pos >= len(data):
+                ci += 1
+                data, wide, pos = chunks[ci], chunks[ci][0] & 1, 1
+            take = min(left, (len(data) - pos) // (2 if wide else 1))
+            raw = data[pos:pos + take * (2 if wide else 1)]
+            parts.append(raw.decode("utf-16-le" if wide else "latin-1"))
+            pos += len(raw)
+            left -= take
+        skip = runs * 4 + ext
+        while skip:
+            if pos >= len(data):
+                ci, pos = ci + 1, 0
+                data = chunks[ci]
+            step = min(skip, len(data) - pos)
+            pos += step
+            skip -= step
+        out.append("".join(parts))
+    return out
+
+
+def xls_tables(sheets, titles):
+    """Tables in the HKTB TEAIT workbook -> {title: {row label: {year: value}}}.
+
+    A table starts at one of the given English titles in column C, its header rows map
+    'Jan - Jun YYYY' to columns, each data row has an English label in column D, and the
+    table ends at the first row without values (footnotes).
+    """
+    tables = {}
+    for cells in sheets.values():
+        rows = defaultdict(dict)
+        for (r, c), v in cells.items():
+            rows[r][c] = v
+        title, years = None, {}
+        for r in sorted(rows):
+            row = rows[r]
+            if isinstance(row.get(2), str) and clean(row[2]) in titles:
+                title, years = clean(row[2]), {}
+                continue
+            if not title:
+                continue
+            for c, v in row.items():
+                m = re.match(r"Jan - Jun (\d{4})", str(v).strip())
+                if m and m.group(1) not in years.values():
+                    years[c] = m.group(1)
+            values = {y: row[c] for c, y in years.items() if isinstance(row.get(c), float)}
+            if isinstance(row.get(3), str) and values:
+                tables.setdefault(title, {})[re.sub(r"\s*\(\d\)$", "", clean(row[3]))] = values
+            elif title in tables and not values:
+                title, years = None, {}
+    return tables
+
+
+def read_xlsx(data):
+    """Minimal xlsx reader -> {sheet_name: {row_number: {column_letter: value}}}."""
+    z = zipfile.ZipFile(io.BytesIO(data))
+    shared = []
+    if "xl/sharedStrings.xml" in z.namelist():
+        for si in re.findall(r"<si>(.*?)</si>", z.read("xl/sharedStrings.xml").decode("utf-8"), flags=re.S):
+            shared.append("".join(re.findall(r"<t[^>]*>([^<]*)</t>", si)))
+    rels = z.read("xl/_rels/workbook.xml.rels").decode("utf-8")
+    targets = {}
+    for rel in re.findall(r"<Relationship [^>]*>", rels):
+        rid = re.search(r'Id="([^"]+)"', rel).group(1)
+        targets[rid] = re.search(r'Target="([^"]+)"', rel).group(1)
+    sheets = {}
+    workbook = z.read("xl/workbook.xml").decode("utf-8")
+    for tag in re.findall(r"<sheet [^>]*>", workbook):
+        name = re.search(r'name="([^"]+)"', tag).group(1)
+        rid = re.search(r'r:id="([^"]+)"', tag).group(1)
+        path = "xl/" + targets[rid].lstrip("/").replace("xl/", "", 1)
+        rows = {}
+        for cell in re.finditer(r'<c r="([A-Z]+)(\d+)"([^>]*?)(?:/>|>(.*?)</c>)', z.read(path).decode("utf-8"), flags=re.S):
+            col, row, attrs, body = cell.groups()
+            v = re.search(r"<v>([^<]*)</v>", body or "")
+            if not v:
+                continue
+            value = shared[int(v.group(1))] if 't="s"' in attrs else v.group(1)
+            rows.setdefault(int(row), {})[col] = value
+        sheets[name] = rows
+    return sheets
 
 
 def load_hktb_arrivals(registry):
@@ -653,522 +719,206 @@ def build_market_playbooks(profile_rows, market_h1):
     return playbooks
 
 
-def read_xlsx(data):
-    """Minimal xlsx reader -> {sheet_name: {row_number: {column_letter: value}}}."""
-    z = zipfile.ZipFile(io.BytesIO(data))
-    shared = []
-    if "xl/sharedStrings.xml" in z.namelist():
-        for si in re.findall(r"<si>(.*?)</si>", z.read("xl/sharedStrings.xml").decode("utf-8"), flags=re.S):
-            shared.append("".join(re.findall(r"<t[^>]*>([^<]*)</t>", si)))
-    rels = z.read("xl/_rels/workbook.xml.rels").decode("utf-8")
+
+# --------------------------------------------------------------------------- #
+# Executive summary inputs (files supplied with the project)
+# --------------------------------------------------------------------------- #
+T_TOTAL = "Total Tourism Expenditure Associated to Inbound Tourism"
+T_OVERNIGHT_AREA = "Total Overnight Visitor Spending by Major Market Areas"
+T_OVERNIGHT_PC = "Per Capita Overnight Visitor Spending by Major Market Areas"
+T_SAMEDAY_AREA = "Total Same-day Visitor Spending by Major Market Areas"
+T_SAMEDAY_PC = "Per Capita Same-day Visitor Spending by Major Market Areas"
+
+
+def month_key(year, mon):
+    return "{}-{:02d}".format(year, MONTHS.index(mon.strip()[:3].title()) + 1)
+
+
+def load_monthly_arrivals(registry):
+    """Monthly arrivals by region -> total, segment and TEAIT market-area series."""
+    by_month = defaultdict(lambda: defaultdict(float))
+    for r in read_csv(DATA_DIR / ARRIVALS_CSV):
+        month = month_key(r["Year"].strip(), r["MM"])
+        value = num(r["OBS_VALUE"]) or 0
+        area = REGION_AREA.get(clean(r["REGION"]))
+        by_month[month]["All"] += value
+        if area:
+            by_month[month][area] += value
+            by_month[month][AREA_SEGMENT[area]] += value
+    months = [m for m in sorted(by_month) if m <= DATA_END]
+    registry.add("arrivals_by_region", "Visitor arrivals by nationality / region (monthly)", "data/" + ARRIVALS_CSV, "supplied",
+                 "{} to {}; regions grouped into the TEAIT market areas.".format(months[0], months[-1]))
+    return months, {m: {k: int(round(v)) for k, v in by_month[m].items()} for m in months}
+
+
+def load_length_of_stay(registry):
+    out = {}
+    for r in read_csv(DATA_DIR / LENGTH_OF_STAY_CSV):
+        mon, yy = r["CCYY"].strip().split("-")
+        month = month_key("20" + yy, mon)
+        if month <= DATA_END:
+            out[month] = num(r["Length of stay"])
+    registry.add("length_of_stay", "Average length of stay of overnight visitors (monthly)", "data/" + LENGTH_OF_STAY_CSV, "supplied",
+                 "Nights per overnight visitor, {} to {}.".format(min(out), max(out)))
+    return out
+
+
+def load_targets(registry):
     targets = {}
-    for rel in re.findall(r"<Relationship [^>]*>", rels):
-        rid = re.search(r'Id="([^"]+)"', rel).group(1)
-        targets[rid] = re.search(r'Target="([^"]+)"', rel).group(1)
-    sheets = {}
-    workbook = z.read("xl/workbook.xml").decode("utf-8")
-    for tag in re.findall(r"<sheet [^>]*>", workbook):
-        name = re.search(r'name="([^"]+)"', tag).group(1)
-        rid = re.search(r'r:id="([^"]+)"', tag).group(1)
-        path = "xl/" + targets[rid].lstrip("/").replace("xl/", "", 1)
-        rows = {}
-        for cell in re.finditer(r'<c r="([A-Z]+)(\d+)"([^>]*?)(?:/>|>(.*?)</c>)', z.read(path).decode("utf-8"), flags=re.S):
-            col, row, attrs, body = cell.groups()
-            v = re.search(r"<v>([^<]*)</v>", body or "")
-            if not v:
-                continue
-            value = shared[int(v.group(1))] if 't="s"' in attrs else v.group(1)
-            rows.setdefault(int(row), {})[col] = value
-        sheets[name] = rows
-    return sheets
+    for year in H1_YEARS:
+        with open(DATA_DIR / KPI_CSV.format(year), newline="", encoding="utf-8-sig") as fh:
+            rows = list(csv.reader(fh))
+        values = {clean(r[1]).lower(): num(r[2]) for r in rows[1:] if len(r) > 2 and num(r[2]) is not None}
+        targets[year] = {
+            "arrivals": values["total visitor arrivals"],
+            "length_of_stay": values["average length of stay of overnight visitors (nights)"],
+            "overnight_per_capita_hkd": values["per capital spending of overnight visitor (hk$)"],
+            "satisfaction": values["satisfaction"],
+            "receipts_hkd_m": round(values["total spending of inbound toursim"] / 1e6, 3),
+        }
+    registry.add("kpi_targets", "Government targets for 2025 and 2026", "data/" + KPI_CSV.format("2025"), "supplied",
+                 "Arrivals, total spending, length of stay, overnight spend per visitor and satisfaction.")
+    return targets
 
 
-# --------------------------------------------------------------------------- #
-# Extract - live fetchers that refresh normalised snapshot CSVs
-# --------------------------------------------------------------------------- #
-def refresh_arrivals():
-    rows = []
-    for r in fetch_csd("650-80001"):
-        if r["freq"] != "M" or r["REGION"] not in REGION_GROUP:
-            continue
-        month = csd_period_to_month(r["period"])
-        if month[:4] in BASELINE_YEARS or month >= SCOPE_START:
-            rows.append({"month": month, "region_code": r["REGION"], "arrivals": int(r["figure"])})
-    rows.sort(key=lambda x: (x["month"], x["region_code"]))
-    write_csv("arrivals_by_region_monthly.csv", ["month", "region_code", "arrivals"], rows)
+def load_visitor_types(registry):
+    out = defaultdict(dict)
+    for r in read_csv(DATA_DIR / VISITOR_TYPE_CSV):
+        out[r["year"]][r["origin"]] = {"visitors": int(num(r["total_visitors"])), "overnight": int(num(r["overnight_visitors"])),
+                                       "same_day": int(num(r["same_day_visitors"]))}
+    registry.add("visitor_types_h1", "Jan-Jun overnight and same-day visitors by segment", "data/" + VISITOR_TYPE_CSV, "supplied",
+                 "From the HKTB visitor-type workbooks (Table 4).")
+    return dict(out)
 
 
-def refresh_spending():
-    spend = {(r["period"], r["VISTYPEDesc"], r["REGIONDesc"].strip()): r["figure"]
-             for r in fetch_csd("650-80003") if r["freq"] == "Y"}
-    per_cap = {(r["period"], r["VISTYPEDesc"], r["REGIONDesc"].strip()): r["figure"]
-               for r in fetch_csd("650-80004") if r["freq"] == "Y"}
-    rows = []
-    for (year, vtype, region), value in sorted(spend.items()):
-        if year < "2024" or (year, vtype, region) not in per_cap:
-            continue
-        rows.append({
-            "year": year,
-            "visitor_type": "Overnight" if vtype.startswith("Overnight") else "Same-day",
-            "region": region,
-            "spend_hkd_m": value,
-            "per_capita_hkd": per_cap[(year, vtype, region)],
-        })
-    write_csv("visitor_spending_annual.csv", ["year", "visitor_type", "region", "spend_hkd_m", "per_capita_hkd"], rows)
+def load_expenditure(registry):
+    titles = {T_TOTAL, T_OVERNIGHT_AREA, T_OVERNIGHT_PC, T_SAMEDAY_AREA, T_SAMEDAY_PC, *SPEND_CATEGORY_TABLES.values()}
+    tables = xls_tables(read_xls((DATA_DIR / EXPENDITURE_XLS).read_bytes()), titles)
+    missing = titles - set(tables)
+    if missing:
+        raise ValueError("TEAIT tables not found: " + ", ".join(sorted(missing)))
+    registry.add("hktb_teait", "HKTB: Tourism Expenditure Associated to Inbound Tourism, Jan-Jun 2025 and 2026",
+                 "data/" + EXPENDITURE_XLS, "supplied",
+                 "Spending by visitor type, market area and category. Passenger international transportation is a C&SD figure within the HKTB total.")
+    return tables
 
 
-def refresh_length_of_stay():
-    agg = defaultdict(dict)
-    for r in fetch_csd("650-80005"):
-        if r["freq"] != "Y" or r["period"] < "2019":
-            continue
-        vtype = "Overnight" if r["VISTYPEDesc"].startswith("Overnight") else "Same-day"
-        agg[(r["period"], vtype)]["avg_nights" if r["svDesc"] == "Nights" else "arrivals"] = r["figure"]
-    rows = [{"year": y, "visitor_type": v, "arrivals": d.get("arrivals", ""), "avg_nights": d.get("avg_nights", "")}
-            for (y, v), d in sorted(agg.items())]
-    write_csv("visitor_type_annual.csv", ["year", "visitor_type", "arrivals", "avg_nights"], rows)
+def load_quarterly(registry):
+    sheets = read_xlsx((DATA_DIR / QUARTERLY_XLSX).read_bytes())
+    quarterly = []
+    for row in sheets["Quarterly Update"].values():
+        q = re.match(r"Q([1-4])$", row.get("B", "").strip())
+        if re.match(r"\d{4}$", row.get("A", "").strip()) and q and num(row.get("C")) is not None:
+            quarterly.append({"year": int(row["A"]), "quarter": int(q.group(1)), "value": num(row["C"])})
+    overnight = {}
+    for row in sheets["Market Area Averages"].values():
+        area = html.unescape(row.get("A", "")).strip()
+        if area in AREA_SEGMENT:
+            overnight[area] = {"2025": int(num(row["C"])), "2026": int(num(row["F"]))}
+    registry.add("quarterly_overnight_spend", "Average spend per overnight visitor (quarterly) and market-area overnight visitors",
+                 "data/" + QUARTERLY_XLSX, "supplied", "Compiled from the TEAIT releases and the HKTB visitor-type workbooks.")
+    return sorted(quarterly, key=lambda q: (q["year"], q["quarter"])), overnight
 
 
-def refresh_bri():
-    def clean(name):
-        return re.sub(r"<[^>]+>", "", name).strip()
+def build_summary(registry):
+    months, monthly = load_monthly_arrivals(registry)
+    los = load_length_of_stay(registry)
+    targets = load_targets(registry)
+    types = load_visitor_types(registry)
+    tables = load_expenditure(registry)
+    quarterly, area_overnight = load_quarterly(registry)
 
-    index = {(r["period"], clean(r["INDDesc"])): r["figure"] for r in fetch_csd("660-69001") if r["freq"] == "Q"}
-    yoy = {(r["period"], clean(r["INDDesc"])): r["figure"] for r in fetch_csd("660-69002") if r["freq"] == "Q"}
-    rows = [
-        {"quarter": month_to_quarter(csd_period_to_month(p)), "industry": ind, "index": v, "yoy_pct": yoy.get((p, ind), "")}
-        for (p, ind), v in sorted(index.items()) if ind in BRI_INDUSTRIES and p >= "202401"
-    ]
-    write_csv("bri_quarterly.csv", ["quarter", "industry", "index", "yoy_pct"], rows)
+    h1, areas, categories = {}, [], []
+    for year in H1_YEARS:
+        seg = types[year]
+        total = tables[T_TOTAL]
+        h1[year] = {
+            "receipts_hkd_m": total[T_TOTAL][year],
+            "destination_hkd_m": total["Total Destination Consumption Expenditure"][year],
+            "overnight_spend_hkd_m": total["Overnight Visitors"][year],
+            "same_day_spend_hkd_m": total["Same-day Visitors"][year],
+            "overnight_visitors": sum(s["overnight"] for s in seg.values()),
+            "same_day_visitors": sum(s["same_day"] for s in seg.values()),
+            "overnight_per_capita_hkd": tables[T_OVERNIGHT_PC]["Total"][year],
+            "same_day_per_capita_hkd": tables[T_SAMEDAY_PC]["Total"][year],
+        }
+        h1_months = ["{}-{:02d}".format(year, m) for m in range(1, 7)]
+        for area, segment in AREA_SEGMENT.items():
+            overnight_spend = tables[T_OVERNIGHT_AREA][area][year]
+            same_day_spend = tables[T_SAMEDAY_AREA][area][year]
+            areas.append({
+                "area": area, "segment": segment, "year": year,
+                "arrivals": sum(monthly[m].get(area, 0) for m in h1_months),
+                "overnight_visitors": area_overnight.get(area, {}).get(year),
+                "spend_hkd_m": round(overnight_spend + same_day_spend, 3),
+                "overnight_spend_hkd_m": overnight_spend, "same_day_spend_hkd_m": same_day_spend,
+                "overnight_per_capita_hkd": tables[T_OVERNIGHT_PC][area][year],
+                "same_day_per_capita_hkd": tables[T_SAMEDAY_PC][area][year],
+            })
+        for (vtype, segment), title in SPEND_CATEGORY_TABLES.items():
+            for category, values in tables[title].items():
+                if category != "Total":
+                    categories.append({"visitor_type": vtype, "segment": segment, "category": category, "year": year,
+                                       "spend_hkd_m": values[year]})
 
-
-def refresh_tourism_industries():
-    agg = defaultdict(dict)
-    for r in fetch_csd("655-82101"):
-        if r["IND"] in TOURISM_INDUSTRIES and r["freq"] == "Y" and r["period"] >= "2019" and r["svDesc"] in INDUSTRY_MEASURES:
-            agg[(r["period"], r["IND"])][INDUSTRY_MEASURES[r["svDesc"]]] = r["figure"]
-    rows = []
-    for (year, code), measures in sorted(agg.items()):
-        label, group = TOURISM_INDUSTRIES[code]
-        rows.append({"year": year, "code": code, "industry": label, "group": group,
-                     **{k: measures.get(k, "") for k in INDUSTRY_MEASURES.values()}})
-    write_csv("tourism_industries_annual.csv", ["year", "code", "industry", "group"] + list(INDUSTRY_MEASURES.values()), rows)
-
-
-def refresh_ports():
-    agg = defaultdict(lambda: [0, 0])
-    last_date = ""
-    for r in csv.DictReader(io.StringIO(http_get(IMMD_CSV))):
-        if r.get("Arrival / Departure") != "Arrival":
-            continue
-        d, m, y = r["Date"].split("-")
-        month = "{}-{}".format(y, m)
-        if month < SCOPE_START:
-            continue
-        last_date = max(last_date, "{}-{}-{}".format(y, m, d))
-        port = PORT_GROUP.get(r["Control Point"].strip(), "Land Control Points")
-        agg[(month, port)][0] += int(r["Mainland Visitors"] or 0)
-        agg[(month, port)][1] += int(r["Other Visitors"] or 0)
-    if not agg:
-        raise ValueError("ImmD CSV contained no arrivals in scope")
-    last = datetime.strptime(last_date, "%Y-%m-%d")
-    nxt = datetime(last.year + (last.month == 12), last.month % 12 + 1, 1)
-    if (nxt - last).days > 1:  # drop the trailing incomplete month
-        agg = {k: v for k, v in agg.items() if k[0] != last_date[:7]}
-    rows = [{"month": m, "port": p, "mainland_visitors": v[0], "other_visitors": v[1]} for (m, p), v in sorted(agg.items())]
-    write_csv("port_arrivals_monthly.csv", ["month", "port", "mainland_visitors", "other_visitors"], rows)
-
-
-def refresh_hotel_rooms():
-    rows = [{"year": r["Year"], "rooms": r["Number_hotel_rooms"]} for r in csv.DictReader(io.StringIO(http_get(CSTB_ROOMS_CSV)))]
-    if not rows:
-        raise ValueError("CSTB hotel rooms CSV empty")
-    write_csv("hotel_rooms_pipeline.csv", ["year", "rooms"], rows)
-
-
-# --------------------------------------------------------------------------- #
-# Transform
-# --------------------------------------------------------------------------- #
-def build_overnight_ratios(spending):
-    """Overnight share and per-capita spend per (year, region_code, visitor type).
-
-    Visitor counts per region are recovered as spend / per-capita spend.
-    """
-    by_key = defaultdict(dict)
-    for r in spending:
-        by_key[(r["year"], r["region"])][r["visitor_type"]] = (float(r["spend_hkd_m"]), float(r["per_capita_hkd"]))
-    ratios, per_capita = {}, {}
-    for (year, region), types in by_key.items():
-        if len(types) < 2 or region not in SPEND_REGION_CODES:
-            continue
-        counts = {t: s * 1e6 / pc for t, (s, pc) in types.items() if pc}
-        share = counts["Overnight"] / (counts["Overnight"] + counts["Same-day"])
-        for code in SPEND_REGION_CODES[region]:
-            ratios[(year, code)] = share
-            for t, (_, pc) in types.items():
-                per_capita[(year, code, t)] = pc
-    return ratios, per_capita
-
-
-def build_arrival_records(arrivals, ratios, per_capita):
-    """Monthly arrivals and spending by origin segment x visitor type."""
-    years_with_spend = sorted({y for (y, _) in ratios})
-    latest_spend_year = years_with_spend[-1]
-    agg = defaultdict(lambda: {"arrivals": 0.0, "spend": 0.0, "estimate": False})
-    for r in arrivals:
-        month, code, n = r["month"], r["region_code"], int(r["arrivals"])
-        if month[:4] == "2019":
-            continue
-        year = month[:4] if month[:4] in years_with_spend else latest_spend_year
-        share = ratios.get((year, code), 0.5)
-        for vtype, part in (("Overnight", share), ("Same-day", 1 - share)):
-            cell = agg[(month, REGION_GROUP[code], vtype)]
-            visitors = n * part
-            cell["arrivals"] += visitors
-            cell["spend"] += visitors * per_capita.get((year, code, vtype), 0) / 1e6
-            cell["estimate"] = cell["estimate"] or year != month[:4]
-    return [
-        {"month": m, "origin": o, "visitor_type": v, "arrivals": round(c["arrivals"]),
-         "spend_hkd_m": round(c["spend"], 1), "is_estimate": c["estimate"]}
-        for (m, o, v), c in sorted(agg.items())
-    ]
-
-
-def monthly_totals(arrivals, year_prefix=None):
-    totals = defaultdict(int)
-    for r in arrivals:
-        if year_prefix is None or r["month"].startswith(year_prefix):
-            totals[r["month"]] += int(r["arrivals"])
-    return dict(sorted(totals.items()))
-
-
-def seasonal_trend_forecast(history, baseline, horizon_end):
-    """Multiplicative seasonal decomposition + OLS linear trend.
-
-    * Seasonal index per calendar month from full baseline years (2024, 2025).
-    * Linear trend fitted on the de-seasonalised in-scope history.
-    * 95% prediction interval from the residual standard error.
-    """
-    full_years = defaultdict(dict)
-    for m, v in baseline.items():
-        full_years[m[:4]][m[5:]] = v
-    ratios = defaultdict(list)
-    for months in full_years.values():
-        if len(months) == 12:
-            mean = sum(months.values()) / 12
-            for mm, v in months.items():
-                ratios[mm].append(v / mean)
-    seasonal = {mm: statistics.mean(v) for mm, v in sorted(ratios.items())}
-    norm = statistics.mean(seasonal.values())
-    seasonal = {k: v / norm for k, v in seasonal.items()}
-
-    months = sorted(history)
-    xs = list(range(len(months)))
-    ys = [history[m] / seasonal[m[5:]] for m in months]
-    n = len(xs)
-    xbar, ybar = statistics.mean(xs), statistics.mean(ys)
-    sxx = sum((x - xbar) ** 2 for x in xs)
-    slope = sum((x - xbar) * (y - ybar) for x, y in zip(xs, ys)) / sxx
-    intercept = ybar - slope * xbar
-    residuals = [y - (intercept + slope * x) for x, y in zip(xs, ys)]
-    sigma = math.sqrt(sum(e * e for e in residuals) / (n - 2))
-    ss_tot = sum((y - ybar) ** 2 for y in ys)
-    r_squared = 1 - sum(e * e for e in residuals) / ss_tot if ss_tot else 0.0
-
-    forecast = {}
-    for i, m in enumerate(month_range(months[-1], horizon_end)[1:], start=n):
-        s = seasonal[m[5:]]
-        point = (intercept + slope * i) * s
-        half = 1.96 * sigma * math.sqrt(1 + 1 / n + (i - xbar) ** 2 / sxx) * s
-        forecast[m] = (point, max(point - half, 0), point + half)
-
-    model = {
-        "method": "Multiplicative seasonal decomposition + OLS linear trend",
-        "training_window": "{} to {}".format(months[0], months[-1]),
-        "observations": n,
-        "slope_per_month": round(slope),
-        "annualised_trend_pct": round(slope * 12 / ybar * 100, 2),
-        "r_squared": round(r_squared, 3),
-        "sigma": round(sigma),
-        "confidence_level": 0.95,
-        "seasonal_index": {k: round(v, 3) for k, v in seasonal.items()},
-    }
-    return forecast, model
-
-
-# --------------------------------------------------------------------------- #
-# Build JSON outputs
-# --------------------------------------------------------------------------- #
-def build_outputs(registry):
-    log.info("Loading sources:")
-    csd = lambda t: CSD_TABLE_PAGE.format(table=t)  # noqa: E731
-    arrivals = load_with_fallback(registry, "csd_650_80001", "C&SD 650-80001: Visitor arrivals by nationality/region",
-                                  csd("650-80001"), refresh_arrivals, "arrivals_by_region_monthly.csv",
-                                  "Monthly; 2019 and 2024 kept as baselines.")
-    spending = load_with_fallback(registry, "csd_650_80003_4", "C&SD 650-80003/04: Visitor consumption expenditure & per-capita spending",
-                                  csd("650-80003"), refresh_spending, "visitor_spending_annual.csv",
-                                  "Annual, by visitor type and source market.")
-    vtypes = load_with_fallback(registry, "csd_650_80005", "C&SD 650-80005: Visitor arrivals and length of stay",
-                                csd("650-80005"), refresh_length_of_stay, "visitor_type_annual.csv")
-    bri = load_with_fallback(registry, "csd_660_69001_2", "C&SD 660-69001/02: Business Receipts Indices for service industries",
-                             csd("660-69001"), refresh_bri, "bri_quarterly.csv", "Quarterly index (2015 = 100) and YoY %.")
-    industries = load_with_fallback(registry, "csd_655_82101", "C&SD 655-82101: Value added & employment of the Four Key Industries (Tourism)",
-                                    csd("655-82101"), refresh_tourism_industries, "tourism_industries_annual.csv",
-                                    "Annual value added, GDP share and employment by tourism sub-industry.")
-    ports = load_with_fallback(registry, "immd_passenger_traffic", "DATA.GOV.HK / ImmD: Statistics on daily passenger traffic",
-                               "https://data.gov.hk/en-data/dataset/hk-immd-set5-statistics-daily-passenger-traffic",
-                               refresh_ports, "port_arrivals_monthly.csv", "Visitor entries by control point (trips).")
-    rooms = load_with_fallback(registry, "cstb_hotel_rooms", "DATA.GOV.HK / CSTB: Number of hotel rooms for the next three years",
-                               "https://data.gov.hk/en-data/dataset/hk-cstb-cstb_tc-tc-number-of-hotel-rooms-next-three-years",
-                               refresh_hotel_rooms, "hotel_rooms_pipeline.csv")
-    manual = load_manual(registry)
-    market_monthly, market_h1 = load_hktb_arrivals(registry)
-
-    # ---- Core derived tables -------------------------------------------------
-    ratios, per_capita = build_overnight_ratios(spending)
-    records = build_arrival_records(arrivals, ratios, per_capita)
-    totals = monthly_totals(arrivals)
-    baseline_2019 = monthly_totals(arrivals, "2019")
-    in_scope = {m: v for m, v in totals.items() if m >= SCOPE_START}
-    scope_months = sorted(in_scope)
-    latest = scope_months[-1]
-    latest_year = latest[:4]
-    prev_year = str(int(latest_year) - 1)
-    ytd_months = [m for m in scope_months if m.startswith(latest_year)]
-    ytd_prev_months = [shift_year(m, -1) for m in ytd_months]
-
-    def sum_records(months, field, **filters):
-        ms = set(months)
-        return sum(r[field] for r in records if r["month"] in ms and all(r[k] == v for k, v in filters.items()))
-
-    arrivals_ytd = sum(totals.get(m, 0) for m in ytd_months)
-    arrivals_ytd_prev = sum(totals.get(m, 0) for m in ytd_prev_months)
-    fy = {y: sum(v for m, v in totals.items() if m.startswith(y)) for y in ("2019", "2024", "2025")}
-
-    spend_annual = {(r["year"], r["visitor_type"]): float(r["spend_hkd_m"]) for r in spending if r["region"] == "Total"}
-    per_cap_total = {(r["year"], r["visitor_type"]): float(r["per_capita_hkd"]) for r in spending if r["region"] == "Total"}
-    spend_years = sorted({y for (y, _) in spend_annual})
-    total_spend = {y: spend_annual[(y, "Overnight")] + spend_annual[(y, "Same-day")] for y in spend_years}
-    yield_per_visitor = {y: total_spend[y] * 1e6 / fy[y] for y in spend_years if fy.get(y)}
-
-    vt_annual = {(r["year"], r["visitor_type"]): r for r in vtypes}
-    los = [{"year": y, "nights": float(vt_annual[(y, "Overnight")]["avg_nights"])}
-           for y in sorted({k[0] for k in vt_annual}) if (vt_annual.get((y, "Overnight")) or {}).get("avg_nights")]
-
-    # ---- Hotel (manual) + supply -----------------------------------------------
-    hotel_monthly = []
-    for r in manual["hotel_occupancy_monthly.csv"]:
-        occ, adr = num(r["occupancy_pct"]), num(r["adr_hkd"])
-        hotel_monthly.append({"month": r["month"], "occupancy_pct": occ, "adr_hkd": adr,
-                              "revpar_hkd": round(occ / 100 * adr, 1) if occ is not None and adr is not None else None})
-    hotel_monthly.sort(key=lambda h: h["month"])
-
-    bri_records = [{"quarter": r["quarter"], "industry": r["industry"], "index": float(r["index"]),
-                    "yoy_pct": num(r["yoy_pct"])} for r in bri]
-    accom = [r for r in bri_records if r["industry"] == "Accommodation services"]
-
-    # ---- Tourism industries (value added & employment) -------------------------
-    industry_records = [{"year": r["year"], "code": r["code"], "industry": r["industry"], "group": r["group"],
-                         **{k: num(r[k]) for k in INDUSTRY_MEASURES.values()}} for r in industries]
-    ind_years = sorted({r["year"] for r in industry_records})
-    ind_latest = ind_years[-1] if ind_years else None
-
-    def industry(code, year):
-        return next((r for r in industry_records if r["code"] == code and r["year"] == year), None)
-
-    tourism_latest = industry("ind_KEY_IND_2", ind_latest) if ind_latest else None
-    tourism_prev = industry("ind_KEY_IND_2", ind_years[-2]) if len(ind_years) > 1 else None
-
-    # ---- 1. kpi_summary.json ---------------------------------------------------
-    spend_ytd = sum_records(ytd_months, "spend_hkd_m")
-    spend_ytd_prev = sum_records(ytd_prev_months, "spend_hkd_m")
-    targets = [{"year": r["year"], "target_arrivals": num(r["target_arrivals"]), "source": r.get("source", "")}
-               for r in manual["arrival_targets.csv"]]
-    kpi = {
-        "period": {
-            "latest_month": latest,
-            "ytd_months": ytd_months,
-            "ytd_label": "Jan-{} {}".format(datetime.strptime(latest, "%Y-%m").strftime("%b"), latest_year),
-            "compare_label": "Same period {}".format(prev_year),
-        },
-        "arrivals": {
-            "ytd": arrivals_ytd,
-            "ytd_prev": arrivals_ytd_prev,
-            "yoy_pct": pct_change(arrivals_ytd, arrivals_ytd_prev),  # YoY Arrival Growth %
-            "full_year": fy,
-            "full_year_yoy_pct": pct_change(fy["2025"], fy["2024"]),
-            "recovery_vs_2019_ytd_pct": round(arrivals_ytd / sum(baseline_2019.get("2019-" + m[5:], 0) for m in ytd_months) * 100, 1),
-            "mainland_share_ytd_pct": round(sum_records(ytd_months, "arrivals", origin="Mainland") / arrivals_ytd * 100, 1),
-        },
-        "monthly": [
-            {"month": m, "arrivals": v, "prior_year": totals.get(shift_year(m, -1)),
-             "baseline_2019": baseline_2019.get("2019-" + m[5:])}
-            for m, v in in_scope.items()
-        ],
+    summary = {
+        "months": months,
+        "arrivals_monthly": monthly,
+        "areas": [{"area": a, "segment": s} for a, s in AREA_SEGMENT.items()],
+        "length_of_stay_monthly": los,
         "targets": targets,
-        "length_of_stay": los,
-        "spending": {
-            "ytd_hkd_m": round(spend_ytd),
-            "ytd_prev_hkd_m": round(spend_ytd_prev),
-            "ytd_yoy_pct": pct_change(spend_ytd, spend_ytd_prev),
-            "ytd_is_estimate": True,
-            "annual_hkd_m": {y: round(v) for y, v in total_spend.items()},
-            "annual_by_type_hkd_m": {y: {t: round(spend_annual[(y, t)]) for t in VISITOR_TYPES} for y in spend_years},
-            "per_capita_hkd": {y: {t: per_cap_total.get((y, t)) for t in VISITOR_TYPES} for y in spend_years},
-            "yield_per_visitor_hkd": {y: round(v) for y, v in yield_per_visitor.items()},  # Spend / Visitors
-        },
-        "hotel": {
-            "available": bool(hotel_monthly),
-            "accommodation_bri_latest": accom[-1] if accom else None,
-            "rooms_pipeline": [{"year": r["year"], "rooms": int(r["rooms"])} for r in rooms],
-        },
-        "tourism_economy": {
-            "year": ind_latest,
-            "value_added_hkd_m": tourism_latest and tourism_latest["value_added_hkd_m"],
-            "gdp_share_pct": tourism_latest and tourism_latest["va_share_gdp_pct"],
-            "employment": tourism_latest and tourism_latest["employment"],
-            "employment_share_pct": tourism_latest and tourism_latest["emp_share_pct"],
-            "prev_year": tourism_prev and tourism_prev["year"],
-            "prev_employment": tourism_prev and tourism_prev["employment"],
-            "prev_gdp_share_pct": tourism_prev and tourism_prev["va_share_gdp_pct"],
-            "history": [
-                {"year": r["year"], "gdp_share_pct": r["va_share_gdp_pct"], "employment": r["employment"],
-                 "value_added_hkd_m": r["value_added_hkd_m"]}
-                for r in industry_records if r["code"] == "ind_KEY_IND_2"],
-        },
+        "segments_h1": types,
+        "h1": h1,
+        "area_h1": areas,
+        "spend_categories": categories,
+        "quarterly_overnight_per_capita": quarterly,
     }
+    return summary, months
 
-    # ---- 2. visitor_demographics.json -------------------------------------------
-    port_records = [{"month": r["month"], "port": r["port"], "mainland": int(r["mainland_visitors"]),
-                     "non_mainland": int(r["other_visitors"])} for r in ports if r["month"] >= SCOPE_START]
-    demographics = {
-        "months": scope_months,
-        "origins": ORIGINS,
-        "visitor_types": VISITOR_TYPES,
-        "ports": PORTS,
-        "segments": [{"origin": o, "regions": [REGION_LABEL[c] for c, g in REGION_GROUP.items() if g == o]} for o in ORIGINS],
-        "arrivals": [r for r in records if r["month"] >= "2024-01"],
-        "region_monthly": [
-            {"month": r["month"], "region_code": r["region_code"], "region": REGION_LABEL[r["region_code"]],
-             "origin": REGION_GROUP[r["region_code"]], "arrivals": int(r["arrivals"])}
-            for r in arrivals if r["month"] >= SCOPE_START],
-        "port_arrivals": port_records,
-        "length_of_stay": los,
-        "visitor_type_annual": [{"year": r["year"], "visitor_type": r["visitor_type"], "arrivals": int(r["arrivals"])}
-                                for r in vtypes if r["arrivals"]],
-        "markets": [{"market": m, "origin": o} for m, o in HKTB_MARKETS.items()],
-        "market_monthly": market_monthly,
-        "market_h1": market_h1,
-        "visitor_profile": [{"period": r["period"], "market": r["market"], "dimension": r["dimension"],
-                             "category": r["category"], "value": num(r["value"])}
-                            for r in manual["visitor_profile.csv"]],
-    }
 
-    # ---- 3. hotel_sector_performance.json (Revenue Analysis) --------------------
-    market_spending = []
-    for r in spending:
-        if r["region"] == "Total" or r["region"] not in SPEND_REGION_CODES:
-            continue
-        spend, pc = float(r["spend_hkd_m"]), float(r["per_capita_hkd"])
-        codes = SPEND_REGION_CODES[r["region"]]
-        market_spending.append({
-            "year": r["year"], "market": SPEND_REGION_LABEL[r["region"]],
-            "origin": REGION_GROUP[codes[0]] if r["region"] != "Europe, Africa and the Middle East" else "Long-haul",
-            "visitor_type": r["visitor_type"], "spend_hkd_m": spend, "per_capita_hkd": pc,
-            "visitors": round(spend * 1e6 / pc) if pc else None,
-        })
-    revenue = {
-        "market_spending": market_spending,
-        "tourism_industries": industry_records,
-        "hotel_monthly": hotel_monthly,
-        "hotel_rooms_pipeline": kpi["hotel"]["rooms_pipeline"],
-        "bri_industries": BRI_INDUSTRIES,
-        "bri_quarterly": bri_records,
-    }
+# --------------------------------------------------------------------------- #
+# 2027 strategy pillars (rationale and KPIs from the HKTB / TEAIT data)
+# --------------------------------------------------------------------------- #
+def build_pillars(summary, profile_rows):
+    def pv(period, market, dimension, category):
+        for r in profile_rows:
+            if r["period"] == period and r["market"] == market and r["dimension"] == dimension and r["category"] == category:
+                return num(r["value"])
+        return None
 
-    # ---- 4. strategy_forecast_2027.json ----------------------------------------
-    baseline_for_season = {m: v for m, v in totals.items() if m[:4] in ("2024", "2025")}
-    forecast, model = seasonal_trend_forecast(in_scope, baseline_for_season, "{}-12".format(FORECAST_YEAR))
-    series = [{"month": m, "actual": v, "forecast": None, "lower": None, "upper": None} for m, v in in_scope.items()]
-    series[-1].update({"forecast": series[-1]["actual"], "lower": series[-1]["actual"], "upper": series[-1]["actual"]})
-    series += [{"month": m, "actual": None, "forecast": round(p), "lower": round(lo), "upper": round(hi)}
-               for m, (p, lo, hi) in forecast.items()]
+    def change(new, old):
+        return (new / old - 1) * 100 if old else 0.0
 
-    # Yield: 2026 estimated from 2025 per-capita by segment (mix effect); 2027 applies half the historical drift.
-    yields = dict(yield_per_visitor)
-    if latest_year not in yields:
-        yields[latest_year] = sum_records(ytd_months, "spend_hkd_m") * 1e6 / arrivals_ytd
-    ys = sorted(yields)
-    growths = [yields[b] / yields[a] - 1 for a, b in zip(ys, ys[1:])]
-    damped_growth = statistics.mean(growths) * 0.5 if growths else 0.0
-    yield_2027 = yields[ys[-1]] * (1 + damped_growth) ** (FORECAST_YEAR - int(ys[-1]))
+    seg_now, seg_before = summary["segments_h1"]["2026"], summary["segments_h1"]["2025"]
+    total = sum(s["visitors"] for s in seg_now.values())
+    same_day_share = sum(s["same_day"] for s in seg_now.values()) / total * 100
+    long_haul_share = seg_now["Long-haul"]["visitors"] / total * 100
+    mainland_share = seg_now["Mainland"]["visitors"] / total * 100
+    mainland_overnight = seg_now["Mainland"]["overnight"] / seg_now["Mainland"]["visitors"] * 100
+    h1_now, h1_before = summary["h1"]["2026"], summary["h1"]["2025"]
+    per_capita = {(a["area"], a["year"]): a["overnight_per_capita_hkd"] for a in summary["area_h1"]}
+    month_totals = {m: v["All"] for m, v in summary["arrivals_monthly"].items() if m.startswith("2026")}
+    peak, low = max(month_totals, key=month_totals.get), min(month_totals, key=month_totals.get)
+    cat = {(c["category"], c["year"]): c["spend_hkd_m"] for c in summary["spend_categories"]
+           if c["visitor_type"] == "Overnight" and c["segment"] == "All markets"}
+    hotel_growth = change(cat[("Hotel Bills", "2026")], cat[("Hotel Bills", "2025")])
+    entertainment_growth = change(cat[("Entertainment", "2026")], cat[("Entertainment", "2025")])
+    long_multi = pv("2025", "Long-haul", "itinerary", "Multi-destination")
+    short_macao = pv("2025", "Short-haul", "other_destination", "Macao SAR")
+    month_label = lambda m: datetime.strptime(m, "%Y-%m").strftime("%b %Y")  # noqa: E731
 
-    fc_year = lambda y, i: sum(v[i] for m, v in forecast.items() if m.startswith(str(y)))  # noqa: E731
-    year_latest_total = arrivals_ytd + fc_year(latest_year, 0)
-    arrivals_2027 = fc_year(FORECAST_YEAR, 0)
-    annual = [
-        {"year": "2024", "arrivals": fy["2024"], "yield_hkd": round(yields.get("2024", 0)),
-         "spend_hkd_m": round(total_spend.get("2024", 0)), "status": "actual"},
-        {"year": "2025", "arrivals": fy["2025"], "yield_hkd": round(yields["2025"]),
-         "spend_hkd_m": round(total_spend["2025"]), "status": "actual"},
-        {"year": latest_year, "arrivals": round(year_latest_total), "yield_hkd": round(yields[latest_year]),
-         "spend_hkd_m": round(year_latest_total * yields[latest_year] / 1e6), "status": "actual + forecast"},
-        {"year": str(FORECAST_YEAR), "arrivals": round(arrivals_2027), "yield_hkd": round(yield_2027),
-         "spend_hkd_m": round(arrivals_2027 * yield_2027 / 1e6), "status": "forecast",
-         "arrivals_lower": round(fc_year(FORECAST_YEAR, 1)), "arrivals_upper": round(fc_year(FORECAST_YEAR, 2))},
-    ]
-    annual = [a for i, a in enumerate(annual) if a["year"] not in {b["year"] for b in annual[:i]}]
-
-    def scenario(label, vol_adj, yield_adj, description, drivers):
-        a, y = arrivals_2027 * (1 + vol_adj), yield_2027 * (1 + yield_adj)
-        return {"label": label, "arrivals": round(a), "yield_hkd": round(y), "spend_hkd_m": round(a * y / 1e6),
-                "arrivals_adj_pct": vol_adj * 100, "yield_adj_pct": yield_adj * 100,
-                "description": description, "drivers": drivers}
-
-    scenarios = {
-        "base": scenario("Base case", 0.0, 0.0,
-                         "Current 2025-26 run-rate continues: Mainland-led volume growth with gradual yield drift.",
-                         ["Trend + seasonality extrapolated", "Segment spending mix held at 2025 levels"]),
-        "upside": scenario("Strategy delivered", 0.03, 0.06,
-                           "Strategic pillars land: more overnight, long-haul and MICE visitors lift yield.",
-                           ["Overnight share +3pp", "Mega-event calendar at Kai Tak", "GBA multi-destination packages"]),
-        "downside": scenario("Headwinds", -0.05, -0.04,
-                             "Weaker regional demand, strong HKD and Mainland outbound diversion to other destinations.",
-                             ["Same-day shopping trips soften", "Long-haul air capacity constraints"]),
-    }
-
-    # Metrics feeding the strategy narrative (all computed from official data)
-    ytd_overnight = sum_records(ytd_months, "arrivals", visitor_type="Overnight")
-    sameday_share = round((1 - ytd_overnight / arrivals_ytd) * 100, 1)
-    longhaul_share = round(sum_records(ytd_months, "arrivals", origin="Long-haul") / arrivals_ytd * 100, 1)
-    pc = kpi["spending"]["per_capita_hkd"].get("2025", {})
-    port_ytd = defaultdict(int)
-    for p in port_records:
-        if p["month"].startswith(latest_year):
-            port_ytd[p["port"]] += p["mainland"] + p["non_mainland"]
-    port_total = sum(port_ytd.values()) or 1
-    xb_share = round((port_ytd["West Kowloon HSR"] + port_ytd["HZMB"] + port_ytd["Land Control Points"]) / port_total * 100, 1)
-    tce = [r for r in bri_records if r["industry"] == BRI_INDUSTRIES[0]]
-    tce_latest = tce[-1] if tce else {"quarter": "n/a", "yoy_pct": None, "index": None}
-    accom_by_q = defaultdict(list)
-    for r in accom:
-        accom_by_q[r["quarter"][-2:]].append(r["index"])
-    accom_q = {q: statistics.mean(v) for q, v in accom_by_q.items()}
-    accom_peak_q = max(accom_q, key=accom_q.get) if accom_q else "Q4"
-    accom_low_q = min(accom_q, key=accom_q.get) if accom_q else "Q3"
-    accom_gap = (accom_q[accom_peak_q] / accom_q[accom_low_q] - 1) * 100 if accom_q else 0
-
-    pillars = [
+    return [
         {
             "id": "high-value", "number": 1,
             "title": "High-Value, Long-Haul Experience & MICE Diversification",
             "tagline": "From same-day shopping to overnight, experience-driven stays",
             "rationale": [
-                "Same-day visitors account for {}% of {} YTD arrivals but spend HK${:,.0f} per head vs HK${:,.0f} for overnight visitors (2025).".format(
-                    sameday_share, latest_year, pc.get("Same-day") or 0, pc.get("Overnight") or 0),
-                "Long-haul markets are only {}% of arrivals despite the highest per-capita spend.".format(longhaul_share),
-                "Yield per visitor moved from HK${:,.0f} (2024) to HK${:,.0f} (2025) as volume shifted to same-day trips.".format(
-                    yields.get("2024", 0), yields["2025"]),
+                "Same-day visitors account for {:.0f}% of Jan-Jun 2026 arrivals but spend HK${:,.0f} per head vs HK${:,.0f} for overnight visitors.".format(
+                    same_day_share, h1_now["same_day_per_capita_hkd"], h1_now["overnight_per_capita_hkd"]),
+                "Long-haul markets are only {:.1f}% of arrivals yet spend HK${:,.0f} per overnight visitor in the Americas and HK${:,.0f} in Europe, Africa & the Middle East.".format(
+                    long_haul_share, per_capita[("The Americas", "2026")], per_capita[("Europe, Africa & the Middle East", "2026")]),
+                "Overnight spend per visitor was flat: HK${:,.0f} in Jan-Jun 2025 and HK${:,.0f} in Jan-Jun 2026.".format(
+                    h1_before["overnight_per_capita_hkd"], h1_now["overnight_per_capita_hkd"]),
             ],
             "initiatives": [
                 "Scale 'CityWalk' neighbourhood trails (Sham Shui Po, Sai Kung, Central-Western) into bookable multi-day itineraries.",
@@ -1177,12 +927,12 @@ def build_outputs(registry):
                 "Night-time economy and cultural districts (WestK, M+, Palace Museum) bundled as premium overnight products.",
             ],
             "kpis": [
-                {"metric": "Overnight share of arrivals", "baseline": "{}%".format(round(100 - sameday_share, 1)),
-                 "target_2027": "{}%".format(round(100 - sameday_share + 3, 1))},
-                {"metric": "Long-haul share of arrivals", "baseline": "{}%".format(longhaul_share),
-                 "target_2027": "{}%".format(round(longhaul_share + 1.5, 1))},
-                {"metric": "Yield per visitor (HKD)", "baseline": "{:,.0f}".format(yields[ys[-1]]),
-                 "target_2027": "{:,.0f}".format(scenarios["upside"]["yield_hkd"])},
+                {"metric": "Overnight share of arrivals", "baseline": "{:.1f}%".format(100 - same_day_share),
+                 "target_2027": "{:.1f}%".format(100 - same_day_share + 3)},
+                {"metric": "Long-haul share of arrivals", "baseline": "{:.1f}%".format(long_haul_share),
+                 "target_2027": "{:.1f}%".format(long_haul_share + 1.5)},
+                {"metric": "Spend per overnight visitor (HKD)", "baseline": "{:,.0f}".format(h1_now["overnight_per_capita_hkd"]),
+                 "target_2027": "{:,.0f}".format(round(h1_now["overnight_per_capita_hkd"] * 1.05, -1))},
             ],
             "timeline": [
                 {"phase": "Q1 2027", "action": "Launch long-haul stopover campaign and MICE bid fund round."},
@@ -1195,12 +945,12 @@ def build_outputs(registry):
             "title": "Mega-Events & \"+ Tourism\" Integration",
             "tagline": "Kai Tak Sports Park as a year-round demand engine",
             "rationale": [
-                "Tourism, convention & exhibition BRI stood at {} (2015 = 100) in {}, up {}% YoY - still well below its 2015 base.".format(
-                    tce_latest["index"], tce_latest["quarter"], tce_latest["yoy_pct"]),
-                "Accommodation receipts in {} run {:.0f}% above {} on average - events can fill the softer quarter.".format(
-                    accom_peak_q, accom_gap, accom_low_q),
-                "Seasonal index ranges {:.2f}-{:.2f}: events can fill the softer June and September troughs.".format(
-                    min(model["seasonal_index"].values()), max(model["seasonal_index"].values())),
+                "Monthly arrivals ranged from {:.1f}M ({}) to {:.1f}M ({}) in the first half of 2026: events can fill the softer months.".format(
+                    month_totals[low] / 1e6, month_label(low), month_totals[peak] / 1e6, month_label(peak)),
+                "Hotel bills were HK${:.1f}bn of overnight visitor spending in Jan-Jun 2026, {:+.1f}% YoY.".format(
+                    cat[("Hotel Bills", "2026")] / 1000, hotel_growth),
+                "Overnight entertainment spending was HK${:.1f}bn ({:+.1f}% YoY), leaving room for event-led growth.".format(
+                    cat[("Entertainment", "2026")] / 1000, entertainment_growth),
             ],
             "initiatives": [
                 "Anchor a 12-month mega-event calendar at Kai Tak Sports Park (concerts, rugby sevens, e-sports).",
@@ -1210,9 +960,8 @@ def build_outputs(registry):
             ],
             "kpis": [
                 {"metric": "Mega-events hosted", "baseline": "2025-26 calendar", "target_2027": "+20% events"},
-                {"metric": "Accommodation BRI YoY", "baseline": "{}%".format(accom[-1]["yoy_pct"] if accom else "n/a"),
-                 "target_2027": "+6-8%"},
-                {"metric": "TCE BRI YoY", "baseline": "{}%".format(tce_latest["yoy_pct"]), "target_2027": "+8-10%"},
+                {"metric": "Overnight hotel-bill spending (YoY)", "baseline": "{:+.1f}%".format(hotel_growth), "target_2027": "+8-10%"},
+                {"metric": "Overnight entertainment spending (YoY)", "baseline": "{:+.1f}%".format(entertainment_growth), "target_2027": "+5%"},
             ],
             "timeline": [
                 {"phase": "H2 2026", "action": "Lock 2027 Kai Tak anchor events and ticket-bundle partners."},
@@ -1224,11 +973,13 @@ def build_outputs(registry):
             "title": "Seamless Cross-Boundary GBA Multi-Destination Strategy",
             "tagline": "Hong Kong as the international gateway to the Greater Bay Area",
             "rationale": [
-                "{}% of {} YTD visitor entries came via land, HSR or HZMB control points.".format(xb_share, latest_year),
-                "Mainland visitors make up {}% of {} YTD arrivals; most are same-day.".format(
-                    kpi["arrivals"]["mainland_share_ytd_pct"], latest_year),
-                "International visitors increasingly combine Hong Kong with Shenzhen, Macao and Guangzhou in one trip.",
-            ],
+                "Mainland visitors made up {:.0f}% of Jan-Jun 2026 arrivals; only {:.0f}% of them stayed overnight.".format(
+                    mainland_share, mainland_overnight),
+                "Same-day Mainland visitors grew {:+.0f}% YoY against {:+.0f}% for overnight Mainland visitors.".format(
+                    change(seg_now["Mainland"]["same_day"], seg_before["Mainland"]["same_day"]),
+                    change(seg_now["Mainland"]["overnight"], seg_before["Mainland"]["overnight"])),
+            ] + (["In 2025, {:.0f}% of long-haul overnight visitors made Hong Kong part of a multi-destination trip and {:.0f}% of short-haul visitors also went to Macao.".format(
+                long_multi, short_macao)] if long_multi is not None and short_macao is not None else []),
             "initiatives": [
                 "Joint 'One Trip, Multiple Destinations' packages with Macao and GBA cities.",
                 "Single-ticketing across HSR, HZMB and ferries with integrated attraction passes.",
@@ -1237,10 +988,9 @@ def build_outputs(registry):
             ],
             "kpis": [
                 {"metric": "Multi-destination itineraries sold", "baseline": "Pilot", "target_2027": "500k travellers"},
-                {"metric": "Mainland overnight conversion", "baseline": "{:.0f}%".format(ratios.get(("2025", "CN"), 0) * 100),
-                 "target_2027": "+3pp"},
-                {"metric": "Cross-boundary entries (land, HSR, HZMB)", "baseline": "{}%".format(xb_share),
-                 "target_2027": "Maintain share with higher yield"},
+                {"metric": "Mainland overnight conversion", "baseline": "{:.0f}%".format(mainland_overnight), "target_2027": "+3pp"},
+                {"metric": "Long-haul multi-destination trips", "baseline": "{:.0f}% (2025)".format(long_multi) if long_multi is not None else "n/a",
+                 "target_2027": "+5pp"},
             ],
             "timeline": [
                 {"phase": "Q1 2027", "action": "Launch single-ticket pilot (HSR + HZMB + attraction pass)."},
@@ -1249,33 +999,46 @@ def build_outputs(registry):
         },
     ]
 
-    playbooks = build_market_playbooks(manual["visitor_profile.csv"], market_h1) if manual["visitor_profile.csv"] and market_h1 else []
+
+# --------------------------------------------------------------------------- #
+# Build JSON outputs
+# --------------------------------------------------------------------------- #
+def build_outputs(registry):
+    log.info("Loading sources:")
+    summary, months = build_summary(registry)
+    manual = load_manual(registry)
+    market_monthly, market_h1 = load_hktb_arrivals(registry)
+    profile_rows = manual["visitor_profile.csv"]
+
+    demographics = {
+        "markets": [{"market": m, "origin": o} for m, o in HKTB_MARKETS.items()],
+        "market_monthly": market_monthly,
+        "market_h1": market_h1,
+        "visitor_profile": [{"period": r["period"], "market": r["market"], "dimension": r["dimension"],
+                             "category": r["category"], "value": num(r["value"])} for r in profile_rows],
+    }
+    playbooks = build_market_playbooks(profile_rows, market_h1) if profile_rows and market_h1 else []
+    pillars = build_pillars(summary, profile_rows)
     for p in pillars:
         p["focus_markets"] = [b["market"] for b in playbooks if b["primary"] == p["id"]]
-
-    strategy = {"model": model, "series": series, "annual": annual, "scenarios": scenarios, "pillars": pillars,
-                "market_playbooks": playbooks}
     return {
-        "kpi_summary.json": kpi,
+        "summary.json": summary,
         "visitor_demographics.json": demographics,
-        "hotel_sector_performance.json": revenue,
-        "strategy_forecast_2027.json": strategy,
-    }, (scope_months[0], latest)
+        "strategy_2027.json": {"pillars": pillars, "market_playbooks": playbooks},
+    }, (months[0], months[-1])
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--offline", action="store_true", help="skip live fetches and use snapshot CSVs only")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT, help="output directory for JSON files")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(message)s")
 
-    registry = SourceRegistry(args.offline)
+    registry = SourceRegistry()
     outputs, coverage = build_outputs(registry)
     meta = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "coverage": {"start": coverage[0], "end": coverage[1]},
-        "mode": "offline" if args.offline else "live",
         "sources": registry.items,
         "pending": registry.pending,
     }
@@ -1284,10 +1047,9 @@ def main():
     for name, payload in outputs.items():
         path = args.out / name
         path.write_text(json.dumps({"meta": meta, **payload}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-        log.info("  %-34s %6.1f KB", name, path.stat().st_size / 1024)
+        log.info("  %-28s %6.1f KB", name, path.stat().st_size / 1024)
     if registry.pending:
-        log.info("Pending (no open data - fill data/manual/*.csv to enable): %s",
-                 ", ".join(p["id"] for p in registry.pending))
+        log.info("Pending (fill data/manual/*.csv to enable): %s", ", ".join(p["id"] for p in registry.pending))
 
 
 if __name__ == "__main__":

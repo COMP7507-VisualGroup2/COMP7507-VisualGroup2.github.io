@@ -9,12 +9,10 @@ import world from 'world-atlas/countries-110m.json';
 import { demographics } from '@/lib/data';
 import { inRange } from '@/lib/filters';
 import { formatCompact, formatNumber, formatPct } from '@/lib/format';
-import { MARKET_ORIGIN, shortMarket } from '@/lib/persona';
-import { COUNTRY_TO_REGION } from '@/lib/regions';
+import { MARKET_ORIGIN, marketInFilter, shortMarket } from '@/lib/persona';
 import { COLORS, ORIGIN_COLORS } from '@/lib/theme';
 import type { Filters, Origin } from '@/lib/types';
 import { AnimatedNumber } from '../motion';
-import { Segmented } from '../SectionCard';
 
 const WIDTH = 960;
 const MAX_ZOOM = 8;
@@ -23,10 +21,6 @@ const SCALE = WIDTH / (2 * Math.PI);
 const HEIGHT = Math.round(SCALE * (mercatorY(79) - mercatorY(-57)));
 const HK: [number, number] = [114.17, 22.32];
 const ARROW = COLORS.accentDeep;
-const ANCHORS: Record<string, [number, number]> = {
-  CN: [104, 34], TW: [121, 23.7], NA: [134, 37], SA: [100, 8], AU: [134, -25],
-  AM: [-98, 38], EU: [12, 50], ME: [46, 26], AF: [20, 3],
-};
 
 type Anchor = 'start' | 'middle' | 'end';
 interface MarketGeo {
@@ -70,14 +64,12 @@ const pathGen = geoPath(projection);
 const PATHS = countries.map((f: Feature<Geometry, { name: string }>) => ({
   id: String(f.id),
   name: f.properties.name,
-  region: COUNTRY_TO_REGION[String(f.id)],
   market: COUNTRY_MARKET[String(f.id)],
   d: pathGen(f) ?? '',
 }));
 const MARKET_PATHS = PATHS.filter((p) => p.market);
 
-type Mode = 'markets' | 'regions';
-type Hover = { country: string; region?: string; market?: string } | null;
+type Hover = { country: string; market: string } | null;
 
 const PALETTE = ['#BDE3E5', '#7CC8CC', '#2EA5A8', '#007A86', '#003845'];
 
@@ -152,9 +144,8 @@ function Flow({ from, to, width, emphasis, motion, index, k }: { from: [number, 
 
 const HALO = { stroke: COLORS.canvas, strokeWidth: 3, paintOrder: 'stroke', strokeLinejoin: 'round' } as const;
 
-/** Choropleth of visitor arrivals by HKTB source market (or C&SD region) with animated inbound flows to Hong Kong. */
+/** Choropleth of visitor arrivals by HKTB source market with animated inbound flows to Hong Kong. */
 export default function OriginMap({ filters }: { filters: Filters }) {
-  const [mode, setMode] = useState<Mode>('markets');
   const [hover, setHover] = useState<Hover>(null);
   const [motion, setMotion] = useState(true);
   const [view, setView] = useState<View>(WORLD);
@@ -188,19 +179,6 @@ export default function OriginMap({ filters }: { filters: Filters }) {
     return () => svg.removeEventListener('wheel', onWheel);
   }, []);
 
-  const { byRegion, labels, total: regionTotal, max: regionMax } = useMemo(() => {
-    const byRegion: Record<string, number> = {};
-    const labels: Record<string, { region: string; origin: string }> = {};
-    demographics.region_monthly
-      .filter((r) => inRange(r.month, filters))
-      .forEach((r) => {
-        byRegion[r.region_code] = (byRegion[r.region_code] ?? 0) + r.arrivals;
-        labels[r.region_code] = { region: r.region, origin: r.origin };
-      });
-    const values = Object.values(byRegion);
-    return { byRegion, labels, total: values.reduce((a, b) => a + b, 0), max: Math.max(...values, 1) };
-  }, [filters]);
-
   const { byMarket, marketTotal, marketMax } = useMemo(() => {
     const byMarket: Record<string, number> = {};
     let marketTotal = 0;
@@ -213,40 +191,28 @@ export default function OriginMap({ filters }: { filters: Filters }) {
     return { byMarket, marketTotal, marketMax: Math.max(...Object.values(byMarket), 1) };
   }, [filters]);
 
-  const markets = mode === 'markets';
-  const selectedOrigin = filters.origin;
   const hasMarketData = Object.keys(byMarket).length > 0;
-  const marketVisible = (m: string) => selectedOrigin === 'All' || MARKET_ORIGIN[m] === selectedOrigin;
-  const regionVisible = (code: string) => selectedOrigin === 'All' || labels[code]?.origin === selectedOrigin;
+  const marketVisible = (m: string) => marketInFilter(m, filters);
   const marketScale = useMemo(() => makeScale(Object.values(byMarket)), [byMarket]);
-  const regionScale = useMemo(() => makeScale(Object.values(byRegion)), [byRegion]);
-  const scale = markets ? marketScale : regionScale;
+  const scale = marketScale;
 
   const marketFill = (m?: string) => {
     if (!m || !byMarket[m] || !marketVisible(m)) return COLORS.mist;
     return marketScale.colorOf(byMarket[m]);
   };
-  const regionFill = (region?: string) => {
-    if (!region || !byRegion[region] || !regionVisible(region)) return COLORS.mist;
-    return regionScale.colorOf(byRegion[region]);
-  };
 
   const point = (c: [number, number]) => (projection(c) ?? [0, 0]) as [number, number];
   const hk = point(HK);
-  const flows = Object.entries(markets ? MARKET_GEO : ANCHORS)
-    .map(([key, v]) => {
-      const coords = markets ? (v as MarketGeo).from : (v as [number, number]);
-      const value = markets ? byMarket[key] : byRegion[key];
-      const max = markets ? marketMax : regionMax;
-      const visible = markets ? marketVisible(key) : key !== 'CN' && regionVisible(key);
-      return { key, from: point(coords), value, width: 1.2 + 4.8 * Math.sqrt((value ?? 0) / max), visible };
+  const flows = Object.entries(MARKET_GEO)
+    .map(([key, g]) => {
+      const value = byMarket[key];
+      return { key, from: point(g.from), value, width: 1.2 + 4.8 * Math.sqrt((value ?? 0) / marketMax), visible: marketVisible(key) };
     })
     .filter((f) => f.value && f.visible);
 
-  const hoveredKey = hover ? (markets ? hover.market : hover.region) : undefined;
+  const hoveredKey = hover?.market;
   const hoveredMarket = hover?.market;
-  const hoveredRegion = hover?.region ? labels[hover.region] : null;
-  const total = markets ? marketTotal : regionTotal;
+  const total = marketTotal;
   const compact = (n: number) => formatCompact(n, n >= 1e6 ? 1 : 0);
   const whole = (n: number) => formatNumber(Math.round(n));
 
@@ -289,23 +255,6 @@ export default function OriginMap({ filters }: { filters: Filters }) {
 
   return (
     <div>
-      <div className="mb-2 flex flex-wrap items-center gap-2">
-        <Segmented<Mode>
-          size="xs"
-          value={mode}
-          onChange={(m) => {
-            setMode(m);
-            setHover(null);
-          }}
-          options={[
-            { value: 'markets', label: '18 source markets' },
-            { value: 'regions', label: 'C&SD regions' },
-          ]}
-        />
-        <span className="text-[11px] text-slate-600">
-          {markets ? 'HKTB nationality detail · Jan–Jun 2025 and Jan–Jun 2026 only' : 'C&SD source regions · every month'}
-        </span>
-      </div>
 
       <div className="relative overflow-hidden rounded-xl bg-slate-50/60">
         <svg
@@ -327,33 +276,31 @@ export default function OriginMap({ filters }: { filters: Filters }) {
                 <path
                   key={p.id + p.name}
                   d={p.d}
-                  fill={markets ? marketFill(p.market) : regionFill(p.region)}
+                  fill={marketFill(p.market)}
                   stroke={COLORS.blush}
                   strokeWidth={0.6}
                   strokeLinejoin="round"
                   vectorEffect="non-scaling-stroke"
-                  onMouseEnter={() => (markets ? p.market && setHover({ country: p.name, market: p.market }) : p.region && setHover({ country: p.name, region: p.region }))}
+                  onMouseEnter={() => p.market && setHover({ country: p.name, market: p.market })}
                   onMouseLeave={() => setHover(null)}
-                  className={(markets ? p.market : p.region) ? 'cursor-pointer transition-opacity hover:opacity-80' : undefined}
+                  className={p.market ? 'cursor-pointer transition-opacity hover:opacity-80' : undefined}
                   style={{ transition: 'fill 400ms' }}
                 />
               ))}
             </g>
 
-            {markets && (
-              <g fill="none" strokeLinejoin="round" pointerEvents="none">
-                {MARKET_PATHS.filter((p) => marketVisible(p.market)).map((p) => (
-                  <path
-                    key={`outline-${p.id}`}
-                    d={p.d}
-                    stroke={ORIGIN_COLORS[MARKET_ORIGIN[p.market] as Origin]}
-                    strokeWidth={hoveredMarket === p.market ? 2.4 : 1.3}
-                    strokeOpacity={byMarket[p.market] || !hasMarketData ? 1 : 0.5}
-                    vectorEffect="non-scaling-stroke"
-                  />
-                ))}
-              </g>
-            )}
+            <g fill="none" strokeLinejoin="round" pointerEvents="none">
+              {MARKET_PATHS.filter((p) => marketVisible(p.market)).map((p) => (
+                <path
+                  key={`outline-${p.id}`}
+                  d={p.d}
+                  stroke={ORIGIN_COLORS[MARKET_ORIGIN[p.market] as Origin]}
+                  strokeWidth={hoveredMarket === p.market ? 2.4 : 1.3}
+                  strokeOpacity={byMarket[p.market] || !hasMarketData ? 1 : 0.5}
+                  vectorEffect="non-scaling-stroke"
+                />
+              ))}
+            </g>
 
             <g>
               {flows.map((f, i) => (
@@ -362,8 +309,7 @@ export default function OriginMap({ filters }: { filters: Filters }) {
             </g>
 
             <g pointerEvents="none">
-              {markets &&
-                Object.entries(MARKET_GEO).map(([m, g]) => {
+              {Object.entries(MARKET_GEO).map(([m, g]) => {
                   const [x, y] = point(g.from);
                   const v = byMarket[m];
                   const visible = marketVisible(m);
@@ -375,19 +321,6 @@ export default function OriginMap({ filters }: { filters: Filters }) {
                       <text x={g.label[0]} y={g.label[1]} textAnchor={g.label[2]} fontSize={9.5} fontWeight={hoveredMarket === m ? 800 : 600} fill={COLORS.ink} {...HALO}>
                         {shortMarket(m)}
                         {v ? <> <AnimatedNumber value={v} format={compact} /></> : null}
-                      </text>
-                    </g>
-                  );
-                })}
-              {!markets &&
-                Object.entries(ANCHORS).map(([code, c]) => {
-                  const v = byRegion[code];
-                  if (!v) return null;
-                  const [x, y] = point(c);
-                  return (
-                    <g key={`rlabel-${code}`} transform={`translate(${x},${y}) scale(${1 / k})`} opacity={regionVisible(code) ? 1 : 0.3}>
-                      <text y={code === 'CN' ? 10 : 0} textAnchor="middle" fontSize={10} fontWeight={600} fill={COLORS.ink} {...HALO}>
-                        {labels[code].region.replace('Chinese ', '')} <AnimatedNumber value={v} format={compact} />
                       </text>
                     </g>
                   );
@@ -410,7 +343,7 @@ export default function OriginMap({ filters }: { filters: Filters }) {
         </svg>
 
         <div className="pointer-events-none absolute left-2 top-2 rounded-lg bg-canvas/95 px-3 py-2 text-xs shadow-card ring-1 ring-mist">
-          {markets && hoveredMarket ? (
+          {hoveredMarket ? (
             <>
               <p className="font-semibold text-slate-900">{hoveredMarket}</p>
               <p className="text-slate-600">
@@ -428,20 +361,7 @@ export default function OriginMap({ filters }: { filters: Filters }) {
                 <p className="mt-1 text-slate-600">No arrivals in the selected range</p>
               )}
             </>
-          ) : !markets && hoveredRegion && hover?.region ? (
-            <>
-              <p className="font-semibold text-slate-900">{hoveredRegion.region}</p>
-              <p className="text-slate-600">
-                {hover.country} · {hoveredRegion.origin}
-              </p>
-              <p className="mt-1 font-semibold text-brand-800">
-                <AnimatedNumber value={byRegion[hover.region]} format={whole} />{' '}
-                <span className="font-normal text-slate-600">
-                  (<AnimatedNumber value={(byRegion[hover.region] / regionTotal) * 100} format={(n) => formatPct(n)} />)
-                </span>
-              </p>
-            </>
-          ) : markets && !hasMarketData ? (
+                    ) : !hasMarketData ? (
             <>
               <p className="font-semibold text-slate-900">No nationality detail in this range</p>
               <p className="text-slate-600">Choose months in Jan–Jun 2025 or Jan–Jun 2026</p>
@@ -451,7 +371,7 @@ export default function OriginMap({ filters }: { filters: Filters }) {
               <p className="font-semibold text-slate-900">
                 <AnimatedNumber value={total} format={(n) => `${formatCompact(n, 1)} arrivals`} />
               </p>
-              <p className="text-slate-600">{markets ? 'Hover a highlighted country for its market' : 'Hover a country to see its source region'}</p>
+              <p className="text-slate-600">Hover a highlighted country for its market</p>
             </>
           )}
         </div>
@@ -499,21 +419,16 @@ export default function OriginMap({ filters }: { filters: Filters }) {
           </svg>
           Inbound flow to Hong Kong (width = volume)
         </span>
-        {markets && (
-          <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
-            Outline:
-            {(Object.keys(ORIGIN_COLORS) as Origin[]).map((o) => (
-              <span key={o} className="inline-flex items-center gap-1">
-                <span className="h-2.5 w-3.5 rounded-sm border-2" style={{ borderColor: ORIGIN_COLORS[o] }} />
-                {o}
-              </span>
-            ))}
-          </span>
-        )}
-        {!markets && <span>
-            Macao (not drawn at this scale): <AnimatedNumber value={byRegion.MA ?? 0} format={(n) => formatCompact(n, 1)} />
-          </span>}
-        {markets && <span>Singapore shown as a dot (too small at this scale). Monthly market figures cover all visitors.</span>}
+        <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
+          Outline:
+          {(Object.keys(ORIGIN_COLORS) as Origin[]).map((o) => (
+            <span key={o} className="inline-flex items-center gap-1">
+              <span className="h-2.5 w-3.5 rounded-sm border-2" style={{ borderColor: ORIGIN_COLORS[o] }} />
+              {o}
+            </span>
+          ))}
+        </span>
+        <span>Singapore shown as a dot (too small at this scale). Monthly market figures cover all visitors.</span>
         <span>Zoom: +/− buttons, double-click, or Ctrl/⌘ + scroll · drag to pan.</span>
       </div>
     </div>

@@ -1,4 +1,5 @@
-import { MARKETS, marketH1, profile, profileValue } from './persona';
+import { summary } from './data';
+import { MARKETS, marketH1, profileValue } from './persona';
 import type { Origin, ProfilePeriod } from './types';
 
 /**
@@ -68,19 +69,16 @@ export function totalArrivals(period: ProfilePeriod): number | null {
   return marketH1(period, 'All markets')?.arrivals ?? null;
 }
 
-export const SPEND_CATEGORIES = ['Hotel bills', 'Shopping', 'Dining', 'Others'] as const;
+export const SPEND_CATEGORIES = ['Shopping', 'Hotel Bills', 'Dining', 'Entertainment', 'Sightseeing', 'Others'] as const;
 
-/** Estimated overnight spend (HK$ m) by category for each HKTB segment: segment spend x published spending mix. */
-export function segmentSpendByCategory(period: ProfilePeriod) {
+/** Overnight visitor spending (HK$ m) by category for each segment, Jan-Jun (HKTB TEAIT). */
+export function segmentSpendByCategory(year: string) {
   return (['Mainland', 'Short-haul', 'Long-haul'] as const).flatMap((segment) => {
-    const h1 = marketH1(period, segment);
-    const perCapita = profileValue(period, segment, PC);
-    const mix = profile(period, segment, 'spend_mix');
-    if (!h1 || perCapita === null || !mix.length) return [];
-    const total = (h1.overnight * perCapita) / 1e6;
-    const row: Record<string, string | number> = { segment, total };
-    SPEND_CATEGORIES.forEach((c) => {
-      row[c] = (total * (mix.find((x) => x.category === c)?.value ?? 0)) / 100;
+    const rows = summary.spend_categories.filter((c) => c.visitor_type === 'Overnight' && c.segment === segment && c.year === year);
+    if (!rows.length) return [];
+    const row: Record<string, string | number> = { segment, total: rows.reduce((a, c) => a + c.spend_hkd_m, 0) };
+    rows.forEach((c) => {
+      row[c.category] = c.spend_hkd_m;
     });
     return [row];
   });
