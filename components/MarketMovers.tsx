@@ -16,7 +16,7 @@ const compact = (n: number) => formatCompact(n, n >= 1e6 ? 2 : 0);
 function YoY({ value }: { value: number | null }) {
   if (value === null) return <span className="text-slate-400">–</span>;
   return (
-    <span className={`tabular-nums font-semibold ${value < 0 ? 'text-accent-700' : 'text-brand-700'}`}>
+    <span className={`tabular-nums font-semibold ${value > 0 ? 'text-green-700' : 'text-red-600'}`}>
       <AnimatedNumber value={value} format={(v) => formatPct(v, 0, true)} />
     </span>
   );
@@ -54,10 +54,8 @@ export default function MarketMovers({ filters }: { filters: Filters }) {
   return (
     <SectionCard
       title="Source markets: who is driving arrivals"
-      subtitle="HKTB nationality statistics · Jan–Jun 2026 vs Jan–Jun 2025"
-      badge="manual"
       actions={
-        <Link href="/visitor-persona/" className="text-xs font-semibold text-brand-800 hover:underline">
+        <Link href="/countries-analysis/" className="text-xs font-semibold text-brand-800 hover:underline">
           Explore all 18 markets →
         </Link>
       }

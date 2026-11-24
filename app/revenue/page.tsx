@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import RevenueTab from '@/components/tabs/RevenueTab';
+import MarketAnalysisTab from '@/components/tabs/MarketAnalysisTab';
 
-export const metadata: Metadata = { title: 'Revenue Analysis' };
+export const metadata: Metadata = { title: 'Region Analysis' };
 
 export default function RevenuePage() {
-  return <RevenueTab />;
+  return <MarketAnalysisTab />;
 }

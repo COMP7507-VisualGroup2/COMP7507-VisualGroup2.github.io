@@ -15,11 +15,15 @@ Inputs (all in data/):
   type, market area and spending category.
 * "Average spend per overnight visitors.xlsx" - quarterly overnight spend per visitor and
   market-area overnight visitor counts compiled from the TEAIT releases.
+* TEAIT quarterly releases (2025 and Jan-Jun 2026) - cumulative expenditure and
+  per-capita expenditure used to derive standalone quarterly visitor-type and
+  market-segment spending.
 * Monthly visitor arrivals by region ("Visitor arrivals by nationalityregion.csv"),
   monthly length of stay ("Lenght of stay.csv"), Jan-Jun visitor types
   ("visitor_type_h1.csv") and the 2025 / 2026 government targets ("2025 KPI.csv",
   "2026 KPI.csv"), as supplied with the project.
 * HKTB Visitor Profile Report 2025 FY / 2026 H1, transcribed to data/manual/visitor_profile.csv.
+* Official Hong Kong district boundaries, stored as data/hksar_18_district_boundary.json.
 
 Usage
 -----
@@ -58,6 +62,14 @@ VISITOR_TYPE_CSV = "visitor_type_h1.csv"
 KPI_CSV = "{} KPI.csv"
 EXPENDITURE_XLS = "Inbound tourism expediture 06 2026.xls"
 QUARTERLY_XLSX = "Average spend per overnight visitors.xlsx"
+QUARTERLY_TEAIT_FILES = (
+    (2025, 1, "Mar", "TEAIT 03 2025.xls"),
+    (2025, 2, "Jun", "TEAIT 06 2025.xls"),
+    (2025, 3, "Sep", "TEAIT 09 2025.xls"),
+    (2025, 4, "Dec", "TEAIT 12 2025_R.xls"),
+    (2026, 1, "Mar", "TEAIT 03 2026.xls"),
+    (2026, 2, "Jun", "TEAIT 06 2026.xls"),
+)
 
 # Market areas used by the TEAIT expenditure tables, with the arrivals-CSV regions they combine
 AREA_SEGMENT = {
@@ -70,7 +82,7 @@ REGION_AREA = {
     "South and Southeast Asia": "South & Southeast Asia", "The Americas": "The Americas",
     "Europe": "Europe, Africa & the Middle East", "Africa": "Europe, Africa & the Middle East",
     "Middle East": "Europe, Africa & the Middle East", "Australia, New Zealand and South Pacific": "Australia, NZ & South Pacific",
-}  # "Not identified" counts towards the total only
+}
 SPEND_CATEGORY_TABLES = {
     ("Overnight", "All markets"): "Overnight Visitor Spending by Spending Category - All Markets",
     ("Overnight", "Mainland"): "Overnight Visitor Spending by Spending Category - Mainland China",
@@ -82,10 +94,19 @@ SPEND_CATEGORY_TABLES = {
 
 # Manual inputs: filename -> (columns, dashboard tab, description, where to obtain)
 MANUAL_INPUTS = {
-    "visitor_profile.csv": (
+    "visitor_profile_baseline.csv": (
         ["period", "market", "dimension", "category", "value", "source"], "Visitor Persona",
-        "HKTB visitor profile: age, companions, trip purpose, spending, satisfaction, places visited",
-        "HKTB Visitor Profile Report (2025 FY / 2026 H1) - PDF only"),
+        "Previous visitor profile data: age, companions, trip purpose, spending, satisfaction, places visited",
+        "Previous supplied visitor profile data"),
+    "mainland_origin_provinces.csv": (
+        ["period", "rank", "province_zh", "province_en", "share_pct", "all_visitors_share_pct"],
+        "Mainland China Visitors",
+        "Mainland visitor origins by province / municipality",
+        "User-provided table; original source not stated"),
+    "country_age_quarterly.csv": (
+        ["period", "market", "age_group", "count", "source"], "Country Analysis",
+        "Quarterly country arrivals by age group",
+        "Published quarterly HKTB nationality and age breakdowns"),
 }
 
 # HKTB monthly visitor arrival statistics (local workbooks, June editions) - nationality detail
@@ -100,6 +121,8 @@ HKTB_MARKETS = {
     "France": "Long-haul", "Australia": "Long-haul", "Russia": "Long-haul",
     "Middle East": "Emerging",
 }
+# Additional individually named markets in the nationality workbook, without visitor profiles.
+HKTB_EXTRA_H1_MARKETS = {"Vietnam"}
 # Segment rows in the workbook tables (for the segment age / gender profile)
 HKTB_SEGMENT_ROWS = {
     "Total": "All markets", "Chinese Mainland": "Mainland",
@@ -400,12 +423,96 @@ def load_manual(registry):
         rows = [r for r in read_csv(path) if any((v or "").strip() for v in r.values())]
         out[fname] = rows
         if rows:
+            source = rows[0].get("source") or "Source not stated."
             registry.add("manual_" + fname[:-4], desc, "data/manual/" + fname, "manual",
-                         "{} rows supplied manually ({}).".format(len(rows), rows[0].get("source", "")))
+                         "{} rows supplied manually ({}).".format(len(rows), source))
         else:
             registry.pending.append({"id": fname[:-4], "tab": tab, "item": desc, "source": where,
                                      "file": "data/manual/" + fname, "columns": cols})
     return out
+
+
+def load_country_profiles(registry):
+    """Read the user-supplied country profiles, preserving the submitted CSV."""
+    path = MANUAL_DIR / "visitor_profile.csv"
+    with path.open(newline="", encoding="utf-8-sig") as fh:
+        raw = list(csv.reader(fh))
+    if not raw:
+        raise ValueError("visitor_profile.csv is empty")
+    if len(raw[0]) == 1:
+        if any(len(row) != 1 for row in raw if row):
+            raise ValueError("Inconsistent country profile CSV row format")
+        raw = [next(csv.reader(row)) for row in raw if row and row[0].strip()]
+    if raw[0] != ["period", "market", "dimension", "category", "value"]:
+        raise ValueError("visitor_profile.csv must contain period,market,dimension,category,value")
+    periods = {"2025 H1": "2025-H1", "2025 H2": "2025-H2",
+               "2026 H1": "2026-H1", "2025 Full Year": "2025"}
+    dimensions = {"age_group", "first_timer_pct", "mean_age", "avg_nights",
+                  "per_capita_overnight_hkd", "trip_purpose", "companion", "origin_region", "place_rank"}
+    entries, seen, purposes = [], set(), {}
+    for row in raw[1:]:
+        if not any(value.strip() for value in row):
+            continue
+        if len(row) != 5:
+            raise ValueError("Invalid country profile row: {}".format(row))
+        period, market, dimension, category, value = (value.strip() for value in row)
+        key = (period, market, dimension, category)
+        number = num(value)
+        if period not in periods or market not in HKTB_MARKETS or dimension not in dimensions \
+                or not category or number is None or not math.isfinite(number) or number < 0 or key in seen:
+            raise ValueError("Invalid or duplicate country profile row: {}".format(row))
+        if dimension in ("age_group", "first_timer_pct", "trip_purpose", "companion", "origin_region") and number > 100:
+            raise ValueError("Invalid country profile percentage: {}".format(row))
+        seen.add(key)
+        period = periods[period]
+        if dimension == "trip_purpose":
+            purposes.setdefault((period, market), {})[category] = number
+            continue
+        if dimension == "age_group":
+            dimension = "age_share_pct"
+        entries.append({"period": period, "market": market, "dimension": dimension,
+                        "category": category, "value": str(number), "source": "User-provided; original source not stated"})
+        if period == "2025-H1" and dimension == "per_capita_overnight_hkd":
+            entries.append({"period": "2025", "market": market, "dimension": "per_capita_overnight_h1_hkd",
+                            "category": category, "value": str(number), "source": "User-provided; original source not stated"})
+    categories = ["Sameday visitors", "Vacation", "Visiting friends / relatives", "Business", "En-route", "Others"]
+    for (period, market), values in purposes.items():
+        if set(values) != set(categories) or abs(sum(values.values()) - 100) > 3.5:
+            raise ValueError("Incomplete or invalid country purpose percentages for {} {}".format(period, market))
+        entries.append({"period": period, "market": market, "dimension": "country_visitor_type_share",
+                        "category": "Same-day", "value": str(values["Sameday visitors"]),
+                        "source": "User-provided; original source not stated"})
+        for category in categories[1:]:
+            entries.append({"period": period, "market": market, "dimension": "country_trip_purpose",
+                            "category": category, "value": str(values[category]),
+                            "source": "User-provided; original source not stated"})
+    registry.add("country_profile_update", "User-provided country visitor profiles",
+                 "data/manual/visitor_profile.csv", "manual", "Original source not stated.")
+    return entries
+
+
+def merge_country_profiles(baseline, updates):
+    replaced = {(r["period"], r["market"], r["dimension"]) for r in updates}
+    return [r for r in baseline if (r["period"], r["market"], r["dimension"]) not in replaced] + updates
+
+
+def country_age_quarters(rows):
+    """Validate standalone quarterly age counts without filling missing periods."""
+    valid_periods = {"2025-Q1", "2025-Q2", "2025-Q3", "2025-Q4", "2026-Q1", "2026-Q2"}
+    valid_ages = {age for _, age in AGE_COLUMNS}
+    seen = set()
+    result = []
+    for row in rows:
+        period, market, age = (row.get("period") or "").strip(), (row.get("market") or "").strip(), (row.get("age_group") or "").strip()
+        source = (row.get("source") or "").strip()
+        count = num(row.get("count"))
+        key = (period, market, age)
+        if period not in valid_periods or market not in HKTB_MARKETS or age not in valid_ages or not source \
+                or count is None or not math.isfinite(count) or count < 0 or not count.is_integer() or key in seen:
+            raise ValueError("Invalid or duplicate country_age_quarterly.csv row: {}".format(row))
+        seen.add(key)
+        result.append({"period": period, "market": market, "age_group": age, "count": int(count), "source": source})
+    return result
 
 
 def read_xls(data):
@@ -537,11 +644,11 @@ def _parse_sst(chunks):
     return out
 
 
-def xls_tables(sheets, titles):
+def xls_tables(sheets, titles, end_month="Jun"):
     """Tables in the HKTB TEAIT workbook -> {title: {row label: {year: value}}}.
 
     A table starts at one of the given English titles in column C, its header rows map
-    'Jan - Jun YYYY' to columns, each data row has an English label in column D, and the
+    'Jan - <end_month> YYYY' to columns, each data row has an English label in column D, and the
     table ends at the first row without values (footnotes).
     """
     tables = {}
@@ -558,7 +665,7 @@ def xls_tables(sheets, titles):
             if not title:
                 continue
             for c, v in row.items():
-                m = re.match(r"Jan - Jun (\d{4})", str(v).strip())
+                m = re.match(r"Jan - {} (\d{{4}})".format(re.escape(end_month)), str(v).strip())
                 if m and m.group(1) not in years.values():
                     years[c] = m.group(1)
             values = {y: row[c] for c, y in years.items() if isinstance(row.get(c), float)}
@@ -601,16 +708,23 @@ def read_xlsx(data):
 
 def load_hktb_arrivals(registry):
     """Arrivals by nationality from HKTB's monthly workbooks: Jan-Jun by market, visitor type, gender and age."""
-    files = sorted((ROOT / "data").glob(HKTB_ARRIVALS_GLOB))
+    files = sorted(path for path in (ROOT / "data").glob(HKTB_ARRIVALS_GLOB) if not path.name.startswith("~$"))
     monthly, h1 = [], []
     for path in files:
         year = re.match(r"\d{4}", path.name).group(0)
         sheets = read_xlsx(path.read_bytes())
+        header = sheets.get("Table 4", {}).get(3, {}).get("D", "")
+        period = re.search(r"\bJan to (Jun|Dec) (\d{4})\b", header)
+        if not period or period.group(2) != year:
+            raise ValueError("{}: unrecognized Table 4 reporting period".format(path.name))
+        if period.group(1) != "Jun":
+            log.info("  Skipping non-H1 nationality workbook: %s", path.name)
+            continue
 
         def rows_by_name(sheet):
             out = {}
             for row in sheets.get(sheet, {}).values():
-                name = re.sub(r"\s+", " ", row.get("E", "")).strip()
+                name = re.sub(r"\s+", " ", html.unescape(row.get("E", ""))).strip()
                 name = HKTB_NAME_ALIASES.get(name, name)
                 if name and name not in out:
                     out[name] = row
@@ -623,22 +737,33 @@ def load_hktb_arrivals(registry):
             if total_by_month[m] is None:
                 continue
             named = 0
-            for market in HKTB_MARKETS:
+            for market in list(HKTB_MARKETS) + sorted(HKTB_EXTRA_H1_MARKETS):
                 value = int(num(appendix[market][col]))
                 named += value
                 monthly.append({"month": month, "market": market, "arrivals": value})
             monthly.append({"month": month, "market": "Other markets", "arrivals": int(total_by_month[m]) - named})
         for name, row4 in table4.items():
-            label = name if name in HKTB_MARKETS else HKTB_SEGMENT_ROWS.get(name)
+            label = name if name in HKTB_MARKETS or name in HKTB_EXTRA_H1_MARKETS else HKTB_SEGMENT_ROWS.get(name)
             if not label:
                 continue
             row9 = table9.get(name, {})
+            arrivals = int(num(row4["F"]))
+            age_counts = {}
+            if all(row9.get(c) is not None for c, _ in AGE_COLUMNS):
+                for col, age_label in AGE_COLUMNS:
+                    count = num(row9[col]) * arrivals / 100
+                    if abs(count - round(count)) > 0.0001:
+                        raise ValueError("{}: age percentage does not resolve to a count for {}".format(path.name, name))
+                    age_counts[age_label] = round(count)
+                if sum(age_counts.values()) != arrivals:
+                    raise ValueError("{}: age counts do not sum to arrivals for {}".format(path.name, name))
             h1.append({
                 "period": "{}-H1".format(year), "market": label,
-                "arrivals": int(num(row4["F"])), "same_day": int(num(row4["J"])), "overnight": int(num(row4["N"])),
+                "arrivals": arrivals, "same_day": int(num(row4["J"])), "overnight": int(num(row4["N"])),
                 "male_pct": round(num(row9.get("G")), 1) if row9.get("G") else None,
                 "mean_age": round(num(row9.get("T")), 1) if row9.get("T") else None,
                 "age": {label_: round(num(row9[c]), 1) for c, label_ in AGE_COLUMNS if row9.get(c)},
+                "age_counts": age_counts,
             })
     if files:
         registry.add("hktb_arrivals_nationality", "HKTB: Visitor arrival statistics by nationality (monthly workbooks)",
@@ -740,11 +865,14 @@ def load_monthly_arrivals(registry):
     for r in read_csv(DATA_DIR / ARRIVALS_CSV):
         month = month_key(r["Year"].strip(), r["MM"])
         value = num(r["OBS_VALUE"]) or 0
-        area = REGION_AREA.get(clean(r["REGION"]))
+        region = clean(r["REGION"])
+        area = REGION_AREA.get(region)
         by_month[month]["All"] += value
         if area:
             by_month[month][area] += value
             by_month[month][AREA_SEGMENT[area]] += value
+        elif region == "Not identified":
+            by_month[month]["Short-haul"] += value
     months = [m for m in sorted(by_month) if m <= DATA_END]
     registry.add("arrivals_by_region", "Visitor arrivals by nationality / region (monthly)", "data/" + ARRIVALS_CSV, "supplied",
                  "{} to {}; regions grouped into the TEAIT market areas.".format(months[0], months[-1]))
@@ -820,6 +948,76 @@ def load_quarterly(registry):
     return sorted(quarterly, key=lambda q: (q["year"], q["quarter"])), overnight
 
 
+def load_quarterly_visitor_spend(registry):
+    """Derive standalone quarterly spend per visitor from cumulative TEAIT releases."""
+    titles = {T_TOTAL, T_OVERNIGHT_PC, T_SAMEDAY_PC}
+    previous = {}
+    result = []
+    for year, quarter, end_month, filename in QUARTERLY_TEAIT_FILES:
+        tables = xls_tables(read_xls((DATA_DIR / filename).read_bytes()), titles, end_month)
+        if quarter == 1:
+            previous = {}
+        record = {"year": year, "quarter": quarter}
+        for kind, total_row, per_capita_table in (
+            ("overnight", "Overnight Visitors", T_OVERNIGHT_PC),
+            ("same_day", "Same-day Visitors", T_SAMEDAY_PC),
+        ):
+            total = tables[T_TOTAL][total_row][str(year)]
+            per_capita = tables[per_capita_table]["Total"][str(year)]
+            if total <= 0 or per_capita <= 0:
+                raise ValueError("{}: invalid cumulative {} spending".format(filename, kind))
+            count = total * 1e6 / per_capita
+            prior_total, prior_count = previous.get(kind, (0, 0))
+            if total <= prior_total or count <= prior_count:
+                raise ValueError("{}: invalid quarterly {} spending".format(filename, kind))
+            record[kind + "_per_capita_hkd"] = (total - prior_total) * 1e6 / (count - prior_count)
+            previous[kind] = (total, count)
+        result.append(record)
+        registry.add("quarterly_visitor_spend_{}_q{}".format(year, quarter),
+                     "HKTB TEAIT cumulative expenditure to {} {}".format(end_month, year),
+                     "data/" + filename, "supplied",
+                     "Standalone quarters derived from cumulative visitor-type and market-area spending.")
+    return result
+
+
+def load_quarterly_segment_spend(monthly):
+    """Derive quarterly market expenditure per arrival from cumulative TEAIT releases."""
+    titles = {T_OVERNIGHT_AREA, T_SAMEDAY_AREA}
+    aliases = {
+        "Mainland China": ("Mainland China", "Mainland", "Chinese Mainland"),
+        "Macau SAR": ("Macau SAR", "Macao SAR"),
+    }
+    previous = {}
+    result = []
+    for year, quarter, end_month, filename in QUARTERLY_TEAIT_FILES:
+        tables = xls_tables(read_xls((DATA_DIR / filename).read_bytes()), titles, end_month)
+        if quarter == 1:
+            previous = {}
+        for segment in SEGMENTS:
+            total = 0
+            for area, area_segment in AREA_SEGMENT.items():
+                if area_segment != segment:
+                    continue
+                for title in titles:
+                    rows = tables[title]
+                    name = next((name for name in aliases.get(area, (area,)) if name in rows), None)
+                    if name is None or str(year) not in rows[name]:
+                        raise ValueError("{}: missing {} spending for {}".format(filename, title, area))
+                    total += rows[name][str(year)]
+            spending = total - previous.get(segment, 0)
+            months = ["{}-{:02d}".format(year, month) for month in range((quarter - 1) * 3 + 1, quarter * 3 + 1)]
+            arrivals = sum(monthly[month][segment] for month in months)
+            if spending <= 0 or arrivals <= 0:
+                raise ValueError("{}: invalid quarterly spending or arrivals for {}".format(filename, segment))
+            result.append({
+                "year": year, "quarter": quarter, "segment": segment,
+                "spend_hkd_m": spending, "arrivals": arrivals,
+                "average_spend_hkd": spending * 1e6 / arrivals,
+            })
+            previous[segment] = total
+    return result
+
+
 def build_summary(registry):
     months, monthly = load_monthly_arrivals(registry)
     los = load_length_of_stay(registry)
@@ -827,6 +1025,8 @@ def build_summary(registry):
     types = load_visitor_types(registry)
     tables = load_expenditure(registry)
     quarterly, area_overnight = load_quarterly(registry)
+    quarterly_visitor_spend = load_quarterly_visitor_spend(registry)
+    quarterly_segment_spend = load_quarterly_segment_spend(monthly)
 
     h1, areas, categories = {}, [], []
     for year in H1_YEARS:
@@ -872,6 +1072,8 @@ def build_summary(registry):
         "area_h1": areas,
         "spend_categories": categories,
         "quarterly_overnight_per_capita": quarterly,
+        "quarterly_visitor_spend": quarterly_visitor_spend,
+        "quarterly_segment_spend": quarterly_segment_spend,
     }
     return summary, months
 
@@ -1000,6 +1202,92 @@ def build_pillars(summary, profile_rows):
     ]
 
 
+def simplify_ring(points, tolerance):
+    """Reduce boundary vertices while keeping the district outline at map scale."""
+    if len(points) <= 3:
+        return points
+
+    def distance_sq(point, start, end):
+        dx, dy = end[0] - start[0], end[1] - start[1]
+        if dx == 0 and dy == 0:
+            return (point[0] - start[0]) ** 2 + (point[1] - start[1]) ** 2
+        t = max(0, min(1, ((point[0] - start[0]) * dx + (point[1] - start[1]) * dy) / (dx * dx + dy * dy)))
+        x, y = start[0] + t * dx, start[1] + t * dy
+        return (point[0] - x) ** 2 + (point[1] - y) ** 2
+
+    keep = {0, len(points) - 1}
+    stack = [(0, len(points) - 1)]
+    limit = tolerance * tolerance
+    while stack:
+        first, last = stack.pop()
+        farthest, farthest_distance = None, limit
+        for index in range(first + 1, last):
+            distance = distance_sq(points[index], points[first], points[last])
+            if distance > farthest_distance:
+                farthest, farthest_distance = index, distance
+        if farthest is not None:
+            keep.add(farthest)
+            stack.extend(((first, farthest), (farthest, last)))
+    return [points[index] for index in sorted(keep)]
+
+
+def build_district_boundaries(registry):
+    """Create compact SVG paths from the supplied official district GeoJSON."""
+    path = DATA_DIR / "hksar_18_district_boundary.json"
+    if not path.is_file():
+        raise FileNotFoundError("Missing official district boundaries: {}".format(path))
+    with open(path, encoding="utf-8-sig", errors="replace") as fh:
+        source = json.load(fh)
+
+    registry.add(
+        "hk_district_boundaries",
+        "Hong Kong 18 administrative district boundaries",
+        "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+        "supplied",
+        "Official district polygons from the Home Affairs Department; stored locally for offline builds.",
+    )
+    features = []
+    all_points = []
+    for feature in source["features"]:
+        geometry = feature["geometry"]
+        polygons = [geometry["coordinates"]] if geometry["type"] == "Polygon" else geometry["coordinates"]
+        rings = []
+        for polygon in polygons:
+            for ring in polygon:
+                points = [(float(point[0]), float(point[1])) for point in ring]
+                rings.append(points)
+                all_points.extend(points)
+        features.append({"district": feature["properties"]["District"], "rings": rings})
+
+    if not all_points:
+        raise ValueError("The official district-boundary file contains no coordinates.")
+
+    longitude_scale = math.cos(math.radians(22.3))
+    projected = [(longitude * longitude_scale, latitude) for longitude, latitude in all_points]
+    min_x = min(point[0] for point in projected)
+    max_x = max(point[0] for point in projected)
+    min_y = min(point[1] for point in projected)
+    max_y = max(point[1] for point in projected)
+    width, height, padding = 640, 420, 12
+    scale = min((width - padding * 2) / (max_x - min_x), (height - padding * 2) / (max_y - min_y))
+
+    def map_point(point):
+        x, y = point[0] * longitude_scale, point[1]
+        return padding + (x - min_x) * scale, height - padding - (y - min_y) * scale
+
+    output = []
+    for feature in features:
+        commands = []
+        for ring in feature["rings"]:
+            simplified = simplify_ring(ring, 0.00005)
+            if len(simplified) < 3:
+                continue
+            coords = [map_point(point) for point in simplified]
+            commands.append("M" + "L".join("{:.1f},{:.1f}".format(x, y) for x, y in coords) + "Z")
+        output.append({"district": feature["district"], "path": "".join(commands)})
+    return output
+
+
 # --------------------------------------------------------------------------- #
 # Build JSON outputs
 # --------------------------------------------------------------------------- #
@@ -1008,14 +1296,22 @@ def build_outputs(registry):
     summary, months = build_summary(registry)
     manual = load_manual(registry)
     market_monthly, market_h1 = load_hktb_arrivals(registry)
-    profile_rows = manual["visitor_profile.csv"]
+    profile_rows = merge_country_profiles(manual["visitor_profile_baseline.csv"], load_country_profiles(registry))
+    district_boundaries = build_district_boundaries(registry)
 
     demographics = {
         "markets": [{"market": m, "origin": o} for m, o in HKTB_MARKETS.items()],
         "market_monthly": market_monthly,
         "market_h1": market_h1,
+        "country_age_quarterly": country_age_quarters(manual["country_age_quarterly.csv"]),
         "visitor_profile": [{"period": r["period"], "market": r["market"], "dimension": r["dimension"],
                              "category": r["category"], "value": num(r["value"])} for r in profile_rows],
+        "mainland_origin_provinces": [
+            {"period": r["period"], "rank": int(num(r["rank"])), "province_zh": r["province_zh"],
+             "province_en": r["province_en"], "share_pct": num(r["share_pct"]),
+             "all_visitors_share_pct": num(r["all_visitors_share_pct"])}
+            for r in manual["mainland_origin_provinces.csv"]
+        ],
     }
     playbooks = build_market_playbooks(profile_rows, market_h1) if profile_rows and market_h1 else []
     pillars = build_pillars(summary, profile_rows)
@@ -1025,6 +1321,7 @@ def build_outputs(registry):
         "summary.json": summary,
         "visitor_demographics.json": demographics,
         "strategy_2027.json": {"pillars": pillars, "market_playbooks": playbooks},
+        "hk_district_boundaries.json": {"districts": district_boundaries},
     }, (months[0], months[-1])
 
 

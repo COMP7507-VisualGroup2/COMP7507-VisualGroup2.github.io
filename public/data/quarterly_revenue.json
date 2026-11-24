@@ -1,0 +1,56 @@
+[
+  {
+    "year": 2025,
+    "quarter": 1,
+    "period": "Jan-Mar 2025",
+    "cumulative_ytd_spending_hkd_b": 51.7,
+    "standalone_quarter_spending_hkd_b": 51.7,
+    "data_type": "Estimated",
+    "source_and_derivation_notes": "Pro-rated from H1 2025 official total using Q1 arrival share (51.74% of H1 volume)"
+  },
+  {
+    "year": 2025,
+    "quarter": 2,
+    "period": "Apr-Jun 2025",
+    "cumulative_ytd_spending_hkd_b": 100.0,
+    "standalone_quarter_spending_hkd_b": 48.3,
+    "data_type": "Official H1 / Estimated Q2",
+    "source_and_derivation_notes": "Deducted from official H1 2025 total (HK$100.0B) minus estimated Q1"
+  },
+  {
+    "year": 2025,
+    "quarter": 3,
+    "period": "Jul-Sep 2025",
+    "cumulative_ytd_spending_hkd_b": 156.1,
+    "standalone_quarter_spending_hkd_b": 56.1,
+    "data_type": "Deduced",
+    "source_and_derivation_notes": "Derived from full-year 2025 (HK$217.1B) minus H1 (HK$100.0B) and official Q4 (HK$61.0B)"
+  },
+  {
+    "year": 2025,
+    "quarter": 4,
+    "period": "Oct-Dec 2025",
+    "cumulative_ytd_spending_hkd_b": 217.1,
+    "standalone_quarter_spending_hkd_b": 61.0,
+    "data_type": "Official",
+    "source_and_derivation_notes": "Directly reported in HKTB Industry Snapshot (FY 2025 exact is HK$217.09B)"
+  },
+  {
+    "year": 2026,
+    "quarter": 1,
+    "period": "Jan-Mar 2026",
+    "cumulative_ytd_spending_hkd_b": 58.0,
+    "standalone_quarter_spending_hkd_b": 58.0,
+    "data_type": "Official",
+    "source_and_derivation_notes": "Directly reported in HKTB 01-03/2026 report and Industry Snapshot"
+  },
+  {
+    "year": 2026,
+    "quarter": 2,
+    "period": "Apr-Jun 2026",
+    "cumulative_ytd_spending_hkd_b": 111.0,
+    "standalone_quarter_spending_hkd_b": 53.0,
+    "data_type": "Official H1 / Deduced Q2",
+    "source_and_derivation_notes": "Exact deduction: Official H1 2026 (HK$111.0B) minus Official Q1 2026 (HK$58.0B)"
+  }
+]

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { COLORS } from '@/lib/theme';
 
 export interface HeatColumn {
   key: string;
@@ -21,12 +22,13 @@ interface Props {
   rowHeader?: string;
   onRowClick?: (key: string) => void;
   activeRow?: string | null;
+  cellClass?: (value: number, column: string) => string;
 }
 
 const toRgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(',');
 
-/** Compact table whose cells are shaded by value (brand teal by default). */
-export default function HeatTable({ columns, rows, format, scale = 'table', rowHeader = '', onRowClick, activeRow }: Props) {
+/** Compact table whose cells are shaded by value (brand orange by default). */
+export default function HeatTable({ columns, rows, format, scale = 'table', rowHeader = '', onRowClick, activeRow, cellClass }: Props) {
   const values = (col?: string) =>
     rows.flatMap((r) => (col ? [r.values[col]] : columns.map((c) => r.values[c.key]))).filter((v): v is number => typeof v === 'number');
   const range = (col: string) => {
@@ -76,8 +78,8 @@ export default function HeatTable({ columns, rows, format, scale = 'table', rowH
                 return (
                   <td
                     key={c.key}
-                    className={`rounded px-2 py-1 text-center tabular-nums ${alpha > 0.5 ? 'font-semibold text-canvas' : 'text-slate-800'}`}
-                    style={{ background: `rgba(${toRgb('#005F73')},${alpha.toFixed(2)})` }}
+                    className={`rounded px-2 py-1 text-center tabular-nums ${alpha > 0.5 ? 'font-semibold text-canvas' : 'text-slate-800'} ${cellClass?.(v, c.key) ?? ''}`}
+                    style={{ background: `rgba(${toRgb(COLORS.brandDeep)},${alpha.toFixed(2)})` }}
                   >
                     {format(v, c.key)}
                   </td>

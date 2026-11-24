@@ -65,10 +65,10 @@ export function MarketPersonaTable({
   const [sort, setSort] = useState<ColKey>('arrivals');
   const rows = useMemo(
     () =>
-      MARKETS.filter((m) => marketInFilter(m.market, filters))
+      MARKETS.filter((m) => marketInFilter(m.market, filters, selected))
         .map((m) => ({ market: m.market, origin: m.origin, values: marketMetrics(period, m.market) }))
         .sort((a, b) => (b.values[sort] ?? -Infinity) - (a.values[sort] ?? -Infinity)),
-    [period, filters, sort],
+    [period, filters, selected, sort],
   );
   const fmt = Object.fromEntries(COLUMNS.map((c) => [c.key, c.fmt]));
 
@@ -93,6 +93,7 @@ export function MarketPersonaTable({
             </button>
           ),
         }))}
+        cellClass={(value, column) => (column === 'growth' ? (value > 0 ? 'growth-positive' : 'growth-negative') : '')}
         rows={rows.map((r) => ({
           key: r.market,
           label: (
@@ -113,7 +114,7 @@ export function MarketPersonaTable({
   );
 }
 
-function Stat({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {
+function Stat({ label, value, hint }: { label: string; value: ReactNode; hint?: ReactNode }) {
   return (
     <div className="rounded-xl bg-slate-50 p-2.5">
       <p className="text-[11px] text-slate-600">{label}</p>
@@ -170,7 +171,7 @@ export function MarketPersonaCard({ market, period }: { market: string; period: 
             <Stat
               label={`Arrivals, ${H1_LABEL[period]}`}
               value={num(m.arrivals, (v) => formatCompact(v, v >= 1e6 ? 2 : 0))}
-              hint={m.growth !== null ? `${formatPct(m.growth, 1, true)} vs Jan–Jun 2025` : undefined}
+              hint={m.growth !== null ? <span className={m.growth > 0 ? 'text-green-700' : 'text-red-600'}>{formatPct(m.growth, 1, true)} vs Jan–Jun 2025</span> : undefined}
             />
             <Stat label="Overnight share" value={num(m.overnight, (v) => `${Math.round(v)}%`)} hint={h1 ? `${formatCompact(h1.overnight, 0)} overnight` : undefined} />
             <Stat

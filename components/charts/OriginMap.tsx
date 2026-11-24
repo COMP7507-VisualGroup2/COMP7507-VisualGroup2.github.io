@@ -33,7 +33,7 @@ interface MarketGeo {
 }
 
 const MIDDLE_EAST = ['048', '275', '364', '368', '376', '400', '414', '422', '512', '634', '682', '760', '784', '887'];
-const MARKET_GEO: Record<string, MarketGeo> = {
+export const MARKET_GEO: Record<string, MarketGeo> = {
   'Chinese Mainland': { ids: ['156'], from: [108, 31], label: [-22, -6, 'middle'] },
   Philippines: { ids: ['608'], from: [122, 13], label: [14, 8, 'start'] },
   Thailand: { ids: ['764'], from: [101, 15], label: [-10, 8, 'end'] },
@@ -71,7 +71,7 @@ const MARKET_PATHS = PATHS.filter((p) => p.market);
 
 type Hover = { country: string; market: string } | null;
 
-const PALETTE = ['#BDE3E5', '#7CC8CC', '#2EA5A8', '#007A86', '#003845'];
+const PALETTE = ['#FFF3E0', '#FDD49E', '#F6B96B', '#F28E2B', '#C36B12'];
 
 /** Quantile classes so every colour step is used about equally: five clearly different shades instead of a gradient. */
 function makeScale(values: number[]) {
@@ -145,7 +145,7 @@ function Flow({ from, to, width, emphasis, motion, index, k }: { from: [number, 
 const HALO = { stroke: COLORS.canvas, strokeWidth: 3, paintOrder: 'stroke', strokeLinejoin: 'round' } as const;
 
 /** Choropleth of visitor arrivals by HKTB source market with animated inbound flows to Hong Kong. */
-export default function OriginMap({ filters }: { filters: Filters }) {
+export default function OriginMap({ filters, selectedMarket }: { filters: Filters; selectedMarket?: string }) {
   const [hover, setHover] = useState<Hover>(null);
   const [motion, setMotion] = useState(true);
   const [view, setView] = useState<View>(WORLD);
@@ -154,6 +154,14 @@ export default function OriginMap({ filters }: { filters: Filters }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const drag = useRef<{ x: number; y: number } | null>(null);
   const k = view.k;
+
+  useEffect(() => {
+    const geo = selectedMarket ? MARKET_GEO[selectedMarket] : undefined;
+    const center = geo ? projection(geo.from) : null;
+    setSmooth(true);
+    setView(center ? clampView({ k: 3.2, x: WIDTH / 2 - center[0] * 3.2, y: HEIGHT / 2 - center[1] * 3.2 }) : WORLD);
+    setHover(null);
+  }, [selectedMarket]);
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -192,8 +200,8 @@ export default function OriginMap({ filters }: { filters: Filters }) {
   }, [filters]);
 
   const hasMarketData = Object.keys(byMarket).length > 0;
-  const marketVisible = (m: string) => marketInFilter(m, filters);
-  const marketScale = useMemo(() => makeScale(Object.values(byMarket)), [byMarket]);
+  const marketVisible = (m: string) => marketInFilter(m, filters, selectedMarket);
+  const marketScale = useMemo(() => makeScale(Object.entries(byMarket).filter(([m]) => marketInFilter(m, filters, selectedMarket)).map(([, value]) => value)), [byMarket, filters, selectedMarket]);
   const scale = marketScale;
 
   const marketFill = (m?: string) => {
@@ -212,7 +220,9 @@ export default function OriginMap({ filters }: { filters: Filters }) {
 
   const hoveredKey = hover?.market;
   const hoveredMarket = hover?.market;
-  const total = marketTotal;
+  const total = filters.origin === 'All'
+    ? marketTotal
+    : Object.entries(byMarket).filter(([market]) => marketVisible(market)).reduce((sum, [, arrivals]) => sum + arrivals, 0);
   const compact = (n: number) => formatCompact(n, n >= 1e6 ? 1 : 0);
   const whole = (n: number) => formatNumber(Math.round(n));
 
@@ -281,9 +291,9 @@ export default function OriginMap({ filters }: { filters: Filters }) {
                   strokeWidth={0.6}
                   strokeLinejoin="round"
                   vectorEffect="non-scaling-stroke"
-                  onMouseEnter={() => p.market && setHover({ country: p.name, market: p.market })}
+                  onMouseEnter={() => p.market && marketVisible(p.market) && setHover({ country: p.name, market: p.market })}
                   onMouseLeave={() => setHover(null)}
-                  className={p.market ? 'cursor-pointer transition-opacity hover:opacity-80' : undefined}
+                  className={p.market && marketVisible(p.market) ? 'cursor-pointer transition-opacity hover:opacity-80' : undefined}
                   style={{ transition: 'fill 400ms' }}
                 />
               ))}
@@ -309,7 +319,7 @@ export default function OriginMap({ filters }: { filters: Filters }) {
             </g>
 
             <g pointerEvents="none">
-              {Object.entries(MARKET_GEO).map(([m, g]) => {
+              {              Object.entries(MARKET_GEO).filter(([m]) => marketVisible(m)).map(([m, g]) => {
                   const [x, y] = point(g.from);
                   const v = byMarket[m];
                   const visible = marketVisible(m);
@@ -343,18 +353,18 @@ export default function OriginMap({ filters }: { filters: Filters }) {
         </svg>
 
         <div className="pointer-events-none absolute left-2 top-2 rounded-lg bg-canvas/95 px-3 py-2 text-xs shadow-card ring-1 ring-mist">
-          {hoveredMarket ? (
+          {hoveredMarket || selectedMarket ? (
             <>
-              <p className="font-semibold text-slate-900">{hoveredMarket}</p>
+              <p className="font-semibold text-slate-900">{hoveredMarket ?? selectedMarket}</p>
               <p className="text-slate-600">
-                {MARKET_ORIGIN[hoveredMarket]}
+                {MARKET_ORIGIN[hoveredMarket ?? selectedMarket ?? '']}
                 {hover && hover.country !== hoveredMarket ? ` · ${hover.country}` : ''}
               </p>
-              {byMarket[hoveredMarket] ? (
+              {byMarket[hoveredMarket ?? selectedMarket ?? ''] ? (
                 <p className="mt-1 font-semibold text-brand-800">
-                  <AnimatedNumber value={byMarket[hoveredMarket]} format={whole} />{' '}
+                  <AnimatedNumber value={byMarket[hoveredMarket ?? selectedMarket ?? '']} format={whole} />{' '}
                   <span className="font-normal text-slate-600">
-                    (<AnimatedNumber value={(byMarket[hoveredMarket] / marketTotal) * 100} format={(n) => formatPct(n)} /> of arrivals)
+                    (<AnimatedNumber value={(byMarket[hoveredMarket ?? selectedMarket ?? ''] / marketTotal) * 100} format={(n) => formatPct(n)} /> of all arrivals)
                   </span>
                 </p>
               ) : (
@@ -369,7 +379,7 @@ export default function OriginMap({ filters }: { filters: Filters }) {
           ) : (
             <>
               <p className="font-semibold text-slate-900">
-                <AnimatedNumber value={total} format={(n) => `${formatCompact(n, 1)} arrivals`} />
+                <AnimatedNumber value={total} format={(n) => `${formatCompact(n, 1)} ${filters.origin === 'All' ? '' : 'named-market '}arrivals`} />
               </p>
               <p className="text-slate-600">Hover a highlighted country for its market</p>
             </>
@@ -409,7 +419,7 @@ export default function OriginMap({ filters }: { filters: Filters }) {
           })}
           <span className="inline-flex items-center gap-1">
             <span className="h-3 w-5 rounded-sm ring-1 ring-slate-300" style={{ background: COLORS.mist }} />
-            No data
+            Not selected / no data
           </span>
         </span>
         <span className="inline-flex items-center gap-1.5">

@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { filterMonths } from './data';
+import { MARKETS, marketInFilter } from './persona';
 import type { Filters } from './types';
 
 export const DEFAULT_FILTERS: Filters = {
@@ -19,13 +20,16 @@ const STORAGE_KEY = 'hk-tourism-filters-v3';
 interface Ctx {
   filters: Filters;
   setFilters: (f: Filters) => void;
+  market: string;
+  setMarket: (market: string) => void;
 }
 
-const FiltersContext = createContext<Ctx>({ filters: DEFAULT_FILTERS, setFilters: () => undefined });
+const FiltersContext = createContext<Ctx>({ filters: DEFAULT_FILTERS, setFilters: () => undefined, market: 'All', setMarket: () => undefined });
 
 /** Global filter state shared by every tab; persisted for the browser session. */
 export function FiltersProvider({ children }: { children: ReactNode }) {
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+  const [market, setMarket] = useState('All');
 
   useEffect(() => {
     try {
@@ -40,9 +44,16 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
   }, [filters]);
 
-  return <FiltersContext.Provider value={{ filters, setFilters }}>{children}</FiltersContext.Provider>;
+  return <FiltersContext.Provider value={{ filters, setFilters, market, setMarket }}>{children}</FiltersContext.Provider>;
 }
 
 export function useFilters() {
   return useContext(FiltersContext);
+}
+
+export function useCountryMarket() {
+  const { filters, market, setMarket } = useFilters();
+  const choices = MARKETS.filter((entry) => marketInFilter(entry.market, { origin: filters.origin, region: 'All' }));
+  const selected = market === 'All' || choices.some((entry) => entry.market === market) ? market : choices[0]?.market;
+  return { choices, selected, setMarket };
 }

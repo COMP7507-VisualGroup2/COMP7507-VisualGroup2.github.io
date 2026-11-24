@@ -51,7 +51,7 @@ export function PerCapitaByMarket({ filters }: { filters: Filters }) {
           <CartesianGrid stroke={COLORS.grid} vertical={false} />
           <XAxis dataKey="market" tick={{ ...AXIS_TICK, fontSize: 10 }} tickLine={false} axisLine={false} interval={0} angle={-25} textAnchor="end" height={64} />
           <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} tickFormatter={(v) => `$${formatCompact(Number(v), 0)}`} />
-          <Tooltip {...TOOLTIP_STYLE} formatter={(v) => formatHkd(Number(v))} cursor={{ fill: 'rgba(10,147,150,0.06)' }} />
+          <Tooltip {...TOOLTIP_STYLE} formatter={(v) => formatHkd(Number(v))} cursor={{ fill: 'rgba(242,142,43,0.08)' }} />
           <Legend iconSize={8} wrapperStyle={{ fontSize: 12 }} />
           {types.map((t) => (
             <Bar key={t} dataKey={t} name={`${t} per capita`} fill={VISITOR_TYPE_COLORS[t]} radius={[4, 4, 0, 0]} maxBarSize={22} />
@@ -127,7 +127,7 @@ export function YieldVolumeScatter({ filters, period }: { filters: Filters; peri
                 if (!p) return null;
                 return (
                   <div className="rounded-[5px] border border-[#e1e7ea] bg-canvas px-3 py-2 text-xs shadow-card">
-                    <p className="font-semibold text-[#0a2540]">{p.market}</p>
+                    <p className="font-semibold text-brand-900">{p.market}</p>
                     <p className="text-[#53636e]">{formatNumber(p.visitors)} overnight visitors</p>
                     <p className="text-[#53636e]">{formatHkd(p.yield)} per visitor</p>
                     <p className="text-[#53636e]">{formatHkdMillions(p.spend)} total</p>

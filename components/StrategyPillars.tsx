@@ -2,7 +2,7 @@ import { strategy } from '@/lib/data';
 import { ORIGIN_COLORS } from '@/lib/theme';
 import type { Pillar } from '@/lib/types';
 
-export const PILLAR_ACCENTS = ['#005F73', '#CA6702', '#0A9396'];
+export const PILLAR_ACCENTS = ['#F28E2B', '#4E79A7', '#59A14F'];
 
 export default function StrategyPillars({ onSelectMarket, activeMarket }: { onSelectMarket?: (m: string) => void; activeMarket?: string }) {
   return (

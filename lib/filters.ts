@@ -4,6 +4,18 @@ export function inRange(month: string, f: Pick<Filters, 'start' | 'end'>): boole
   return month >= f.start && month <= f.end;
 }
 
+export function analysis2026Filters(f: Filters, months: string[]): Filters {
+  const available = months.filter((month) => month.startsWith('2026-'));
+  const first = available[0];
+  const last = available[available.length - 1];
+  if (!first || !last) return f;
+  const start = f.start < first ? first : f.start;
+  const end = f.end > last ? last : f.end;
+  return start > end || !available.includes(start) || !available.includes(end)
+    ? { ...f, start: first, end: last }
+    : { ...f, start, end };
+}
+
 export function describeSegment(f: Filters): string {
   const market = f.region !== 'All' ? f.region : f.origin === 'All' ? 'All markets' : f.origin;
   return [market, f.visitorType === 'All' ? 'all visitors' : f.visitorType].join(' · ');
@@ -17,6 +29,5 @@ export function filterNotes(f: Filters): string[] {
   else if (f.visitorType !== 'All' && !h1('2025') && !h1('2026')) notes.push('Overnight/same-day actuals are available only for Jan–Jun 2025/2026.');
   if (f.channel !== 'All') notes.push('The selected entry-channel profile is historical; H1 2026 channel splits are not supplied.');
   if (f.purpose !== 'All') notes.push('Trip purpose filters the overnight visitor survey profile, not visitor arrival counts.');
-  if (!h1('2025') && !h1('2026')) notes.push('Expenditure and visitor-type actuals are published for H1 periods only.');
   return notes;
 }

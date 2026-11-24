@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import VisitorPersonaTab from '@/components/tabs/VisitorPersonaTab';
+import MarketAnalysisTab from '@/components/tabs/MarketAnalysisTab';
 
-export const metadata: Metadata = { title: 'Visitor Persona' };
+export const metadata: Metadata = { title: 'Region Analysis' };
 
 export default function VisitorPersonaPage() {
-  return <VisitorPersonaTab />;
+  return <MarketAnalysisTab />;
 }

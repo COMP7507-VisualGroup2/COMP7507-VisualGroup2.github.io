@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import {
   Bar,
   BarChart,
@@ -17,7 +17,6 @@ import {
   ZAxis,
 } from 'recharts';
 import HeatTable from '../HeatTable';
-import { Segmented } from '../SectionCard';
 import { formatCompact, formatHkd, formatNumber } from '@/lib/format';
 import {
   AGE_COLORS,
@@ -61,7 +60,7 @@ function SegmentStack({ data, keys, colors, height = 230 }: { data: Row[]; keys:
           tickFormatter={(v) => `${v}%`}
         />
         <YAxis type="category" dataKey="label" tick={{ ...AXIS_TICK, fontSize: 11 }} tickLine={false} axisLine={false} width={150} />
-        <Tooltip {...TOOLTIP_STYLE} formatter={(v) => formatShare(Number(v))} cursor={{ fill: 'rgba(10,147,150,0.06)' }} />
+        <Tooltip {...TOOLTIP_STYLE} formatter={(v) => formatShare(Number(v))} cursor={{ fill: 'rgba(242,142,43,0.08)' }} />
         <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} formatter={(v) => <span style={{ color: COLORS.steelDeep }}>{v}</span>} />
         {keys.map((k, i) => {
           const fill = colors[i % colors.length];
@@ -76,8 +75,8 @@ function SegmentStack({ data, keys, colors, height = 230 }: { data: Row[]; keys:
   );
 }
 
-function segmentRows(build: (s: Segment) => Row | null): Row[] {
-  return SEGMENTS.map((s) => build(s)).filter((r): r is Row => r !== null);
+function segmentRows(build: (s: Segment) => Row | null, segment?: Segment): Row[] {
+  return (segment ? [segment] : SEGMENTS).map((s) => build(s)).filter((r): r is Row => r !== null);
 }
 
 /* ------------------------------------------------------------------ */
@@ -85,15 +84,15 @@ function segmentRows(build: (s: Segment) => Row | null): Row[] {
 /* ------------------------------------------------------------------ */
 
 /** Age brackets by segment from the HKTB nationality workbooks (Jan-Jun of the selected year). */
-export function AgeBySegment({ period }: { period: ProfilePeriod }) {
+export function AgeBySegment({ period, segment }: { period: ProfilePeriod; segment?: Segment }) {
   const data = useMemo(
     () =>
       segmentRows((s) => {
         const r = marketH1(period, s);
         if (!r) return null;
         return { label: `${s} · ${r.mean_age?.toFixed(1)} yrs`, ...r.age };
-      }),
-    [period],
+      }, segment),
+    [period, segment],
   );
   return (
     <div>
@@ -104,17 +103,17 @@ export function AgeBySegment({ period }: { period: ProfilePeriod }) {
 }
 
 /** Who overnight visitors travel with (2025 full-year detail). */
-export function CompanionTable() {
+export function CompanionTable({ segment }: { segment?: Segment }) {
   const rows = ['First-time visitors', ...profile('2025', 'All markets', 'companion_detail').map((r) => r.category)];
   return (
     <HeatTable
       rowHeader="Overnight visitors, 2025"
-      columns={SEGMENTS.map((s) => ({ key: s, label: s === 'All markets' ? 'All' : s, color: SEGMENT_COLORS[s] }))}
+      columns={(segment ? [segment] : SEGMENTS).map((s) => ({ key: s, label: s === 'All markets' ? 'All' : s, color: SEGMENT_COLORS[s] }))}
       rows={rows.map((c) => ({
         key: c,
         label: c,
         values: Object.fromEntries(
-          SEGMENTS.map((s) => [s, c === 'First-time visitors' ? profileValue('2025', s, 'first_timer_pct') : profileValue('2025', s, 'companion_detail', c)]),
+          (segment ? [segment] : SEGMENTS).map((s) => [s, c === 'First-time visitors' ? profileValue('2025', s, 'first_timer_pct') : profileValue('2025', s, 'companion_detail', c)]),
         ),
       }))}
       format={(v) => formatShare(v)}
@@ -129,21 +128,21 @@ export function CompanionTable() {
 const PURPOSES = ['Vacation', 'Visiting friends / relatives', 'Business', 'En-route', 'Others'];
 
 /** Main purpose of visit among overnight visitors, by segment. */
-export function PurposeBySegment({ period }: { period: ProfilePeriod }) {
+export function PurposeBySegment({ period, segment }: { period: ProfilePeriod; segment?: Segment }) {
   const data = useMemo(
     () =>
       segmentRows((s) => {
         const rows = profile(period, s, 'trip_purpose');
         if (!rows.length) return null;
         return { label: s, ...Object.fromEntries(rows.map((r) => [r.category, r.value])) };
-      }),
-    [period],
+      }, segment),
+    [period, segment],
   );
   return <SegmentStack data={data} keys={PURPOSES} colors={[COLORS.brandDeep, COLORS.brand, COLORS.accent, COLORS.accentDeep, COLORS.blushDeep]} />;
 }
 
 /** Overnight vs same-day split with average nights stayed, by segment. */
-export function StayBySegment({ period }: { period: ProfilePeriod }) {
+export function StayBySegment({ period, segment }: { period: ProfilePeriod; segment?: Segment }) {
   const data = useMemo(
     () =>
       segmentRows((s) => {
@@ -151,8 +150,8 @@ export function StayBySegment({ period }: { period: ProfilePeriod }) {
         if (sd === null) return null;
         const nights = profileValue(period, s, 'avg_nights');
         return { label: `${s} · ${nights?.toFixed(1)} nights`, Overnight: 100 - sd, 'Same-day': sd };
-      }),
-    [period],
+      }, segment),
+    [period, segment],
   );
   return (
     <div>
@@ -163,19 +162,19 @@ export function StayBySegment({ period }: { period: ProfilePeriod }) {
 }
 
 /** Hong Kong-only vs multi-destination trips and the other places visited (2025 full year). */
-export function ItineraryChart() {
+export function ItineraryChart({ segment }: { segment?: Segment }) {
   const data = segmentRows((s) => {
     const rows = profile('2025', s, 'itinerary');
     return rows.length ? { label: s, ...Object.fromEntries(rows.map((r) => [r.category, r.value])) } : null;
-  });
-  const dests = profile('2025', 'All markets', 'other_destination').map((r) => r.category);
+  }, segment);
+  const dests = profile('2025', segment ?? 'All markets', 'other_destination').map((r) => r.category);
   return (
     <div className="space-y-3">
       <SegmentStack data={data} keys={['Hong Kong only', 'Multi-destination']} colors={[COLORS.brandDeep, COLORS.accent]} height={200} />
       <HeatTable
         rowHeader="Also visited on the same trip"
-        columns={SEGMENTS.map((s) => ({ key: s, label: s === 'All markets' ? 'All' : s, color: SEGMENT_COLORS[s] }))}
-        rows={dests.map((d) => ({ key: d, label: d, values: Object.fromEntries(SEGMENTS.map((s) => [s, profileValue('2025', s, 'other_destination', d)])) }))}
+        columns={(segment ? [segment] : SEGMENTS).map((s) => ({ key: s, label: s === 'All markets' ? 'All' : s, color: SEGMENT_COLORS[s] }))}
+        rows={dests.map((d) => ({ key: d, label: d, values: Object.fromEntries((segment ? [segment] : SEGMENTS).map((s) => [s, profileValue('2025', s, 'other_destination', d)])) }))}
         format={(v) => formatShare(v)}
       />
     </div>
@@ -189,7 +188,7 @@ export function ItineraryChart() {
 const MIX = ['Shopping', 'Hotel bills', 'Dining', 'Others'];
 
 /** Overnight spending mix by segment, labelled with per-capita spend. */
-export function SpendMixBySegment({ period }: { period: ProfilePeriod }) {
+export function SpendMixBySegment({ period, segment }: { period: ProfilePeriod; segment?: Segment }) {
   const data = useMemo(
     () =>
       segmentRows((s) => {
@@ -197,8 +196,8 @@ export function SpendMixBySegment({ period }: { period: ProfilePeriod }) {
         if (!rows.length) return null;
         const pc = profileValue(period, s, 'per_capita_overnight_hkd');
         return { label: `${s} · HK$${pc ? (pc / 1000).toFixed(1) : '–'}K`, ...Object.fromEntries(rows.map((r) => [r.category, r.value])) };
-      }),
-    [period],
+      }, segment),
+    [period, segment],
   );
   return (
     <div>
@@ -211,13 +210,14 @@ export function SpendMixBySegment({ period }: { period: ProfilePeriod }) {
 }
 
 /** What goes in the shopping bag: shopping categories as % of overnight spend, by segment. */
-export function ShoppingTable({ period }: { period: ProfilePeriod }) {
-  const cats = profile(period, 'All markets', 'shopping_mix').map((r) => r.category);
+export function ShoppingTable({ period, segment }: { period: ProfilePeriod; segment?: Segment }) {
+  const selectedSegments = segment ? [segment] : SEGMENTS;
+  const cats = profile(period, segment ?? 'All markets', 'shopping_mix').map((r) => r.category);
   return (
     <HeatTable
       rowHeader="% of overnight spend"
-      columns={SEGMENTS.map((s) => ({ key: s, label: s === 'All markets' ? 'All' : s, color: SEGMENT_COLORS[s] }))}
-      rows={cats.map((c) => ({ key: c, label: c, values: Object.fromEntries(SEGMENTS.map((s) => [s, profileValue(period, s, 'shopping_mix', c)])) }))}
+      columns={selectedSegments.map((s) => ({ key: s, label: s, color: SEGMENT_COLORS[s] }))}
+      rows={cats.map((c) => ({ key: c, label: c, values: Object.fromEntries(selectedSegments.map((s) => [s, profileValue(period, s, 'shopping_mix', c)])) }))}
       format={(v) => formatShare(v)}
     />
   );
@@ -246,7 +246,7 @@ export function MarketYieldScatter({
 }) {
   const points = useMemo<YieldPoint[]>(
     () =>
-      MARKETS.filter((m) => marketInFilter(m.market, filters))
+      MARKETS.filter((m) => marketInFilter(m.market, filters, selected))
         .map((m) => ({
           market: m.market,
           short: shortMarket(m.market),
@@ -256,10 +256,12 @@ export function MarketYieldScatter({
           overnight: marketH1(period, m.market)?.overnight ?? 0,
         }))
         .filter((p) => Number.isFinite(p.nights) && Number.isFinite(p.spend)),
-    [period, filters],
+    [period, filters, selected],
   );
   const avgNights = profileValue(period, 'All markets', 'avg_nights');
   const avgSpend = profileValue(period, 'All markets', 'per_capita_overnight_hkd');
+
+  if (!points.length) return <div className="chart-empty">Market spending and stay data is unavailable for this selection.</div>;
 
   return (
     <div>
@@ -363,7 +365,8 @@ const EXPERIENCE = [
 ];
 
 /** Satisfaction, recommendation and revisit intention by segment, with change vs 2025. */
-export function ExperienceScorecard({ period }: { period: ProfilePeriod }) {
+export function ExperienceScorecard({ period, segment }: { period: ProfilePeriod; segment?: Segment }) {
+  const selectedSegments = segment ? [segment] : SEGMENTS;
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
@@ -378,7 +381,7 @@ export function ExperienceScorecard({ period }: { period: ProfilePeriod }) {
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
-          {SEGMENTS.map((s) => (
+          {selectedSegments.map((s) => (
             <tr key={s}>
               <th scope="row" className="py-2 text-left font-medium text-slate-800">
                 <span className="inline-flex items-center gap-1.5">
@@ -394,7 +397,7 @@ export function ExperienceScorecard({ period }: { period: ProfilePeriod }) {
                   <td key={e.key} className="py-2 text-right tabular-nums">
                     <span className="font-semibold text-slate-900">{v === null ? '–' : e.unit === '/10' ? v.toFixed(1) : `${v}%`}</span>
                     {d !== null && d !== 0 && (
-                      <span className={`ml-1.5 text-[11px] font-semibold ${d > 0 ? 'text-brand-700' : 'text-accent-700'}`}>
+                      <span className={`ml-1.5 text-[11px] font-semibold ${d > 0 ? 'text-green-700' : 'text-red-600'}`}>
                         {d > 0 ? '▲' : '▼'}
                         {e.unit === '/10' ? Math.abs(d).toFixed(1) : `${Math.abs(d)}pp`}
                       </span>
@@ -412,13 +415,14 @@ export function ExperienceScorecard({ period }: { period: ProfilePeriod }) {
 }
 
 /** % of overnight visitors rating each aspect above average (2025 full year). */
-export function AspectTable() {
-  const aspects = profile('2025', 'All markets', 'aspect_rating').map((r) => r.category);
+export function AspectTable({ segment }: { segment?: Segment }) {
+  const selectedSegments = segment ? [segment] : SEGMENTS;
+  const aspects = profile('2025', segment ?? 'All markets', 'aspect_rating').map((r) => r.category);
   return (
     <HeatTable
       rowHeader="Rated above average, 2025"
-      columns={SEGMENTS.map((s) => ({ key: s, label: s === 'All markets' ? 'All' : s, color: SEGMENT_COLORS[s] }))}
-      rows={aspects.map((a) => ({ key: a, label: a, values: Object.fromEntries(SEGMENTS.map((s) => [s, profileValue('2025', s, 'aspect_rating', a)])) }))}
+      columns={selectedSegments.map((s) => ({ key: s, label: s, color: SEGMENT_COLORS[s] }))}
+      rows={aspects.map((a) => ({ key: a, label: a, values: Object.fromEntries(selectedSegments.map((s) => [s, profileValue('2025', s, 'aspect_rating', a)])) }))}
       format={(v) => formatShare(v)}
     />
   );
@@ -429,7 +433,7 @@ export function RankBadge({ change }: { change: number | 'new' | null }) {
   if (change === 'new') return <span className="rounded bg-accent-50 px-1.5 text-[10px] font-semibold text-accent-600">NEW</span>;
   if (change === 0) return <span className="text-[10px] text-slate-400">–</span>;
   return (
-    <span className={`text-[10px] font-semibold ${change > 0 ? 'text-brand-700' : 'text-accent-700'}`}>
+    <span className={`text-[10px] font-semibold ${change > 0 ? 'text-green-700' : 'text-red-600'}`}>
       {change > 0 ? '▲' : '▼'}
       {Math.abs(change)}
     </span>
@@ -437,14 +441,11 @@ export function RankBadge({ change }: { change: number | 'new' | null }) {
 }
 
 /** Top-10 places visited by overnight visitors with rank movement vs 2025. */
-export function TopPlaces({ period }: { period: ProfilePeriod }) {
-  const [segment, setSegment] = useState<Segment>('All markets');
-  const places = profile(period, segment, 'place_rank').sort((a, b) => a.value - b.value);
+export function TopPlaces({ period, segment }: { period: ProfilePeriod; segment?: Segment }) {
+  const market = segment ?? 'All markets';
+  const places = profile(period, market, 'place_rank').sort((a, b) => a.value - b.value);
   return (
     <div>
-      <div className="mb-2">
-        <Segmented<Segment> size="xs" value={segment} onChange={setSegment} options={SEGMENTS.map((s) => ({ value: s, label: s === 'All markets' ? 'All' : s }))} />
-      </div>
       <ol className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
         {places.map((p) => (
           <li key={p.category} className="flex items-center gap-2 rounded-lg bg-slate-50 px-2.5 py-1.5">
@@ -457,7 +458,7 @@ export function TopPlaces({ period }: { period: ProfilePeriod }) {
             <span className="min-w-0 flex-1 truncate text-xs font-medium text-slate-800" title={p.category}>
               {p.category}
             </span>
-            <RankBadge change={rankChange(period, segment, p.category, p.value)} />
+            <RankBadge change={rankChange(period, market, p.category, p.value)} />
           </li>
         ))}
       </ol>

@@ -27,6 +27,13 @@ export function formatPct(value: number | null | undefined, digits = 1, signed =
   return `${sign}${value.toFixed(digits)}%`;
 }
 
+export function changeColorClass(value: number | 'new' | null): string {
+  if (value === 'new') return 'text-yellow-700';
+  if (value !== null && value > 0) return 'text-green-700';
+  if (value !== null && value < 0) return 'text-red-600';
+  return 'text-slate-500';
+}
+
 export function monthLabel(month: string, withYear = true): string {
   const [y, m] = month.split('-');
   return withYear ? `${MONTHS[Number(m) - 1]} ${y.slice(2)}` : MONTHS[Number(m) - 1];

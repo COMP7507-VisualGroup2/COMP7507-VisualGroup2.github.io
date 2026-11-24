@@ -1,6 +1,6 @@
-import { demographics } from './data';
+import { demographics, summary } from './data';
 import { COLORS, ORIGIN_COLORS } from './theme';
-import type { Filters, MarketH1, Origin, ProfilePeriod } from './types';
+import type { Filters, MarketH1, Origin, ProfileDataPeriod, ProfilePeriod } from './types';
 
 /** Helpers for the HKTB Visitor Profile data (data/manual/visitor_profile.csv + HKTB arrival workbooks). */
 
@@ -49,26 +49,34 @@ export const AREA_MARKETS: Record<string, string[]> = {
 };
 
 /** Whether an HKTB source market passes the sidebar's visitor-market and country filters. */
-export function marketInFilter(market: string, f: Pick<Filters, 'origin' | 'region'>): boolean {
-  if (f.origin !== 'All' && MARKET_ORIGIN[market] !== f.origin) return false;
+export function marketInFilter(market: string, f: Pick<Filters, 'origin' | 'region'>, selectedMarket?: string): boolean {
+  if (selectedMarket && market !== selectedMarket) return false;
+  const area = Object.entries(AREA_MARKETS).find(([, markets]) => markets.includes(market))?.[0];
+  const region = summary.areas.find((entry) => entry.area === area)?.segment;
+  if (f.origin !== 'All' && region !== f.origin) return false;
   return f.region === 'All' || (AREA_MARKETS[f.region] ?? []).includes(market);
 }
 
 export const shortMarket = (m: string) => SHORT_NAMES[m] ?? m;
 
 export const AGE_GROUPS = ['0-15', '16-25', '26-35', '36-45', '46-55', '56-65', '66+'];
-export const AGE_COLORS = ['#C2E4E6', '#5FB8BB', '#0A9396', '#005F73', '#F5C566', '#EE9B00', '#CA6702'];
+export const AGE_COLORS = ['#4E79A7', '#F28E2B', '#E15759', '#76B7B2', '#59A14F', '#EDC948', '#B07AA1'];
 
 /** Profile rows for a period / market / dimension, in CSV order. */
-export function profile(period: ProfilePeriod, market: string, dimension: string) {
+export function profile(period: ProfileDataPeriod, market: string, dimension: string) {
   return demographics.visitor_profile
     .filter((r) => r.period === period && r.market === market && r.dimension === dimension && r.value !== null)
     .map((r) => ({ category: r.category, value: r.value as number }));
 }
 
-export function profileValue(period: ProfilePeriod, market: string, dimension: string, category?: string): number | null {
+export function profileValue(period: ProfileDataPeriod, market: string, dimension: string, category?: string): number | null {
   const rows = profile(period, market, dimension);
   return (category ? rows.find((r) => r.category === category) : rows[0])?.value ?? null;
+}
+
+export function countrySameDayShare(period: ProfileDataPeriod, market: string): number | null {
+  const value = profileValue(period, market, 'country_visitor_type_share', 'Same-day');
+  return value !== null && Number.isFinite(value) && value >= 0 && value <= 100 ? value : null;
 }
 
 export function hasProfile(dimension: string) {
@@ -108,7 +116,7 @@ export function rankChange(period: ProfilePeriod, market: string, place: string,
   const prior = profile(OTHER_PERIOD[period], market, 'place_rank');
   if (!prior.length) return null;
   const prev = prior.find((r) => r.category === place);
-  return prev ? prev.value - rank : 'new';
+  return prev ? (prev.value <= 10 ? prev.value - rank : 'new') : prior.filter((row) => row.value <= 10).length === 10 ? 'new' : null;
 }
 
 function mix(from: string, to: string, t: number) {
@@ -117,14 +125,14 @@ function mix(from: string, to: string, t: number) {
   return `#${a.map((v, i) => Math.round(v + (b[i] - v) * t).toString(16).padStart(2, '0')).join('')}`;
 }
 
-/** One colour per HKTB market, shaded within its segment hue (teal = short-haul, amber = long-haul). */
+/** One colour per HKTB market, shaded within its Tableau segment hue. */
 export const MARKET_COLORS: Record<string, string> = (() => {
   const out: Record<string, string> = { 'Other markets': COLORS.blush };
   const ramps: Record<Origin, [string, string]> = {
-    Mainland: [COLORS.brandDark, COLORS.brandDark],
-    'Short-haul': ['#007A86', '#C2E4E6'],
-    'Long-haul': ['#AE2012', '#FBE3B6'],
-    Emerging: [COLORS.steelDeep, COLORS.steelDeep],
+    Mainland: ['#C36B12', '#F6C98F'],
+    'Short-haul': ['#4E79A7', '#A0CBE8'],
+    'Long-haul': ['#E15759', '#FF9D9A'],
+    Emerging: ['#59A14F', '#B6D7A8'],
   };
   (Object.keys(ramps) as Origin[]).forEach((o) => {
     const ms = MARKETS.filter((m) => m.origin === o);

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import DataSourceBadge, { type BadgeKind } from './DataSourceBadge';
+import { COLORS } from '@/lib/theme';
 
 interface Props {
   title: string;
@@ -79,7 +80,7 @@ export function Segmented<T extends string>({
 }
 
 export function Insight({ children, tone = 'brand' }: { children: ReactNode; tone?: 'brand' | 'accent' | 'steel' }) {
-  const border = { brand: '#0a9396', accent: '#ffb800', steel: '#94a3b8' }[tone];
+  const border = { brand: COLORS.brandDeep, accent: COLORS.brandLight, steel: '#94a3b8' }[tone];
   return (
     <div className="rounded-r-[5px] border-l-2 bg-[#fafbfc] px-3 py-2 text-[12px] leading-snug text-[#405461]" style={{ borderColor: border }}>
       {children}

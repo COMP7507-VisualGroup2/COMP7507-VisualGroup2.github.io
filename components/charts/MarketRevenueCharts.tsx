@@ -1,39 +1,41 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { formatCompact, formatHkd, formatHkdMillions, formatPct } from '@/lib/format';
 import { SPEND_CATEGORIES, marketEconomics, segmentSpendByCategory } from '@/lib/markets';
 import { marketInFilter, shortMarket } from '@/lib/persona';
 import { AXIS_TICK, COLORS, SERIES, TOOLTIP_STYLE } from '@/lib/theme';
-import type { Filters, ProfilePeriod } from '@/lib/types';
+import type { Filters, ProfilePeriod, Segment } from '@/lib/types';
 
 const ROW = 30;
 
-function HideMainland({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <label className="mb-2 inline-flex items-center gap-1.5 text-[11px] text-slate-600">
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="accent-brand-700" />
-      Hide Mainland (to compare smaller markets)
-    </label>
-  );
-}
-
-const useRows = (period: ProfilePeriod, filters: Filters, hideMainland: boolean) =>
+const useRows = (period: ProfilePeriod, filters: Filters) =>
   useMemo(
-    () => marketEconomics(period).filter((r) => marketInFilter(r.market, filters) && !(hideMainland && r.origin === 'Mainland')),
-    [period, filters, hideMainland],
+    () => marketEconomics(period).filter((r) => marketInFilter(r.market, filters)),
+    [period, filters],
   );
 
 /** Share of overnight visitors against share of estimated overnight spend: who earns more than their headcount. */
 export function MarketShareChart({ period, filters }: { period: ProfilePeriod; filters: Filters }) {
-  const [hideMainland, setHideMainland] = useState(false);
-  const rows = useRows(period, filters, hideMainland);
-  const data = useMemo(() => rows.filter((r) => r.spend !== null).sort((a, b) => (b.spend ?? 0) - (a.spend ?? 0)).map((r) => ({ ...r, name: shortMarket(r.market) })), [rows]);
+  const rows = useRows(period, filters);
+  const data = useMemo(() => {
+    const visitorTotal = rows.reduce((sum, row) => sum + row.overnight, 0);
+    const spendTotal = rows.reduce((sum, row) => sum + (row.spend ?? 0), 0);
+    return rows
+      .filter((r) => r.spend !== null)
+      .sort((a, b) => (b.spend ?? 0) - (a.spend ?? 0))
+      .map((r) => ({
+        ...r,
+        name: shortMarket(r.market),
+        overnightShare: visitorTotal ? (r.overnight / visitorTotal) * 100 : 0,
+        spendShare: spendTotal ? ((r.spend ?? 0) / spendTotal) * 100 : 0,
+      }));
+  }, [rows]);
 
+  if (!data.length) return <div className="chart-empty">No source-market share detail is available for the selected filters.</div>;
   return (
     <div>
-      {(filters.origin === 'All' || filters.origin === 'Mainland') && filters.region === 'All' && <HideMainland checked={hideMainland} onChange={setHideMainland} />}
       <ResponsiveContainer width="100%" height={60 + data.length * ROW}>
         <BarChart data={data} layout="vertical" margin={{ top: 0, right: 16, left: 4, bottom: 0 }} barCategoryGap={6}>
           <CartesianGrid stroke={COLORS.grid} horizontal={false} />
@@ -41,7 +43,7 @@ export function MarketShareChart({ period, filters }: { period: ProfilePeriod; f
           <YAxis type="category" dataKey="name" tick={{ ...AXIS_TICK, fontSize: 11 }} tickLine={false} axisLine={false} width={78} interval={0} />
           <Tooltip
             {...TOOLTIP_STYLE}
-            cursor={{ fill: 'rgba(10,147,150,0.06)' }}
+            cursor={{ fill: 'rgba(242,142,43,0.08)' }}
             content={({ payload }) => {
               const p = payload?.[0]?.payload as (typeof data)[number] | undefined;
               if (!p) return null;
@@ -68,8 +70,7 @@ export function MarketShareChart({ period, filters }: { period: ProfilePeriod; f
 
 /** Why estimated spend moved: more visitors (volume) or a different spend per head (yield). */
 export function MarketDriversChart({ period, filters }: { period: ProfilePeriod; filters: Filters }) {
-  const [hideMainland, setHideMainland] = useState(false);
-  const rows = useRows(period, filters, hideMainland);
+  const rows = useRows(period, filters);
   const data = useMemo(
     () =>
       rows
@@ -86,9 +87,9 @@ export function MarketDriversChart({ period, filters }: { period: ProfilePeriod;
       </div>
     );
   }
+  if (!data.length) return <div className="chart-empty">No source-market spend-change detail is available for the selected filters.</div>;
   return (
     <div>
-      {(filters.origin === 'All' || filters.origin === 'Mainland') && filters.region === 'All' && <HideMainland checked={hideMainland} onChange={setHideMainland} />}
       <ResponsiveContainer width="100%" height={60 + data.length * ROW}>
         <BarChart data={data} layout="vertical" stackOffset="sign" margin={{ top: 0, right: 16, left: 4, bottom: 0 }} barCategoryGap={6}>
           <CartesianGrid stroke={COLORS.grid} horizontal={false} />
@@ -97,7 +98,7 @@ export function MarketDriversChart({ period, filters }: { period: ProfilePeriod;
           <ReferenceLine x={0} stroke={COLORS.steelDeep} />
           <Tooltip
             {...TOOLTIP_STYLE}
-            cursor={{ fill: 'rgba(10,147,150,0.06)' }}
+            cursor={{ fill: 'rgba(242,142,43,0.08)' }}
             content={({ payload }) => {
               const p = payload?.[0]?.payload as (typeof data)[number] | undefined;
               if (!p) return null;
@@ -122,8 +123,8 @@ export function MarketDriversChart({ period, filters }: { period: ProfilePeriod;
 }
 
 /** Where the money goes: estimated overnight spend (HK$) by category for each HKTB segment. */
-export function SegmentCategoryChart({ year }: { year: string }) {
-  const data = useMemo(() => segmentSpendByCategory(year), [year]);
+export function SegmentCategoryChart({ year, segment }: { year: string; segment?: Segment }) {
+  const data = useMemo(() => segmentSpendByCategory(year).filter((row) => segment === undefined || row.segment === segment), [year, segment]);
   if (!data.length) return <div className="chart-empty">Not published for Jan–Jun {year}.</div>;
   return (
     <ResponsiveContainer width="100%" height={220}>
@@ -131,7 +132,7 @@ export function SegmentCategoryChart({ year }: { year: string }) {
         <CartesianGrid stroke={COLORS.grid} horizontal={false} />
         <XAxis type="number" tick={AXIS_TICK} tickLine={false} axisLine={false} tickFormatter={(v) => formatHkdMillions(Number(v))} />
         <YAxis type="category" dataKey="segment" tick={{ ...AXIS_TICK, fontSize: 11 }} tickLine={false} axisLine={false} width={78} />
-        <Tooltip {...TOOLTIP_STYLE} cursor={{ fill: 'rgba(10,147,150,0.06)' }} formatter={(v) => formatHkdMillions(Number(v))} />
+        <Tooltip {...TOOLTIP_STYLE} cursor={{ fill: 'rgba(242,142,43,0.08)' }} formatter={(v) => formatHkdMillions(Number(v))} />
         <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12 }} />
         {SPEND_CATEGORIES.map((c, i) => (
           <Bar key={c} dataKey={c} stackId="c" fill={SERIES[i]} maxBarSize={30} />

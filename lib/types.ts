@@ -10,6 +10,11 @@ export interface SourceInfo {
   note: string;
 }
 
+export interface DistrictBoundary {
+  district: string;
+  path: string;
+}
+
 export interface PendingItem {
   id: string;
   tab: string;
@@ -24,6 +29,16 @@ export interface Meta {
   coverage: { start: string; end: string };
   sources: SourceInfo[];
   pending: PendingItem[];
+}
+
+export interface QuarterlyRevenueRecord {
+  year: number;
+  quarter: number;
+  period: string;
+  cumulative_ytd_spending_hkd_b: number;
+  standalone_quarter_spending_hkd_b: number;
+  data_type: string;
+  source_and_derivation_notes: string;
 }
 
 /** One TEAIT market area for a Jan-Jun period. Spend in HK$ million, per capita in HK$. */
@@ -65,13 +80,16 @@ export interface SummaryData {
   area_h1: AreaH1[];
   spend_categories: { visitor_type: VisitorType; segment: string; category: string; year: string; spend_hkd_m: number }[];
   quarterly_overnight_per_capita: { year: number; quarter: number; value: number }[];
+  quarterly_visitor_spend: { year: number; quarter: number; overnight_per_capita_hkd: number; same_day_per_capita_hkd: number }[];
+  quarterly_segment_spend: { year: number; quarter: number; segment: Segment; spend_hkd_m: number; arrivals: number; average_spend_hkd: number }[];
 }
 
 /** HKTB Visitor Profile periods: 2025 full year and Jan-Jun 2026. */
 export type ProfilePeriod = '2025' | '2026-H1';
+export type ProfileDataPeriod = ProfilePeriod | '2025-H1' | '2025-H2';
 
 export interface ProfileRecord {
-  period: ProfilePeriod;
+  period: ProfileDataPeriod;
   /** 'All markets' | 'Mainland' | 'Short-haul' | 'Long-haul' or one of the 18 HKTB source markets. */
   market: string;
   dimension: string;
@@ -89,6 +107,7 @@ export interface MarketH1 {
   male_pct: number | null;
   mean_age: number | null;
   age: Record<string, number>;
+  age_counts: Record<string, number>;
 }
 
 export interface VisitorDemographics {
@@ -96,7 +115,16 @@ export interface VisitorDemographics {
   markets: { market: string; origin: Origin }[];
   market_monthly: { month: string; market: string; arrivals: number }[];
   market_h1: MarketH1[];
+  country_age_quarterly: { period: string; market: string; age_group: string; count: number; source: string }[];
   visitor_profile: ProfileRecord[];
+  mainland_origin_provinces: {
+    period: string;
+    rank: number;
+    province_zh: string;
+    province_en: string;
+    share_pct: number;
+    all_visitors_share_pct: number;
+  }[];
 }
 
 export interface PillarKpi {

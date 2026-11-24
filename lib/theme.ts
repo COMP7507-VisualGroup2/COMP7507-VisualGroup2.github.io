@@ -1,37 +1,50 @@
 import type { Origin, VisitorType } from './types';
 
 /** Hong Kong Tourism palette (see tailwind.config.ts). */
+export const TABLEAU_CASUAL = [
+  '#4E79A7',
+  '#F28E2B',
+  '#E15759',
+  '#76B7B2',
+  '#59A14F',
+  '#EDC948',
+  '#B07AA1',
+  '#FF9DA7',
+  '#9C755F',
+  '#BAB0AC',
+] as const;
+
 export const COLORS = {
-  canvas: '#FFFFFF',
-  mist: '#F1F5F9',
-  blush: '#CBD5E1',
-  blushDeep: '#94A3B8',
-  steel: '#94A3B8',
-  steelDeep: '#64748B',
-  brand: '#0A9396',
-  brandLight: '#94D2BD',
-  brandDeep: '#005F73',
-  brandDark: '#003845',
-  accent: '#EE9B00',
-  accentDeep: '#CA6702',
-  ink: '#0F172A',
-  grid: '#E2E8F0',
+  canvas: '#FFFCF7',
+  mist: '#FFF3E0',
+  blush: '#FBE2C3',
+  blushDeep: '#D9B58A',
+  steel: '#B7A898',
+  steelDeep: '#746657',
+  brand: '#F28E2B',
+  brandLight: '#F6C98F',
+  brandDeep: '#C36B12',
+  brandDark: '#8C4B0F',
+  accent: '#4E79A7',
+  accentDeep: '#E15759',
+  ink: '#433426',
+  grid: '#EADFCC',
 };
 
 export const ORIGIN_COLORS: Record<Origin, string> = {
-  Mainland: COLORS.brandDeep,
-  'Short-haul': COLORS.brand,
-  'Long-haul': COLORS.accent,
-  Emerging: COLORS.accentDeep,
+  Mainland: TABLEAU_CASUAL[1],
+  'Short-haul': TABLEAU_CASUAL[0],
+  'Long-haul': TABLEAU_CASUAL[2],
+  Emerging: TABLEAU_CASUAL[4],
 };
 
 export const VISITOR_TYPE_COLORS: Record<VisitorType, string> = {
-  Overnight: COLORS.brandDeep,
-  'Same-day': COLORS.accent,
+  Overnight: TABLEAU_CASUAL[1],
+  'Same-day': TABLEAU_CASUAL[0],
 };
 
 /** Ordered categorical series colours. */
-export const SERIES = [COLORS.brandDeep, COLORS.accent, COLORS.brand, COLORS.accentDeep, COLORS.brandLight, COLORS.steelDeep];
+export const SERIES = TABLEAU_CASUAL;
 
 export const AXIS_TICK = { fontSize: 11, fill: COLORS.steelDeep };
 
