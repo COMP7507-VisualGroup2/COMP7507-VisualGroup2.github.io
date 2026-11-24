@@ -196,8 +196,7 @@ export function TravelCompanionChart({ segment, available }: { segment: string; 
   const period = regional ? '2025' : '2026-H1';
   const rows = available ? profile(period, segment, regional ? 'companion_detail' : 'companion') : [];
   return (
-    <SectionCard title="Travel Companion" subtitle={`Overnight visitors · ${PERIOD_LABEL[period]}${regional ? ' · HKTB Visitor Profile' : ''}`}
-      footnote="Categories overlap; visitors may travel with more than one type of companion.">
+    <SectionCard title="Travel Companion" subtitle={`Overnight visitors · ${PERIOD_LABEL[period]}${regional ? ' · HKTB Visitor Profile' : ''}`}>
       {rows.length ? (
         <>
           <p className="visually-hidden">{rows.map((row) => `${row.category}: ${row.value}%.`).join(' ')}</p>
@@ -227,7 +226,7 @@ export function ExpenditureChart({ segment, available = true }: { segment?: Segm
   });
   const minimumBarWidth = (value: number | null | undefined) => value ? 5 : 0;
   return (
-    <SectionCard title="Spending Category" subtitle="Overnight visitors · H1 2025 vs H1 2026 · HK$ million" footnote="Very small non-zero bars use a minimum visual width; hover for exact values.">
+    <SectionCard title="Spending Category" subtitle="Overnight visitors · H1 2025 vs H1 2026 · HK$ million">
       {data ? (
         <>
           <div className="flex justify-end">

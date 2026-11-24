@@ -113,7 +113,6 @@ export default function CountryOriginMap({ market, filters }: { market: string; 
               );
             })}
           </ol>
-          <p className="mt-3 text-slate-500">Change in rounded overnight visitor origin share (percentage points): H1 2026 minus 2025 full year. Periods differ in length. New means absent from the supplied 2025 list.</p>
           {market === 'Philippines' && <p className="mt-2 text-slate-500">Manila represents Greater Manila; Pampanga represents San Fernando in the HKTB report.</p>}
           {market === 'USA' && <p className="mt-2 text-slate-500">Arizona, New Jersey and North Carolina are state-level in the HKTB report and are plotted at Phoenix, Newark and Raleigh; the San Jose and San Diego areas are plotted at those cities.</p>}
           {market === 'Canada' && <p className="mt-2 text-slate-500">Richmond is Richmond, British Columbia.</p>}

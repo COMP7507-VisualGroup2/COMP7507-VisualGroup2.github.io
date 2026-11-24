@@ -48,8 +48,7 @@ export function RegionInsights({ filters }: { filters: Filters }) {
   ] : [];
 
   return (
-    <SectionCard title="Insights and proposed actions" subtitle={insight && !incomplete ? `${selectedLabel} · ${insight.period} · complete quarters` : selectedLabel}
-      footnote={insight && !incomplete ? 'Quarterly spending is derived from HKTB TEAIT market-area data and excludes international passenger transport.' : undefined}>
+    <SectionCard title="Insights and proposed actions" subtitle={insight && !incomplete ? `${selectedLabel} · ${insight.period} · complete quarters` : selectedLabel}>
       {incomplete ? <div className="chart-empty">Insights are unavailable because regional data is incomplete for the selected period.</div>
         : !insight ? <div className="chart-empty">Insights are unavailable without a complete quarter in the selected period.</div>
           : (
