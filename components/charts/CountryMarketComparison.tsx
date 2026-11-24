@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { AnimatedText } from '../motion';
 import SectionCard from '../SectionCard';
 import { marketArrivalComparison, marketH1ArrivalComparison, marketOvernightShare } from '@/lib/country-market-comparison';
 import { demographics } from '@/lib/data';
@@ -60,7 +61,7 @@ export default function CountryMarketComparison({ filters }: { filters: Filters 
           <div className="overflow-x-auto">
             <table className="w-full min-w-[800px] border-collapse text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-200 text-[10px] font-semibold text-slate-500">
+                <tr className="border-b border-slate-200 text-[12px] font-semibold text-slate-500">
                   {columns.map((column) => (
                     <th key={column.key} scope="col" aria-sort={sort.key === column.key ? sort.direction : undefined} className={`px-2 py-2 ${column.key === 'market' || column.key === 'region' ? 'text-left' : 'text-right'}`}>
                       <button type="button" onClick={() => changeSort(column.key)} className="hover:text-brand-800" aria-label={`Sort by ${column.label}`}>
@@ -75,11 +76,11 @@ export default function CountryMarketComparison({ filters }: { filters: Filters 
                   <tr key={row.market}>
                     <td className="px-2 py-2.5">{row.region}</td>
                     <th scope="row" className="px-2 py-2.5 font-medium text-slate-800">{displayMarket(row.market)}</th>
-                    <td className="px-2 py-2.5 text-right tabular-nums">{row.arrivals === null ? 'N/A' : formatCompact(row.arrivals, 2)}</td>
-                    <td className={`px-2 py-2.5 text-right font-semibold tabular-nums ${row.growth === null ? 'text-slate-500' : row.growth >= 0 ? 'text-green-700' : 'text-red-600'}`}>{row.growth === null ? 'N/A' : formatPct(row.growth, 1, true)}</td>
-                    <td className="px-2 py-2.5 text-right tabular-nums">{row.overnightShare === null ? 'N/A' : formatPct(row.overnightShare)}</td>
-                    <td className="px-2 py-2.5 text-right tabular-nums">{row.overnightSpend === null ? 'N/A' : formatHkd(row.overnightSpend)}</td>
-                    <td className="px-2 py-2.5 text-right tabular-nums">{row.stay === null ? 'N/A' : row.stay.toFixed(1)}</td>
+                    <td className="px-2 py-2.5 text-right tabular-nums"><AnimatedText text={row.arrivals === null ? 'N/A' : formatCompact(row.arrivals, 2)} /></td>
+                    <td className={`px-2 py-2.5 text-right font-semibold tabular-nums ${row.growth === null ? 'text-slate-500' : row.growth >= 0 ? 'text-green-700' : 'text-red-600'}`}><AnimatedText text={row.growth === null ? 'N/A' : formatPct(row.growth, 1, true)} /></td>
+                    <td className="px-2 py-2.5 text-right tabular-nums"><AnimatedText text={row.overnightShare === null ? 'N/A' : formatPct(row.overnightShare)} /></td>
+                    <td className="px-2 py-2.5 text-right tabular-nums"><AnimatedText text={row.overnightSpend === null ? 'N/A' : formatHkd(row.overnightSpend)} /></td>
+                    <td className="px-2 py-2.5 text-right tabular-nums"><AnimatedText text={row.stay === null ? 'N/A' : row.stay.toFixed(1)} /></td>
                   </tr>
                 ))}
               </tbody>

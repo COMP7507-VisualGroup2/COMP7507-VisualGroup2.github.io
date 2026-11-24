@@ -98,6 +98,34 @@ const zoomAt = (v: View, factor: number, cx: number, cy: number): View => {
   return clampView({ k, x: cx - (cx - v.x) * r, y: cy - (cy - v.y) * r });
 };
 const WORLD: View = { k: 1, x: 0, y: 0 };
+const FOCUS_MS = 800;
+/** The profile is opened (and cross-faded in underneath) this far into the zoom, so the zoom flows into it. */
+const HANDOFF_MS = 450;
+const FOCUS_FIXED_ZOOM: Record<string, number> = { USA: 2.4, Russia: 2.2 };
+
+/** Pan/zoom view that frames a market's territory (large antimeridian-spanning markets use a fixed zoom on their arrow origin). */
+function viewForMarket(market: string): View | null {
+  const geo = MARKET_GEO[market];
+  if (!geo) return null;
+  const shapes = countries.filter((f) => geo.ids.includes(String(f.id)));
+  const fixed = FOCUS_FIXED_ZOOM[market];
+  let k: number;
+  let cx: number;
+  let cy: number;
+  if (shapes.length && !fixed) {
+    const boxes = shapes.map((f) => pathGen.bounds(f));
+    const x0 = Math.min(...boxes.map((b) => b[0][0]));
+    const y0 = Math.min(...boxes.map((b) => b[0][1]));
+    const x1 = Math.max(...boxes.map((b) => b[1][0]));
+    const y1 = Math.max(...boxes.map((b) => b[1][1]));
+    k = Math.min(MAX_ZOOM, Math.max(1.6, 0.7 * Math.min(WIDTH / (x1 - x0), HEIGHT / (y1 - y0))));
+    [cx, cy] = [(x0 + x1) / 2, (y0 + y1) / 2];
+  } else {
+    k = fixed ?? 6;
+    [cx, cy] = projection(geo.from) ?? [WIDTH / 2, HEIGHT / 2];
+  }
+  return clampView({ k, x: WIDTH / 2 - cx * k, y: HEIGHT / 2 - cy * k });
+}
 
 /** Curved flow line from a source to Hong Kong, with flowing dashes, a travelling arrow and a fixed arrowhead. */
 function Flow({ from, to, width, emphasis, motion, index, k }: { from: [number, number]; to: [number, number]; width: number; emphasis: number; motion: boolean; index: number; k: number }) {
@@ -145,17 +173,48 @@ function Flow({ from, to, width, emphasis, motion, index, k }: { from: [number, 
 const HALO = { stroke: COLORS.canvas, strokeWidth: 3, paintOrder: 'stroke', strokeLinejoin: 'round' } as const;
 
 /** Choropleth of visitor arrivals by HKTB source market with animated inbound flows to Hong Kong. */
-export default function OriginMap({ filters, selectedMarket }: { filters: Filters; selectedMarket?: string }) {
+export default function OriginMap({ filters, selectedMarket, onSelectMarket, startMarket }: { filters: Filters; selectedMarket?: string; onSelectMarket?: (market: string) => void; startMarket?: string }) {
   const [hover, setHover] = useState<Hover>(null);
   const [motion, setMotion] = useState(true);
-  const [view, setView] = useState<View>(WORLD);
+  const [view, setView] = useState<View>(() => (startMarket && viewForMarket(startMarket)) || WORLD);
+  const startedAt = useRef(startMarket);
+  const previousSelected = useRef(selectedMarket);
   const [smooth, setSmooth] = useState(false);
+  const [focusing, setFocusing] = useState(false);
   const [dragging, setDragging] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
-  const drag = useRef<{ x: number; y: number } | null>(null);
+  const drag = useRef<{ x: number; y: number; sx: number; sy: number; moved: boolean } | null>(null);
+  const focusTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const k = view.k;
 
+  const selectTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => () => {
+    clearTimeout(focusTimer.current);
+    clearTimeout(selectTimer.current);
+  }, []);
+
   useEffect(() => {
+    if (!startedAt.current) return;
+    let second = 0;
+    const first = requestAnimationFrame(() => {
+      second = requestAnimationFrame(() => {
+        setFocusing(true);
+        setSmooth(true);
+        setView(WORLD);
+      });
+    });
+    const done = setTimeout(() => setFocusing(false), FOCUS_MS + 100);
+    return () => {
+      cancelAnimationFrame(first);
+      cancelAnimationFrame(second);
+      clearTimeout(done);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (previousSelected.current === selectedMarket) return;
+    previousSelected.current = selectedMarket;
     const geo = selectedMarket ? MARKET_GEO[selectedMarket] : undefined;
     const center = geo ? projection(geo.from) : null;
     setSmooth(true);
@@ -234,21 +293,44 @@ export default function OriginMap({ filters, selectedMarket }: { filters: Filter
     setSmooth(true);
     setView(clampView(v));
   };
+  const selectMarket = (market: string) => {
+    if (!onSelectMarket || focusTimer.current) return;
+    const target = viewForMarket(market);
+    if (!target || !motion) {
+      onSelectMarket(market);
+      return;
+    }
+    setHover(null);
+    setFocusing(true);
+    setSmooth(true);
+    setView(target);
+    selectTimer.current = setTimeout(() => onSelectMarket(market), HANDOFF_MS);
+    focusTimer.current = setTimeout(() => {
+      focusTimer.current = undefined;
+      setFocusing(false);
+    }, FOCUS_MS);
+  };
   const focusAsia = () => goTo({ k: 3.2, x: WIDTH / 2 - hk[0] * 3.2, y: HEIGHT / 2 - hk[1] * 3.2 });
 
   const onPointerDown = (e: ReactPointerEvent<SVGSVGElement>) => {
-    if (e.button !== 0 || k === 1) return;
-    drag.current = { x: e.clientX, y: e.clientY };
-    setSmooth(false);
-    setDragging(true);
-    e.currentTarget.setPointerCapture(e.pointerId);
+    if (e.button !== 0 || k === 1 || focusTimer.current) return;
+    drag.current = { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, moved: false };
   };
   const onPointerMove = (e: ReactPointerEvent<SVGSVGElement>) => {
-    if (!drag.current) return;
+    const d = drag.current;
+    if (!d) return;
+    if (!d.moved) {
+      if (Math.hypot(e.clientX - d.sx, e.clientY - d.sy) < 4) return;
+      d.moved = true;
+      setSmooth(false);
+      setDragging(true);
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
     const rect = e.currentTarget.getBoundingClientRect();
-    const dx = ((e.clientX - drag.current.x) * WIDTH) / rect.width;
-    const dy = ((e.clientY - drag.current.y) * HEIGHT) / rect.height;
-    drag.current = { x: e.clientX, y: e.clientY };
+    const dx = ((e.clientX - d.x) * WIDTH) / rect.width;
+    const dy = ((e.clientY - d.y) * HEIGHT) / rect.height;
+    d.x = e.clientX;
+    d.y = e.clientY;
     setView((v) => clampView({ ...v, x: v.x + dx, y: v.y + dy }));
   };
   const endDrag = () => {
@@ -256,6 +338,7 @@ export default function OriginMap({ filters, selectedMarket }: { filters: Filter
     setDragging(false);
   };
   const onDoubleClick = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (focusTimer.current) return;
     const rect = e.currentTarget.getBoundingClientRect();
     setSmooth(true);
     setView((v) => zoomAt(v, 2, ((e.clientX - rect.left) * WIDTH) / rect.width, ((e.clientY - rect.top) * HEIGHT) / rect.height));
@@ -280,7 +363,7 @@ export default function OriginMap({ filters, selectedMarket }: { filters: Filter
           onPointerCancel={endDrag}
           onDoubleClick={onDoubleClick}
         >
-          <g style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${k})`, transition: smooth ? 'transform 350ms ease' : 'none' }}>
+          <g style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${k})`, transition: smooth ? `transform ${focusing ? FOCUS_MS : 350}ms ${focusing ? 'cubic-bezier(0.45, 0, 0.2, 1)' : 'ease'}` : 'none' }}>
             <g>
               {PATHS.map((p) => (
                 <path
@@ -293,6 +376,7 @@ export default function OriginMap({ filters, selectedMarket }: { filters: Filter
                   vectorEffect="non-scaling-stroke"
                   onMouseEnter={() => p.market && marketVisible(p.market) && setHover({ country: p.name, market: p.market })}
                   onMouseLeave={() => setHover(null)}
+                  onClick={() => p.market && marketVisible(p.market) && selectMarket(p.market)}
                   className={p.market && marketVisible(p.market) ? 'cursor-pointer transition-opacity hover:opacity-80' : undefined}
                   style={{ transition: 'fill 400ms' }}
                 />
@@ -326,9 +410,20 @@ export default function OriginMap({ filters, selectedMarket }: { filters: Filter
                   return (
                     <g key={`label-${m}`} transform={`translate(${x},${y}) scale(${1 / k})`} opacity={visible ? 1 : 0.3}>
                       {g.ids.length === 0 && (
-                        <circle r={hoveredMarket === m ? 4.5 : 3.2} fill={v ? marketScale.colorOf(v) : COLORS.mist} stroke={ORIGIN_COLORS[MARKET_ORIGIN[m] as Origin]} strokeWidth={1.4} />
+                        <>
+                          <circle r={hoveredMarket === m ? 4.5 : 3.2} fill={v ? marketScale.colorOf(v) : COLORS.mist} stroke={ORIGIN_COLORS[MARKET_ORIGIN[m] as Origin]} strokeWidth={1.4} />
+                          <circle
+                            r={9}
+                            fill="transparent"
+                            pointerEvents="all"
+                            className="cursor-pointer"
+                            onMouseEnter={() => setHover({ country: m, market: m })}
+                            onMouseLeave={() => setHover(null)}
+                            onClick={() => selectMarket(m)}
+                          />
+                        </>
                       )}
-                      <text x={g.label[0]} y={g.label[1]} textAnchor={g.label[2]} fontSize={9.5} fontWeight={hoveredMarket === m ? 800 : 600} fill={COLORS.ink} {...HALO}>
+                      <text x={g.label[0]} y={g.label[1]} textAnchor={g.label[2]} fontSize={11.5} fontWeight={hoveredMarket === m ? 800 : 600} fill={COLORS.ink} {...HALO}>
                         {shortMarket(m)}
                         {v ? <> <AnimatedNumber value={v} format={compact} /></> : null}
                       </text>
@@ -345,7 +440,7 @@ export default function OriginMap({ filters, selectedMarket }: { filters: Filter
                 </circle>
               )}
               <circle r={6} fill={COLORS.accentDeep} stroke={COLORS.canvas} strokeWidth={2} />
-              <text x={9} y={18} fontSize={13} fontWeight={700} fill={COLORS.ink} {...HALO}>
+              <text x={9} y={18} fontSize={15} fontWeight={700} fill={COLORS.ink} {...HALO}>
                 Hong Kong
               </text>
             </g>
@@ -370,6 +465,7 @@ export default function OriginMap({ filters, selectedMarket }: { filters: Filter
               ) : (
                 <p className="mt-1 text-slate-600">No arrivals in the selected range</p>
               )}
+              {onSelectMarket && hoveredMarket && <p className="mt-1 text-slate-500">Click to open the country profile</p>}
             </>
                     ) : !hasMarketData ? (
             <>
@@ -381,7 +477,7 @@ export default function OriginMap({ filters, selectedMarket }: { filters: Filter
               <p className="font-semibold text-slate-900">
                 <AnimatedNumber value={total} format={(n) => `${formatCompact(n, 1)} ${filters.origin === 'All' ? '' : 'named-market '}arrivals`} />
               </p>
-              <p className="text-slate-600">Hover a highlighted country for its market</p>
+              <p className="text-slate-600">{onSelectMarket ? 'Click a highlighted country to open its profile' : 'Hover a highlighted country for its market'}</p>
             </>
           )}
         </div>
@@ -395,16 +491,16 @@ export default function OriginMap({ filters, selectedMarket }: { filters: Filter
               −
             </button>
           </div>
-          <button type="button" className={`${iconButton} w-auto px-2 text-[11px]`} onClick={focusAsia}>
+          <button type="button" className={`${iconButton} w-auto px-2 text-[13px]`} onClick={focusAsia}>
             Focus Asia
           </button>
-          <button type="button" className={`${iconButton} w-auto px-2 text-[11px]`} onClick={() => goTo(WORLD)} disabled={k === 1}>
+          <button type="button" className={`${iconButton} w-auto px-2 text-[13px]`} onClick={() => goTo(WORLD)} disabled={k === 1}>
             Reset
           </button>
         </div>
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-slate-600">
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] text-slate-600">
         <span className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1">
           Arrivals:
           {scale.colors.map((c, i) => {

@@ -31,6 +31,16 @@ const config: Config = {
           700: '#A93638',
         },
       },
+      // Root font-size is 18px (see app/v3.css), so these are the default sizes + 2px, written in px.
+      fontSize: {
+        xs: ['15.5px', '20px'],
+        sm: ['17.75px', '24.5px'],
+        base: ['20px', '29px'],
+        lg: ['22.25px', '33.5px'],
+        xl: ['24.5px', '33.5px'],
+        '2xl': ['29px', '38px'],
+        '3xl': ['35.75px', '42.5px'],
+      },
       fontFamily: {
         sans: ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },

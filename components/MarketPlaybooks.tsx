@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { AnimatedText } from './motion';
 import StrategyPillars from './StrategyPillars';
 import { demographics } from '@/lib/data';
 import { useFilters } from '@/lib/filters-context';
@@ -79,7 +80,7 @@ export default function MarketPlaybooks({ selected, origin, available }: { selec
           <h3 className="mb-2 font-bold text-amber-900">Insights · {title}</h3>
           {displayedPairs.length ? (
             <ol className="list-decimal space-y-2 pl-4">
-              {displayedPairs.map((pair) => <li key={pair.insight}>{pair.insight}</li>)}
+              {displayedPairs.map((pair, index) => <li key={index}><AnimatedText text={pair.insight} /></li>)}
             </ol>
           ) : <p>Insights are unavailable for this selection and period.</p>}
         </div>
@@ -87,7 +88,7 @@ export default function MarketPlaybooks({ selected, origin, available }: { selec
           <h3 className="mb-2 font-bold text-green-900">Proposed actions · {title}</h3>
           {displayedPairs.length ? (
             <ol className="list-decimal space-y-2 pl-4">
-              {displayedPairs.map((pair) => <li key={pair.insight}>{pair.action}</li>)}
+              {displayedPairs.map((pair, index) => <li key={index}><AnimatedText text={pair.action} /></li>)}
             </ol>
           ) : <p>Proposed actions are unavailable without an insight for this selection and period.</p>}
         </div>

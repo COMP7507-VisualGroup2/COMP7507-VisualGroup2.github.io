@@ -46,7 +46,7 @@ export const VISITOR_TYPE_COLORS: Record<VisitorType, string> = {
 /** Ordered categorical series colours. */
 export const SERIES = TABLEAU_CASUAL;
 
-export const AXIS_TICK = { fontSize: 11, fill: COLORS.steelDeep };
+export const AXIS_TICK = { fontSize: 13, fill: COLORS.steelDeep };
 
 export const TOOLTIP_STYLE = {
   contentStyle: {
@@ -54,7 +54,7 @@ export const TOOLTIP_STYLE = {
     border: `1px solid ${COLORS.grid}`,
     background: COLORS.canvas,
     boxShadow: '0 8px 24px rgba(15,23,42,0.08)',
-    fontSize: 12,
+    fontSize: 14,
   },
   labelStyle: { fontWeight: 600, color: COLORS.ink },
 };

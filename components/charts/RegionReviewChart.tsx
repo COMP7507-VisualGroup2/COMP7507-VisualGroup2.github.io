@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, LabelList, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { useTweenedRows } from '../motion';
 import SectionCard, { Segmented } from '../SectionCard';
 import { summary } from '@/lib/data';
 import { formatCompact, formatHkd, formatNumber, formatPct, monthLabel } from '@/lib/format';
@@ -107,6 +108,19 @@ export default function RegionReviewChart({ filters }: { filters: Filters }) {
     };
   });
   const chartData = mode === 'visitors' ? data : quarterlyData;
+  const weighted = chartData.map((source) => {
+    const row = source as Record<string, string | number | null>;
+    return {
+      ...row,
+      ...Object.fromEntries(REVIEW_REGIONS.flatMap((region) => {
+        const on = regions.includes(region) ? 1 : 0;
+        const share = row[`${region}-share`];
+        return [[region, Number(row[region]) * on], [`${region}-share`, share === null ? null : Number(share) * on]];
+      })),
+    };
+  });
+  const animatedChart = useTweenedRows(weighted, 'period', mode);
+  const animatedQuarterly = useTweenedRows(quarterlyData, 'period', mode);
   const incomplete = mode === 'visitors' ? monthly.incomplete : quarterly.incomplete || history.incomplete;
   const totalLabel = filters.start === '2026-01' && filters.end === '2026-06'
     ? 'H1 2026' : mode === 'visitors' ? 'Selected period' : 'Complete quarters';
@@ -151,18 +165,18 @@ export default function RegionReviewChart({ filters }: { filters: Filters }) {
             </p>
             {mode === 'average' ? (
               <ResponsiveContainer width="100%" height={340}>
-                <LineChart data={quarterlyData} margin={{ top: 24, right: 12, left: 0, bottom: 0 }}>
+                <LineChart data={animatedQuarterly} margin={{ top: 24, right: 12, left: 0, bottom: 0 }}>
                   <CartesianGrid stroke={COLORS.grid} vertical={false} />
                   <XAxis dataKey="period" tick={AXIS_TICK} tickLine={false} axisLine={false} />
                   <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} tickFormatter={(value) => formatCompact(Number(value), 1)} />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(value, name) => [formatHkd(Number(value)), name]} itemSorter={(item) => -Number(item.value)} />
-                  <Legend wrapperStyle={{ fontSize: 10 }} />
+                  <Legend wrapperStyle={{ fontSize: 12 }} />
                   {regions.map((region) => <Line key={region} dataKey={region} name={label(region)} stroke={ORIGIN_COLORS[region]} strokeWidth={2} dot={{ r: 4 }} isAnimationActive={false} />)}
                 </LineChart>
               </ResponsiveContainer>
             ) : (
               <ResponsiveContainer width="100%" height={340} className="overflow-hidden">
-              <BarChart data={chartData} margin={{ top: 24, right: 12, left: 0, bottom: 0 }}>
+              <BarChart data={animatedChart} margin={{ top: 24, right: 12, left: 0, bottom: 0 }}>
                 <CartesianGrid stroke={COLORS.grid} vertical={false} />
                 <XAxis dataKey="period" tick={AXIS_TICK} tickLine={false} axisLine={false} />
                 <YAxis yAxisId="amount" tick={AXIS_TICK} tickLine={false} axisLine={false} domain={labelMode === 'numbers' ? [0, (max: number) => max * 1.15] : undefined} tickFormatter={(value) => formatCompact(Number(value), 1)} />
@@ -174,22 +188,27 @@ export default function RegionReviewChart({ filters }: { filters: Filters }) {
                   }}
                   itemSorter={(item) => -Number(item.value)}
                 />
-                <Legend wrapperStyle={{ fontSize: 10 }} />
-                {regions.map((region, index) => (
-                  <Bar key={region} yAxisId="amount" dataKey={region} name={label(region)} stackId="regions" fill={ORIGIN_COLORS[region]} maxBarSize={100}>
-                    <LabelList
-                      dataKey={labelMode === 'percent' ? `${region}-share` : region}
-                      position="center"
-                      fill={labelColor(ORIGIN_COLORS[region])}
-                      fontSize={labelMode === 'numbers' ? 9 : 11}
-                      formatter={(value: number) => labelMode === 'percent' ? `${value.toFixed(1)}%` : formatCompact(value, 2)}
-                    />
-                    {labelMode === 'numbers' && index === regions.length - 1 && (
-                      <LabelList dataKey="shownTotal" position="top" fill="#334155" fontSize={10}
-                        formatter={(value: number) => `Total ${formatCompact(value, 2)}`} />
-                    )}
-                  </Bar>
-                ))}
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                {REVIEW_REGIONS.map((region) => {
+                  const shown = regions.includes(region);
+                  const lastShown = region === regions[regions.length - 1];
+                  return (
+                    <Bar key={region} yAxisId="amount" dataKey={region} name={label(region)} stackId="regions" fill={ORIGIN_COLORS[region]} maxBarSize={100} isAnimationActive={false}
+                      legendType={shown ? undefined : 'none'} tooltipType={shown ? undefined : 'none'}>
+                      <LabelList
+                        dataKey={labelMode === 'percent' ? `${region}-share` : region}
+                        position="center"
+                        fill={labelColor(ORIGIN_COLORS[region])}
+                        fontSize={labelMode === 'numbers' ? 11 : 13}
+                        formatter={(value: number) => value < 1 ? '' : labelMode === 'percent' ? `${value.toFixed(1)}%` : formatCompact(value, 2)}
+                      />
+                      {labelMode === 'numbers' && lastShown && (
+                        <LabelList dataKey="shownTotal" position="top" fill="#334155" fontSize={12}
+                          formatter={(value: number) => `Total ${formatCompact(value, 2)}`} />
+                      )}
+                    </Bar>
+                  );
+                })}
               </BarChart>
               </ResponsiveContainer>
             )}
@@ -202,7 +221,7 @@ export default function RegionReviewChart({ filters }: { filters: Filters }) {
             <div>
               <div className="text-xs text-slate-500">YoY Growth</div>
               <strong className={`text-base ${overview.growth === null ? 'text-slate-500' : overview.growth >= 0 ? 'text-green-700' : 'text-red-600'}`}>{formatPct(overview.growth, 1, true)}</strong>
-              <div className="text-[11px] text-slate-500">vs same period in 2025</div>
+              <div className="text-[13px] text-slate-500">vs same period in 2025</div>
             </div>
           </aside>
         </div>

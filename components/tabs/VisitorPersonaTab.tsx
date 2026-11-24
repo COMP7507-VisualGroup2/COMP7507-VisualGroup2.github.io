@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import CountryMetrics from '../CountryMetrics';
 import LazyMount from '../LazyMount';
 import MarketPlaybooks from '../MarketPlaybooks';
@@ -21,7 +21,25 @@ import { periodForRange } from '@/lib/persona';
 export default function VisitorPersonaTab({ view = 'region' }: { view?: 'region' | 'country' }) {
   const { filters: sharedFilters } = useFilters();
   const filters = useMemo(() => (view === 'country' ? countryAnalysisFilters : analysis2026Filters)(sharedFilters, filterMonths), [sharedFilters, view]);
-  const { choices, selected } = useCountryMarket();
+  const { choices, selected, setMarket } = useCountryMarket();
+  const [leavingWorld, setLeavingWorld] = useState(false);
+  const [returningFrom, setReturningFrom] = useState<string | null>(null);
+  const backTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  useEffect(() => {
+    if (!leavingWorld) return;
+    const timer = setTimeout(() => setLeavingWorld(false), 600);
+    return () => clearTimeout(timer);
+  }, [leavingWorld]);
+  useEffect(() => () => backTimers.current.forEach(clearTimeout), []);
+  const backToWorld = (from: string) => {
+    if (returningFrom) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setMarket('All');
+      return;
+    }
+    setReturningFrom(from);
+    backTimers.current = [setTimeout(() => setMarket('All'), 520), setTimeout(() => setReturningFrom(null), 950)];
+  };
   const analysisFilters = useMemo(() => ({ ...filters, visitorType: 'All' as const, region: 'All' }), [filters]);
   const profileSegment = analysisFilters.origin !== 'All' ? analysisFilters.origin : 'All markets';
   const period = periodForRange(filters.end);
@@ -64,10 +82,33 @@ export default function VisitorPersonaTab({ view = 'region' }: { view?: 'region'
         title="Where visitors come from"
         subtitle={selectedMarket === 'Chinese Mainland' ? 'Mainland visitor origins' : selectedMarket === 'Singapore' ? 'Singapore visitor arrivals' : selectedMarket ? `${selectedMarket} overnight visitor origins` : `${choices.length} HKTB source markets · ${describeSegment(analysisFilters).split(' · ')[0]}`}
         footnote={selectedMarket === 'Chinese Mainland' ? 'Mainland origin shares were supplied by the user without a stated source.' : undefined}
+        actions={selectedMarket && !returningFrom ? (
+          <button
+            type="button"
+            onClick={() => backToWorld(selectedMarket)}
+            className="shrink-0 rounded-lg border border-slate-200 bg-canvas px-2.5 py-1.5 text-xs font-semibold text-brand-800 shadow-sm transition hover:border-brand-500"
+          >
+            ← World map
+          </button>
+        ) : undefined}
       >
-        {selectedMarket === 'Chinese Mainland' ? <MainlandOriginMap filters={analysisFilters} />
-          : selectedMarket ? <CountryOriginMap market={selectedMarket} filters={analysisFilters} />
-            : <LazyMount height={640}><OriginMap filters={analysisFilters} /></LazyMount>}
+        <div className="relative">
+          {selectedMarket && (
+            <div key={`detail-${selectedMarket}`} className="map-fade-in">
+              {selectedMarket === 'Chinese Mainland' ? <MainlandOriginMap filters={analysisFilters} /> : <CountryOriginMap market={selectedMarket} filters={analysisFilters} />}
+            </div>
+          )}
+          {(!selectedMarket || leavingWorld || returningFrom) && (
+            <div
+              key="world"
+              className={selectedMarket ? `${returningFrom ? 'map-fade-in' : 'map-fade-out'} pointer-events-none absolute inset-0 overflow-hidden bg-canvas` : undefined}
+            >
+              <LazyMount height={640} eager={!!returningFrom}>
+                <OriginMap filters={analysisFilters} startMarket={returningFrom ?? undefined} onSelectMarket={(m) => { setLeavingWorld(true); setMarket(m); }} />
+              </LazyMount>
+            </div>
+          )}
+        </div>
       </SectionCard>
       {selectedMarket ? (
         <>

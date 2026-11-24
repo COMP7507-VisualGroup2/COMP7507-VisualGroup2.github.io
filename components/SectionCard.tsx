@@ -21,7 +21,7 @@ export default function SectionCard({ title, subtitle, badge, actions, children,
           <h2>{title}</h2>
           <div className="flex flex-wrap items-center gap-x-2">
             {badge && <DataSourceBadge kind={badge} />}
-            {subtitle && <p className="mt-[7px] text-[11px] text-[#89949c]">{subtitle}</p>}
+            {subtitle && <p className="mt-[7px] text-[13px] text-[#89949c]">{subtitle}</p>}
           </div>
         </div>
         {actions}
@@ -71,7 +71,7 @@ export function Segmented<T extends string>({
   return (
     <div className="segmented-control !mt-0" role="group">
       {options.map((o) => (
-        <button key={o.value} type="button" onClick={() => onChange(o.value)} aria-pressed={value === o.value} className={`segment !text-[11px] ${value === o.value ? 'active' : ''}`}>
+        <button key={o.value} type="button" onClick={() => onChange(o.value)} aria-pressed={value === o.value} className={`segment !text-[13px] ${value === o.value ? 'active' : ''}`}>
           {o.label}
         </button>
       ))}
@@ -82,7 +82,7 @@ export function Segmented<T extends string>({
 export function Insight({ children, tone = 'brand' }: { children: ReactNode; tone?: 'brand' | 'accent' | 'steel' }) {
   const border = { brand: COLORS.brandDeep, accent: COLORS.brandLight, steel: '#94a3b8' }[tone];
   return (
-    <div className="rounded-r-[5px] border-l-2 bg-[#fafbfc] px-3 py-2 text-[12px] leading-snug text-[#405461]" style={{ borderColor: border }}>
+    <div className="rounded-r-[5px] border-l-2 bg-[#fafbfc] px-3 py-2 text-[14px] leading-snug text-[#405461]" style={{ borderColor: border }}>
       {children}
     </div>
   );

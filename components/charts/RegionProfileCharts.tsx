@@ -26,7 +26,7 @@ function ProfilePieCard({ title, subtitle, rows }: { title: string; subtitle: st
     const x = Number(props.cx) + Math.cos(angle) * radius;
     const y = Number(props.cy) + Math.sin(angle) * radius;
     return (
-      <text x={x} y={y} textAnchor="middle" dominantBaseline="middle" fill={labelColor(row.color)} fontSize={9} fontWeight={700} pointerEvents="none">
+      <text x={x} y={y} textAnchor="middle" dominantBaseline="middle" fill={labelColor(row.color)} fontSize={11} fontWeight={700} pointerEvents="none">
         <tspan x={x} dy="-0.6em">{row.name}</tspan>
         <tspan x={x} dy="1.2em">{display(row)}</tspan>
       </text>
@@ -106,7 +106,7 @@ function ShoppingTile({ x = 0, y = 0, width = 0, height = 0, index = 0, depth = 
       <rect x={x} y={y} width={width} height={height} fill={color} stroke="#fff" strokeWidth={2} />
       {width >= 26 && height >= 32 && (
         <foreignObject x={x + 3} y={y + 3} width={Math.max(0, width - 6)} height={Math.max(0, height - 6)} pointerEvents="none">
-          <div className="flex h-full flex-col items-center justify-center overflow-hidden text-center text-[10px] font-semibold leading-tight" style={{ color: labelColor(color), overflowWrap: 'anywhere' }}>
+          <div className="flex h-full flex-col items-center justify-center overflow-hidden text-center text-[12px] font-semibold leading-tight" style={{ color: labelColor(color), overflowWrap: 'anywhere' }}>
             <span>{name}</span>
             <span>{formatShare(value)}</span>
           </div>
@@ -124,7 +124,7 @@ export function ShoppingTreemap({ period, segment, available = true }: { period:
         <>
           <p className="visually-hidden">{rows.map((row) => `${row.name}: ${formatShare(row.value)}.`).join(' ')}</p>
           <ResponsiveContainer width="100%" height={330}>
-            <Treemap data={rows} dataKey="value" nameKey="name" content={<ShoppingTile />} isAnimationActive={false}>
+            <Treemap data={rows} dataKey="value" nameKey="name" content={<ShoppingTile />}>
               <Tooltip {...TOOLTIP_STYLE} formatter={(value) => formatShare(Number(value))} />
             </Treemap>
           </ResponsiveContainer>
@@ -151,7 +151,7 @@ export function PurposeChart({ period, segment, available = true }: { period: Pr
               <YAxis type="category" dataKey="purpose" width={150} tick={AXIS_TICK} tickLine={false} axisLine={false} />
               <Tooltip {...TOOLTIP_STYLE} formatter={(value) => `${Number(value).toFixed(1)}%`} />
               <Bar dataKey="percent" name="Visitors" fill={COLORS.accent} maxBarSize={24}>
-                <LabelList dataKey="percent" position="right" fontSize={10} formatter={(value: number) => `${value}%`} />
+                <LabelList dataKey="percent" position="right" fontSize={12} formatter={(value: number) => `${value}%`} />
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -178,9 +178,9 @@ export function AverageStayChart({ segment, available }: { segment: string; avai
               <XAxis dataKey="period" tick={AXIS_TICK} tickLine={false} axisLine={false} />
               <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} domain={[0, (max: number) => Math.ceil(max * 1.2)]} />
               <Tooltip {...TOOLTIP_STYLE} formatter={(value) => `${Number(value).toFixed(1)} nights`} />
-              <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: 10 }} />
-              <Line dataKey="nights" name="Average stay" stroke={COLORS.accent} strokeWidth={2} dot={{ r: 4 }} isAnimationActive={false}>
-                <LabelList dataKey="nights" position="top" fontSize={11} formatter={(value: number) => `${value.toFixed(1)} nights`} />
+              <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: 12 }} />
+              <Line dataKey="nights" name="Average stay" stroke={COLORS.accent} strokeWidth={2} dot={{ r: 4 }}>
+                <LabelList dataKey="nights" position="top" fontSize={13} formatter={(value: number) => `${value.toFixed(1)} nights`} />
               </Line>
             </LineChart>
           </ResponsiveContainer>
@@ -207,8 +207,8 @@ export function TravelCompanionChart({ segment, available }: { segment: string; 
               <XAxis type="number" domain={[0, 100]} tickFormatter={(value) => `${value}%`} tick={AXIS_TICK} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="category" width={150} tick={AXIS_TICK} tickLine={false} axisLine={false} />
               <Tooltip {...TOOLTIP_STYLE} formatter={(value) => `${Number(value).toFixed(1)}%`} />
-              <Bar dataKey="value" name="Visitors" fill={COLORS.accent} maxBarSize={24} isAnimationActive={false}>
-                <LabelList dataKey="value" position="right" fontSize={10} formatter={(value: number) => `${value}%`} />
+              <Bar dataKey="value" name="Visitors" fill={COLORS.accent} maxBarSize={24}>
+                <LabelList dataKey="value" position="right" fontSize={12} formatter={(value: number) => `${value}%`} />
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -235,7 +235,7 @@ export function ExpenditureChart({ segment, available = true }: { segment?: Segm
               type="button"
               onClick={() => setSortDirection((current) => current === 'descending' ? 'ascending' : 'descending')}
               aria-label={`Sort by YoY percentage, currently ${sortDirection}`}
-              className="pr-1 text-[11px] font-semibold text-slate-600 hover:text-brand-800"
+              className="pr-1 text-[13px] font-semibold text-slate-600 hover:text-brand-800"
             >
               YoY % {sortDirection === 'descending' ? '↓' : '↑'}
             </button>
@@ -257,16 +257,16 @@ export function ExpenditureChart({ segment, available = true }: { segment?: Segm
                   axisLine={false}
                   tick={({ x, y, payload }: { x: number; y: number; payload: { value: string } }) => {
                     const row = rows.find((entry) => entry.category === payload.value);
-                    return <text x={x + 58} y={y} textAnchor="end" dominantBaseline="middle" fill={row ? (row.growth >= 0 ? '#15803d' : '#dc2626') : COLORS.steelDeep} fontSize={11} fontWeight={600}>{formatPct(row?.growth, 1, true)}</text>;
+                    return <text x={x + 58} y={y} textAnchor="end" dominantBaseline="middle" fill={row ? (row.growth >= 0 ? '#15803d' : '#dc2626') : COLORS.steelDeep} fontSize={13} fontWeight={600}>{formatPct(row?.growth, 1, true)}</text>;
                   }}
                 />
                 <Tooltip {...TOOLTIP_STYLE} formatter={(value) => `HK$${formatNumber(Number(value), 2)}m`} />
-                <Legend wrapperStyle={{ fontSize: 10 }} />
-                <Bar yAxisId="category" dataKey="before" name="H1 2025" fill={TABLEAU_CASUAL[0]} maxBarSize={18} minPointSize={minimumBarWidth} isAnimationActive={false}>
-                  <LabelList dataKey="before" position="right" fontSize={10} formatter={(value: number) => `${formatNumber(value, 2)}m`} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar yAxisId="category" dataKey="before" name="H1 2025" fill={TABLEAU_CASUAL[0]} maxBarSize={18} minPointSize={minimumBarWidth}>
+                  <LabelList dataKey="before" position="right" fontSize={12} formatter={(value: number) => `${formatNumber(value, 2)}m`} />
                 </Bar>
-                <Bar yAxisId="category" dataKey="now" name="H1 2026" fill={TABLEAU_CASUAL[1]} maxBarSize={18} minPointSize={minimumBarWidth} isAnimationActive={false}>
-                  <LabelList dataKey="now" position="right" fontSize={10} formatter={(value: number) => `${formatNumber(value, 2)}m`} />
+                <Bar yAxisId="category" dataKey="now" name="H1 2026" fill={TABLEAU_CASUAL[1]} maxBarSize={18} minPointSize={minimumBarWidth}>
+                  <LabelList dataKey="now" position="right" fontSize={12} formatter={(value: number) => `${formatNumber(value, 2)}m`} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>

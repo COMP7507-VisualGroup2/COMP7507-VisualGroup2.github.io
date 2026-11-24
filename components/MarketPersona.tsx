@@ -106,7 +106,7 @@ export function MarketPersonaTable({
         }))}
         format={(v, col) => fmt[col](v)}
       />
-      <p className="mt-2 text-[11px] text-slate-600">
+      <p className="mt-2 text-[13px] text-slate-600">
         Arrivals, YoY and overnight share: HKTB arrival statistics, {H1_LABEL[period]}. Other columns: HKTB Visitor Profile, {PERIOD_LABEL[period]} (overnight
         visitors). Shading compares markets within each column. Click a row to open the persona.
       </p>
@@ -117,9 +117,9 @@ export function MarketPersonaTable({
 function Stat({ label, value, hint }: { label: string; value: ReactNode; hint?: ReactNode }) {
   return (
     <div className="rounded-xl bg-slate-50 p-2.5">
-      <p className="text-[11px] text-slate-600">{label}</p>
+      <p className="text-[13px] text-slate-600">{label}</p>
       <p className="text-base font-bold text-slate-900">{value}</p>
-      {hint && <p className="text-[10px] text-slate-500">{hint}</p>}
+      {hint && <p className="text-[12px] text-slate-500">{hint}</p>}
     </div>
   );
 }
@@ -156,11 +156,11 @@ export function MarketPersonaCard({ market, period }: { market: string; period: 
     <article className="rounded-2xl border border-slate-200/80 bg-canvas p-4 shadow-card sm:p-5" style={{ borderTop: `4px solid ${ORIGIN_COLORS[origin]}` }}>
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Market persona · {PERIOD_LABEL[period]}</p>
+          <p className="text-[13px] font-semibold uppercase tracking-wider text-slate-500">Market persona · {PERIOD_LABEL[period]}</p>
           <h3 className="text-xl font-bold text-brand-900">{market}</h3>
           <p className="mt-0.5 text-xs text-slate-600">{traits.length ? `${traits.join(', ')}.` : ''}</p>
         </div>
-        <span className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold text-canvas" style={{ background: ORIGIN_COLORS[origin] }}>
+        <span className="rounded-full px-2.5 py-0.5 text-[13px] font-semibold text-canvas" style={{ background: ORIGIN_COLORS[origin] }}>
           {origin}
         </span>
       </header>
@@ -199,7 +199,7 @@ export function MarketPersonaCard({ market, period }: { market: string; period: 
                   return (
                     <div
                       key={g}
-                      className="flex items-center justify-center overflow-hidden whitespace-nowrap text-[10px] font-semibold transition-[width] duration-700 ease-out motion-reduce:transition-none"
+                      className="flex items-center justify-center overflow-hidden whitespace-nowrap text-[12px] font-semibold transition-[width] duration-700 ease-out motion-reduce:transition-none"
                       style={{ width: `${v}%`, background: AGE_COLORS[i], color: labelColor(AGE_COLORS[i]) }}
                       title={`${g}: ${v}%`}
                     >
@@ -208,7 +208,7 @@ export function MarketPersonaCard({ market, period }: { market: string; period: 
                   );
                 })}
               </div>
-              <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-slate-600">
+              <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[12px] text-slate-600">
                 {AGE_GROUPS.map((g, i) => (
                   <span key={g} className="inline-flex items-center gap-1">
                     <span className="h-2 w-2 rounded-sm" style={{ background: AGE_COLORS[i] }} />
@@ -248,7 +248,7 @@ export function MarketPersonaCard({ market, period }: { market: string; period: 
             <ol className="space-y-1">
               {places.map((p) => (
                 <li key={p.category} ref={flipRef(p.category)} className="flex items-center gap-2 text-xs">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-700 text-[10px] font-bold text-canvas">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-700 text-[12px] font-bold text-canvas">
                     {num(p.value, (n) => String(Math.round(n)))}
                   </span>
                   <span className="min-w-0 flex-1 truncate text-slate-700" title={p.category}>
@@ -263,7 +263,7 @@ export function MarketPersonaCard({ market, period }: { market: string; period: 
           )}
         </div>
       </div>
-      <p className="mt-4 text-[11px] text-slate-600">
+      <p className="mt-4 text-[13px] text-slate-600">
         Sources: HKTB Visitor Profile Report 2025 FY / 2026 H1 (market summary pages); HKTB visitor arrival statistics ({H1_LABEL[period]}) for arrivals, overnight share and gender.
       </p>
     </article>

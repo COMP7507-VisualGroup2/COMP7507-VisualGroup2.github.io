@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useProgress } from './motion';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { summary } from '@/lib/data';
 import { profile, type Segment } from '@/lib/persona';
@@ -52,7 +53,7 @@ export function ProfilePie({ rows }: { rows: { name: string; value: number; colo
           <Tooltip formatter={(value) => `${Number(value).toFixed(1)}%`} itemSorter={(item) => -Number(item.value)} />
         </PieChart>
       </ResponsiveContainer>
-      <ul className="space-y-1 text-[11px] text-slate-600">
+      <ul className="space-y-1 text-[13px] text-slate-600">
         {rows.map((row) => (
           <li key={row.name} className="flex items-center justify-between gap-2">
             <span className="flex items-center gap-1.5"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-sm" style={{ background: row.color }} />{row.name}</span>
@@ -94,7 +95,7 @@ export function SpendingTable({ segment }: { segment: ProfileSegment }) {
     <div className="overflow-x-auto">
       <table className="w-full min-w-[560px] border-collapse text-left text-xs">
         <thead>
-          <tr className="border-b border-slate-200 text-[10px] font-semibold text-slate-500">
+          <tr className="border-b border-slate-200 text-[12px] font-semibold text-slate-500">
             {columns.map((column) => (
               <th key={column.key} scope="col" aria-sort={sort.key === column.key ? sort.direction : undefined} className={column.key === 'category' ? 'py-2 pr-3' : 'px-2 py-2 text-right'}>
                 <button type="button" onClick={() => changeSort(column.key)} className="hover:text-brand-800" aria-label={`Sort by ${column.label}`}>
@@ -111,11 +112,11 @@ export function SpendingTable({ segment }: { segment: ProfileSegment }) {
               <th scope="row" className="py-2.5 pr-3 font-medium text-slate-800">{row.category}</th>
               <td className="px-2 py-2.5 text-right tabular-nums">
                 <span className="font-medium text-slate-800">{fmtSpend.format(row.before)}</span>
-                <span className="ml-1 text-[10px] text-slate-500">{formatShare(row.before, spendByCategory.totals['2025'])}</span>
+                <span className="ml-1 text-[12px] text-slate-500">{formatShare(row.before, spendByCategory.totals['2025'])}</span>
               </td>
               <td className="px-2 py-2.5 text-right tabular-nums">
                 <span className="font-medium text-slate-800">{fmtSpend.format(row.now)}</span>
-                <span className="ml-1 text-[10px] text-slate-500">{formatShare(row.now, spendByCategory.totals['2026'])}</span>
+                <span className="ml-1 text-[12px] text-slate-500">{formatShare(row.now, spendByCategory.totals['2026'])}</span>
               </td>
               <td className={`py-2.5 pl-2 text-right font-semibold tabular-nums ${row.growth >= 0 ? 'text-green-700' : 'text-red-600'}`}>
                 {moneyChange(row.growth)}
@@ -125,16 +126,16 @@ export function SpendingTable({ segment }: { segment: ProfileSegment }) {
           <tr className="border-t-2 border-slate-200 bg-slate-50">
             <th scope="row" className="py-2.5 pr-3 font-bold text-slate-900">Total</th>
             <td className="px-2 py-2.5 text-right font-bold tabular-nums text-slate-900">
-              {fmtSpend.format(spendByCategory.totals['2025'])}<span className="ml-1 text-[10px]">100.0%</span>
+              {fmtSpend.format(spendByCategory.totals['2025'])}<span className="ml-1 text-[12px]">100.0%</span>
             </td>
             <td className="px-2 py-2.5 text-right font-bold tabular-nums text-slate-900">
-              {fmtSpend.format(spendByCategory.totals['2026'])}<span className="ml-1 text-[10px]">100.0%</span>
+              {fmtSpend.format(spendByCategory.totals['2026'])}<span className="ml-1 text-[12px]">100.0%</span>
             </td>
             <td className={`py-2.5 pl-2 text-right font-bold tabular-nums ${spendByCategory.growth >= 0 ? 'text-green-700' : 'text-red-600'}`}>{moneyChange(spendByCategory.growth)}</td>
           </tr>
         </tbody>
       </table>
-      <p className="mt-2 text-[10px] leading-relaxed text-slate-500">
+      <p className="mt-2 text-[12px] leading-relaxed text-slate-500">
         {segment} overnight visitor expenditure by category. Shares are each category&apos;s proportion of the displayed total. Select a column heading to sort.
       </p>
     </div>
@@ -153,6 +154,12 @@ export function PlacesBumpChart({ segment, showNote = true }: { segment: string;
   };
   const id = `place-rank-${segment.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   const y = (rank: number) => 48 + (rank - 1) * 28;
+  const progress = useProgress(segment);
+  const settle = Math.min(1, Math.max(0, (progress - 0.6) / 0.4));
+  const slide = (place: { value: number }, prior: number | 'new' | null) => {
+    const from = typeof prior === 'number' ? y(prior) : y(11);
+    return from + (y(place.value) - from) * progress;
+  };
   const color = (name: string) => {
     const index = topPlaces.findIndex((place) => place.category === name);
     return index < 0 ? '#94A3B8' : TABLEAU_CASUAL[index % TABLEAU_CASUAL.length];
@@ -169,21 +176,22 @@ export function PlacesBumpChart({ segment, showNote = true }: { segment: string;
               const change = prior === 'new' ? 'new to the top ten' : movement === null ? 'prior rank unavailable' : movement === 0 ? 'unchanged' : `${movement > 0 ? 'up' : 'down'} ${Math.abs(movement)} places`;
               return `${place.category}: ${typeof prior === 'number' ? `rank ${prior} in 2025` : prior === 'new' ? 'not in the 2025 top ten' : '2025 rank unavailable'}, rank ${place.value} in H1 2026, ${change}.`;
             }).join(' ')} ${previousTop.filter((place) => !topPlaces.some((row) => row.category === place.category)).map((place) => `${place.category}: rank ${place.value} in 2025, not in the H1 2026 top ten.`).join(' ')}`}</desc>
-          <text x="225" y="18" textAnchor="end" fill="#475569" fontSize="11" fontWeight="700">2025 full year</text>
-          <text x="495" y="18" fill="#475569" fontSize="11" fontWeight="700">2026 H1</text>
-          <text x="765" y="18" textAnchor="end" fill="#475569" fontSize="11" fontWeight="700">Movement</text>
+          <g key={segment}>
+          <text x="225" y="18" textAnchor="end" fill="#475569" fontSize="13" fontWeight="700">2025 full year</text>
+          <text x="495" y="18" fill="#475569" fontSize="13" fontWeight="700">2026 H1</text>
+          <text x="765" y="18" textAnchor="end" fill="#475569" fontSize="13" fontWeight="700">Movement</text>
           {Array.from({ length: 10 }, (_, index) => <line key={index} x1="240" x2="480" y1={y(index + 1)} y2={y(index + 1)} stroke="#e2e8f0" />)}
           {topPlaces.map((place) => {
             const prior = priorStatus(place.category);
             return typeof prior === 'number' ? (
-              <line key={place.category} x1="240" y1={y(prior)} x2="480" y2={y(place.value)} stroke={color(place.category)} strokeWidth="2.5">
+              <line key={place.category} x1="240" y1={y(prior)} x2="480" y2={slide(place, prior)} stroke={color(place.category)} strokeWidth="2.5">
                 <title>{`${place.category}: #${prior} → #${place.value}`}</title>
               </line>
             ) : null;
           })}
           {previousTop.map((place) => (
             <g key={place.category}>
-              <text x="225" y={y(place.value) + 4} textAnchor="end" fill="#334155" fontSize="10">{`${place.value}. ${place.category}`}</text>
+              <text x="225" y={y(place.value) + 4} textAnchor="end" fill="#334155" fontSize="12">{`${place.value}. ${place.category}`}</text>
               <circle cx="240" cy={y(place.value)} r="4" fill={color(place.category)} />
             </g>
           ))}
@@ -192,18 +200,20 @@ export function PlacesBumpChart({ segment, showNote = true }: { segment: string;
             const movement = typeof prior === 'number' ? prior - place.value : null;
             const label = prior === 'new' ? 'NEW' : movement === null ? 'N/A' : movement > 0 ? `▲ ${movement}` : movement < 0 ? `▼ ${Math.abs(movement)}` : '—';
             const movementColor = prior === 'new' ? '#a16207' : movement === null ? '#64748b' : movement > 0 ? '#15803d' : movement < 0 ? '#b91c1c' : '#64748b';
+            const cy = slide(place, prior);
             return (
-              <g key={place.category}>
-                <circle cx="480" cy={y(place.value)} r="4" fill={color(place.category)} />
-                <text x="495" y={y(place.value) + 4} fill="#334155" fontSize="10">{`${place.value}. ${place.category}`}</text>
-                <text x="765" y={y(place.value) + 4} textAnchor="end" fill={movementColor} fontSize="10" fontWeight="700">{label}</text>
+              <g key={place.category} opacity={typeof prior === 'number' ? 1 : progress}>
+                <circle cx="480" cy={cy} r="4" fill={color(place.category)} />
+                <text x="495" y={cy + 4} fill="#334155" fontSize="12">{`${place.value}. ${place.category}`}</text>
+                <text x="765" y={y(place.value) + 4} textAnchor="end" fill={movementColor} fontSize="12" fontWeight="700" opacity={settle}>{label}</text>
               </g>
             );
           })}
+          </g>
         </svg>
       </div>
-      {!completePrior && <p className="mt-2 text-[10px] text-slate-500">The supplied data does not identify every 2025 top-10 place; missing prior ranks are unavailable.</p>}
-      {showNote && <p className="mt-2 text-[10px] text-slate-500">HKTB {segment} overnight visitor rankings. Movement shows places gained or lost since 2025; — means unchanged. NEW means new to the top 10, not necessarily a new venue; N/A means the prior rank is unavailable.</p>}
+      {!completePrior && <p className="mt-2 text-[12px] text-slate-500">The supplied data does not identify every 2025 top-10 place; missing prior ranks are unavailable.</p>}
+      {showNote && <p className="mt-2 text-[12px] text-slate-500">HKTB {segment} overnight visitor rankings. Movement shows places gained or lost since 2025; — means unchanged. NEW means new to the top 10, not necessarily a new venue; N/A means the prior rank is unavailable.</p>}
     </>
   );
 }

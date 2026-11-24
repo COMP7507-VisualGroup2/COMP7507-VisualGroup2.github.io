@@ -30,7 +30,7 @@ export default function MainlandOriginMap({ filters }: { filters: Pick<Filters, 
           const row = rows.find((item) => item.province_en === province.properties.name);
           const fill = row ? colorFor(row.all_visitors_share_pct) : '#e2e8f0';
           return (
-            <path key={province.properties.name} d={path(province) ?? ''} fill={fill} stroke="#fff" strokeWidth={0.8}>
+            <path key={province.properties.name} d={path(province) ?? ''} fill={fill} stroke="#fff" strokeWidth={0.8} style={{ transition: 'fill 400ms' }}>
               <title>{row ? `${row.province_en}: ${row.all_visitors_share_pct}%` : `${province.properties.name}: no data`}</title>
             </path>
           );
@@ -49,7 +49,7 @@ export default function MainlandOriginMap({ filters }: { filters: Pick<Filters, 
                   {row.province_en}
                 </span>
                 <strong className="text-right">{row.all_visitors_share_pct}%</strong>
-                <span className={`text-right ${changeColorClass(growth)} ${growth === 'new' ? 'text-[10px] font-bold' : ''}`}>{growth === null ? 'N/A' : growth === 'new' ? 'NEW' : `${growth > 0 ? '+' : ''}${growth.toFixed(1)}%`}</span>
+                <span className={`text-right ${changeColorClass(growth)} ${growth === 'new' ? 'text-[12px] font-bold' : ''}`}>{growth === null ? 'N/A' : growth === 'new' ? 'NEW' : `${growth > 0 ? '+' : ''}${growth.toFixed(1)}%`}</span>
               </li>
             );
           })}

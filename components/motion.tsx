@@ -162,3 +162,72 @@ export function AnimatedText({ text, className, duration = 700 }: { text: string
     </span>
   );
 }
+
+type Row = Record<string, unknown>;
+const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
+const zeroed = <T extends Row>(rows: T[]) => rows.map((row) => Object.fromEntries(Object.entries(row).map(([k, v]) => [k, isNum(v) ? 0 : v])) as T);
+
+/**
+ * Chart data whose numbers glide from what is currently drawn to the new values (rows are matched by `idKey`; new rows
+ * and the first render grow from zero). Use it with the chart's own animation switched off, so bars and lines move from
+ * the previous value instead of restarting from zero. Changing `resetKey` (e.g. switching tabs) restarts from zero.
+ */
+export function useTweenedRows<T extends Row>(rows: T[], idKey: keyof T = 'period', resetKey = '', duration = 700): T[] {
+  const [state, setState] = useState<{ key: string; rows: T[] }>(() => ({ key: resetKey, rows: zeroed(rows) }));
+  const shown = useRef(state);
+  const latest = useRef(rows);
+  latest.current = rows;
+  const signature = JSON.stringify(rows);
+
+  useEffect(() => {
+    const target = latest.current;
+    const from = shown.current.key === resetKey ? shown.current.rows : zeroed(target);
+    if (prefersReducedMotion()) {
+      shown.current = { key: resetKey, rows: target };
+      setState(shown.current);
+      return;
+    }
+    const start = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const e = 1 - Math.pow(1 - t, 3);
+      const next = t === 1 ? target : target.map((row) => {
+        const prev = from.find((item) => item[idKey] === row[idKey]);
+        return Object.fromEntries(Object.entries(row).map(([k, v]) => {
+          if (!isNum(v)) return [k, v];
+          const base = prev && isNum(prev[k]) ? (prev[k] as number) : 0;
+          return [k, base + (v - base) * e];
+        })) as T;
+      });
+      shown.current = { key: resetKey, rows: next };
+      setState(shown.current);
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [signature, idKey, resetKey, duration]);
+
+  return state.key === resetKey ? state.rows : zeroed(rows);
+}
+
+/** Eased 0 → 1 progress that restarts whenever `resetKey` changes (jumps straight to 1 under reduced motion). */
+export function useProgress(resetKey: string, duration = 900) {
+  const [state, setState] = useState({ key: resetKey, value: 0 });
+  useEffect(() => {
+    if (prefersReducedMotion()) {
+      setState({ key: resetKey, value: 1 });
+      return;
+    }
+    const start = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      setState({ key: resetKey, value: 1 - Math.pow(1 - t, 3) });
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [resetKey, duration]);
+  return state.key === resetKey ? state.value : 0;
+}

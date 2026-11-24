@@ -78,7 +78,7 @@ function pieLabel(mode: MixMode, colorFor: (name: string) => string) {
     const value = Number(props.value);
 
     return (
-      <text x={x} y={y} fill={colorFor(name)} fontSize={8} fontWeight={700} textAnchor="middle" dominantBaseline="middle" pointerEvents="none">
+      <text x={x} y={y} fill={colorFor(name)} fontSize={10} fontWeight={700} textAnchor="middle" dominantBaseline="middle" pointerEvents="none">
         <tspan x={x} dy="-0.7em">{name}</tspan>
         <tspan x={x} dy="1.15em">{formatAmount(value, mode)}</tspan>
         <tspan x={x} dy="1.15em">{`${(Number(props.percent ?? 0) * 100).toFixed(1)}%`}</tspan>
@@ -104,7 +104,7 @@ export function VisitorTypeMixCard() {
       title="Overnight and same-day mix"
       actions={<Segmented value={mode} options={[{ value: 'visitors', label: 'Visitors' }, { value: 'revenue', label: 'Revenue' }]} onChange={setMode} />}
     >
-      <p className="mb-1 text-[11px] text-slate-500">H1 2026 · {mode === 'visitors' ? 'visitor arrivals' : 'visitor spending'}</p>
+      <p className="mb-1 text-[13px] text-slate-500">H1 2026 · {mode === 'visitors' ? 'visitor arrivals' : 'visitor spending'}</p>
       <ResponsiveContainer width="100%" height={190}>
         <PieChart>
           <Pie
@@ -124,7 +124,7 @@ export function VisitorTypeMixCard() {
           </Pie>
           <Tooltip
             formatter={(value) => formatAmount(Number(value), mode)}
-            contentStyle={{ borderRadius: 12, border: `1px solid ${COLORS.grid}`, background: COLORS.canvas, fontSize: 12 }}
+            contentStyle={{ borderRadius: 12, border: `1px solid ${COLORS.grid}`, background: COLORS.canvas, fontSize: 14 }}
           />
         </PieChart>
       </ResponsiveContainer>
@@ -146,12 +146,12 @@ export function GrowthRelationshipCard() {
 
   return (
     <SectionCard title="Visitor and revenue growth relationship">
-      <p className="mb-1 text-[11px] text-slate-500">H1 2025 compares with H1 2024; 2026 quarters compare with the same quarter in 2025. Gap = visitor minus revenue growth (pp).</p>
+      <p className="mb-1 text-[13px] text-slate-500">H1 2025 compares with H1 2024; 2026 quarters compare with the same quarter in 2025. Gap = visitor minus revenue growth (pp).</p>
       <ResponsiveContainer width="100%" height={215}>
         <LineChart data={data} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
           <CartesianGrid stroke={COLORS.grid} strokeDasharray="3 3" />
-          <XAxis dataKey="period" tick={{ fontSize: 10, fill: COLORS.steelDeep }} tickLine={false} axisLine={{ stroke: COLORS.grid }} />
-          <YAxis tickFormatter={(value) => `${value}`} tick={{ fontSize: 10, fill: COLORS.steelDeep }} tickLine={false} axisLine={false} />
+          <XAxis dataKey="period" tick={{ fontSize: 12, fill: COLORS.steelDeep }} tickLine={false} axisLine={{ stroke: COLORS.grid }} />
+          <YAxis tickFormatter={(value) => `${value}`} tick={{ fontSize: 12, fill: COLORS.steelDeep }} tickLine={false} axisLine={false} />
           <ReferenceLine y={0} stroke={COLORS.steel} />
           <Tooltip
             formatter={(value, name) => {
@@ -164,11 +164,11 @@ export function GrowthRelationshipCard() {
               return [`${Number(value).toFixed(1)}${unit}`, label];
             }}
             labelFormatter={(label) => label === "H1 '25" ? 'H1 2025 vs H1 2024' : `${String(label).replace("'26", '2026')} vs ${String(label).replace("'26", '2025')}`}
-            contentStyle={{ borderRadius: 12, border: `1px solid ${COLORS.grid}`, background: COLORS.canvas, fontSize: 12 }}
+            contentStyle={{ borderRadius: 12, border: `1px solid ${COLORS.grid}`, background: COLORS.canvas, fontSize: 14 }}
           />
           <Legend
             formatter={(name) => name === 'visitorGrowth' ? 'Visitors YoY' : name === 'revenueGrowth' ? 'Estimated revenue YoY' : 'Visitors − revenue (pp)'}
-            wrapperStyle={{ fontSize: 10 }}
+            wrapperStyle={{ fontSize: 12 }}
           />
           <Line type="monotone" dataKey="visitorGrowth" name="visitorGrowth" stroke={VISITOR_GROWTH} strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} />
           <Line type="monotone" dataKey="revenueGrowth" name="revenueGrowth" stroke={REVENUE_GROWTH} strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} />
@@ -218,7 +218,7 @@ export function SourceSegmentsCard() {
               </Pie>
               <Tooltip
                 formatter={(value) => formatAmount(Number(value), mode)}
-                contentStyle={{ borderRadius: 12, border: `1px solid ${COLORS.grid}`, background: COLORS.canvas, fontSize: 12 }}
+                contentStyle={{ borderRadius: 12, border: `1px solid ${COLORS.grid}`, background: COLORS.canvas, fontSize: 14 }}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -229,14 +229,14 @@ export function SourceSegmentsCard() {
           <ResponsiveContainer width="100%" height={270}>
             <ComposedChart data={segmentData} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
               <CartesianGrid stroke={COLORS.grid} strokeDasharray="3 3" />
-              <XAxis dataKey="segment" tick={{ fontSize: 10, fill: COLORS.steelDeep }} tickLine={false} axisLine={{ stroke: COLORS.grid }} />
-              <YAxis yAxisId="visitors" tickFormatter={(value) => `${(value / 1e6).toFixed(0)}m`} tick={{ fontSize: 10, fill: COLORS.steelDeep }} tickLine={false} axisLine={false} />
-              <YAxis yAxisId="revenue" orientation="right" tickFormatter={(value) => `HK$${(value / 1000).toFixed(1)}k`} tick={{ fontSize: 10, fill: COLORS.steelDeep }} tickLine={false} axisLine={false} />
+              <XAxis dataKey="segment" tick={{ fontSize: 12, fill: COLORS.steelDeep }} tickLine={false} axisLine={{ stroke: COLORS.grid }} />
+              <YAxis yAxisId="visitors" tickFormatter={(value) => `${(value / 1e6).toFixed(0)}m`} tick={{ fontSize: 12, fill: COLORS.steelDeep }} tickLine={false} axisLine={false} />
+              <YAxis yAxisId="revenue" orientation="right" tickFormatter={(value) => `HK$${(value / 1000).toFixed(1)}k`} tick={{ fontSize: 12, fill: COLORS.steelDeep }} tickLine={false} axisLine={false} />
               <Tooltip
                 formatter={(value, name) => [name === 'Visitors' ? formatCompact(Number(value), 2) : `HK$${Math.round(Number(value)).toLocaleString('en-HK')} per visitor`, name]}
-                contentStyle={{ borderRadius: 12, border: `1px solid ${COLORS.grid}`, background: COLORS.canvas, fontSize: 12 }}
+                contentStyle={{ borderRadius: 12, border: `1px solid ${COLORS.grid}`, background: COLORS.canvas, fontSize: 14 }}
               />
-              <Legend wrapperStyle={{ fontSize: 10 }} />
+              <Legend wrapperStyle={{ fontSize: 12 }} />
               <Bar yAxisId="visitors" dataKey="visitors" name="Visitors" fill={VISITOR_GROWTH} radius={[4, 4, 0, 0]} maxBarSize={38} />
               <Line yAxisId="revenue" dataKey="averageRevenue" name="Average revenue / visitor" stroke={REVENUE_GROWTH} strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 5 }} />
             </ComposedChart>

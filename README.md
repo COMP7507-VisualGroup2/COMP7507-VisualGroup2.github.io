@@ -42,7 +42,7 @@ The executive summary and reference charts use fixed periods and do not respond 
 | Historical visitor profiles | `manual/visitor_profile_baseline.csv` (previous dataset; source recorded per row where known) |
 | Mainland origin provinces | `manual/mainland_origin_provinces.csv` (user-provided; original source not stated) |
 | Mainland province boundaries | `china_provinces_natural_earth.json` (China subset of Natural Earth 1:50m admin-1 boundaries; public domain, https://www.naturalearthdata.com/) |
-| Country origin locations and administrative boundaries | `country_origin_cities_natural_earth.json`, `australia_states_natural_earth.json`, `country_origin_regions_natural_earth.json` (selected Natural Earth populated places and 1:10m / 1:50m admin-1 boundaries; public domain, https://www.naturalearthdata.com/) |
+| Country origin locations and administrative boundaries | `country_origin_cities_natural_earth.json`, `australia_states_natural_earth.json`, `country_origin_regions_natural_earth.json` (selected Natural Earth populated places and 1:10m / 1:50m admin-1 boundaries; public domain; Guildford, Mississauga and Richmond BC are not in Natural Earth and use their published coordinates; state-level USA origins are plotted at a representative city, https://www.naturalearthdata.com/) |
 | Hong Kong administrative districts | `hksar_18_district_boundary.json` (Home Affairs Department; district heatmap colors each district by its best-ranked named top-10 place, not visitor counts) |
 
 hart appears with a **Manual input** badge:

@@ -5,12 +5,14 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 interface Props {
   children: ReactNode;
   height: number;
+  /** Render immediately on mount (only read on the first render). */
+  eager?: boolean;
 }
 
 /** Defers rendering heavy charts until they scroll near the viewport. */
-export default function LazyMount({ children, height }: Props) {
+export default function LazyMount({ children, height, eager = false }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(eager);
 
   useEffect(() => {
     const node = ref.current;

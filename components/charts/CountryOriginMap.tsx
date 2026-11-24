@@ -49,7 +49,7 @@ export default function CountryOriginMap({ market, filters }: { market: string; 
     : null;
   const path = projection ? geoPath(projection) : null;
   const mappedCities = rows.flatMap((row) => {
-    if (detailed || (market === 'Indonesia' && row.category === 'Bali')) return [];
+    if (market === 'Japan' || market === 'Singapore' || (market === 'Indonesia' && row.category === 'Bali')) return [];
     const city = cities.find((item) => item.market === market && item.category === row.category);
     return city ? [{ ...row, coordinates: city.coordinates }] : [];
   });
@@ -71,19 +71,19 @@ export default function CountryOriginMap({ market, filters }: { market: string; 
           {!detailed && market !== 'Australia' && base.map((item) => {
             const category = market === 'Middle East' ? middleEastIds[String(item.id)] : undefined;
             const row = rows.find((entry) => entry.category === category);
-            return <path key={String(item.id)} d={path(item) ?? ''} fill={row ? colorFor(row.value) : '#e2e8f0'} stroke="#fff" strokeWidth={0.8}><title>{row ? `${row.category}: ${formatShare(row.value)}` : item.properties.name}</title></path>;
+            return <path key={String(item.id)} d={path(item) ?? ''} fill={row ? colorFor(row.value) : '#e2e8f0'} stroke="#fff" strokeWidth={0.8} style={{ transition: 'fill 400ms' }}><title>{row ? `${row.category}: ${formatShare(row.value)}` : item.properties.name}</title></path>;
           })}
           {market === 'Australia' && australianStates.features.map((item) => {
             const row = rows.find((entry) => entry.category === item.properties.name);
-            return <path key={item.properties.name} d={path(item) ?? ''} fill={row ? colorFor(row.value) : '#e2e8f0'} stroke="#fff" strokeWidth={0.8}><title>{row ? `${row.category}: ${formatShare(row.value)}` : `${item.properties.name}: no data`}</title></path>;
+            return <path key={item.properties.name} d={path(item) ?? ''} fill={row ? colorFor(row.value) : '#e2e8f0'} stroke="#fff" strokeWidth={0.8} style={{ transition: 'fill 400ms' }}><title>{row ? `${row.category}: ${formatShare(row.value)}` : `${item.properties.name}: no data`}</title></path>;
           })}
           {admin.map((item, index) => {
             const row = regionRow(item);
-            return <path key={`${item.properties.category}-${index}`} d={path(item) ?? ''} fill={row ? colorFor(row.value) : market === 'Singapore' ? '#f5a64a' : '#e2e8f0'} stroke="#fff" strokeWidth={0.8}><title>{row ? `${countryOriginLabel(market, row.category)}: ${formatShare(row.value)}` : item.properties.category ?? 'No data'}</title></path>;
+            return <path key={`${item.properties.category}-${index}`} d={path(item) ?? ''} fill={row ? colorFor(row.value) : market === 'Singapore' ? '#f5a64a' : '#e2e8f0'} stroke="#fff" strokeWidth={0.8} style={{ transition: 'fill 400ms' }}><title>{row ? `${countryOriginLabel(market, row.category)}: ${formatShare(row.value)}` : item.properties.category ?? 'No data'}</title></path>;
           })}
-          {mappedCities.map((row) => {
+          {[...mappedCities].sort((a, b) => b.value - a.value).map((row) => {
             const point = projection([row.coordinates[0], row.coordinates[1]]);
-            return point ? <circle key={row.category} cx={point[0]} cy={point[1]} r={5 + 15 * Math.sqrt(row.value / max)} fill={colorFor(row.value)} fillOpacity={0.85} stroke="#fff" strokeWidth={1.5}><title>{`${countryOriginLabel(market, row.category)}: ${formatShare(row.value)}`}</title></circle> : null;
+            return point ? <circle key={`${market}-${row.category}`} className="origin-dot" cx={point[0]} cy={point[1]} r={5 + 15 * Math.sqrt(row.value / max)} fill={colorFor(row.value)} fillOpacity={0.85} stroke="#fff" strokeWidth={1.5}><title>{`${countryOriginLabel(market, row.category)}: ${formatShare(row.value)}`}</title></circle> : null;
           })}
         </svg>
       ) : <div className="chart-empty">Mapped origin locations are unavailable for this country.</div>}
@@ -108,13 +108,15 @@ export default function CountryOriginMap({ market, filters }: { market: string; 
                     {countryOriginLabel(market, row.category)}{!mapped(row.category) && <span className="text-slate-500">(not mapped)</span>}
                   </span>
                   <strong>{formatShare(row.value)}</strong>
-                  <span className={`${changeColorClass(growth)} ${growth === 'new' ? 'text-[10px] font-bold' : ''}`}>{growth === null ? 'N/A' : growth === 'new' ? 'NEW' : `${growth > 0 ? '+' : ''}${growth.toFixed(1)}%`}</span>
+                  <span className={`${changeColorClass(growth)} ${growth === 'new' ? 'text-[12px] font-bold' : ''}`}>{growth === null ? 'N/A' : growth === 'new' ? 'NEW' : `${growth > 0 ? '+' : ''}${growth.toFixed(1)}%`}</span>
                 </li>
               );
             })}
           </ol>
           <p className="mt-3 text-slate-500">Change in rounded overnight visitor origin share (percentage points): H1 2026 minus 2025 full year. Periods differ in length. New means absent from the supplied 2025 list.</p>
           {market === 'Philippines' && <p className="mt-2 text-slate-500">Manila represents Greater Manila; Pampanga represents San Fernando in the HKTB report.</p>}
+          {market === 'USA' && <p className="mt-2 text-slate-500">Arizona, New Jersey and North Carolina are state-level in the HKTB report and are plotted at Phoenix, Newark and Raleigh; the San Jose and San Diego areas are plotted at those cities.</p>}
+          {market === 'Canada' && <p className="mt-2 text-slate-500">Richmond is Richmond, British Columbia.</p>}
         </div>
       )}
     </div>
