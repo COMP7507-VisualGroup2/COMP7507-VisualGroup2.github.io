@@ -49,10 +49,10 @@ export function PerCapitaByMarket({ filters }: { filters: Filters }) {
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} margin={{ top: 4, right: 4, left: -4, bottom: 0 }}>
           <CartesianGrid stroke={COLORS.grid} vertical={false} />
-          <XAxis dataKey="market" tick={{ ...AXIS_TICK, fontSize: 12 }} tickLine={false} axisLine={false} interval={0} angle={-25} textAnchor="end" height={64} />
+          <XAxis dataKey="market" tick={{ ...AXIS_TICK, fontSize: 14 }} tickLine={false} axisLine={false} interval={0} angle={-25} textAnchor="end" height={64} />
           <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} tickFormatter={(v) => `$${formatCompact(Number(v), 0)}`} />
           <Tooltip {...TOOLTIP_STYLE} formatter={(v) => formatHkd(Number(v))} cursor={{ fill: 'rgba(242,142,43,0.08)' }} />
-          <Legend iconSize={8} wrapperStyle={{ fontSize: 14 }} />
+          <Legend iconSize={8} wrapperStyle={{ fontSize: 16 }} />
           {types.map((t) => (
             <Bar key={t} dataKey={t} name={`${t} per capita`} fill={VISITOR_TYPE_COLORS[t]} radius={[4, 4, 0, 0]} maxBarSize={22} />
           ))}
@@ -93,7 +93,7 @@ export function YieldVolumeScatter({ filters, period }: { filters: Filters; peri
             { value: 'areas', label: 'TEAIT market areas' },
           ]}
         />
-        <span className="text-[13px] text-[#74808a]">
+        <span className="text-[15px] text-[#74808a]">
           {mode === 'markets' ? `Overnight visitors, ${PERIOD_LABEL[period]} (HKTB profile)` : `Overnight visitors, Jan–Jun ${year} (HKTB TEAIT)`}
         </span>
       </div>
@@ -113,7 +113,7 @@ export function YieldVolumeScatter({ filters, period }: { filters: Filters; peri
               tickLine={false}
               axisLine={false}
               tickFormatter={(v) => formatCompact(Number(v), 0)}
-              label={{ value: 'Overnight visitors (log scale)', position: 'insideBottom', offset: -2, fontSize: 12, fill: COLORS.steelDeep }}
+              label={{ value: 'Overnight visitors (log scale)', position: 'insideBottom', offset: -2, fontSize: 14, fill: COLORS.steelDeep }}
             />
             <YAxis type="number" dataKey="yield" name="Spend / visitor" tick={AXIS_TICK} tickLine={false} axisLine={false} tickFormatter={(v) => `$${formatCompact(Number(v), 1)}`} />
             <ZAxis type="number" dataKey="spend" range={[120, 1600]} name="Total spend" />
@@ -135,7 +135,7 @@ export function YieldVolumeScatter({ filters, period }: { filters: Filters; peri
                 );
               }}
             />
-            <Scatter data={points} fillOpacity={0.8} label={{ dataKey: 'short', position: 'top', fontSize: 11, fill: COLORS.ink}}>
+            <Scatter data={points} fillOpacity={0.8} label={{ dataKey: 'short', position: 'top', fontSize: 13, fill: COLORS.ink}}>
               {points.map((p) => (
                 <Cell key={p.market} fill={ORIGIN_COLORS[p.origin] ?? COLORS.steel} className="text-[#53636e]"/>
               ))}
@@ -143,13 +143,13 @@ export function YieldVolumeScatter({ filters, period }: { filters: Filters; peri
           </ScatterChart>
         </ResponsiveContainer>
       )}
-      <div className="mt-1 grid grid-cols-2 gap-2 text-[13px] text-[#74808a]">
+      <div className="mt-1 grid grid-cols-2 gap-2 text-[15px] text-[#74808a]">
         <span>↖ <strong className="text-[#405461]">High-yield niche</strong>: high spend, low volume</span>
         <span className="text-right">↗ <strong className="text-[#405461]">Core value</strong>: high spend, high volume</span>
         <span>↙ <strong className="text-[#405461]">Develop</strong>: low spend, low volume</span>
         <span className="text-right">↘ <strong className="text-[#405461]">Volume-driven</strong>: high volume, low spend</span>
       </div>
-      <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[13px] text-[#74808a]">
+      <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[15px] text-[#74808a]">
         {(Object.keys(ORIGIN_COLORS) as Origin[]).map((o) => (
           <li key={o} className="inline-flex items-center gap-1">
             <span className="h-2 w-2 rounded-full" style={{ background: ORIGIN_COLORS[o] }} />

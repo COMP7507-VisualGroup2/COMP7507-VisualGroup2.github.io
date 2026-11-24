@@ -423,7 +423,7 @@ export default function OriginMap({ filters, selectedMarket, onSelectMarket, sta
                           />
                         </>
                       )}
-                      <text x={g.label[0]} y={g.label[1]} textAnchor={g.label[2]} fontSize={11.5} fontWeight={hoveredMarket === m ? 800 : 600} fill={COLORS.ink} {...HALO}>
+                      <text x={g.label[0]} y={g.label[1]} textAnchor={g.label[2]} fontSize={13.5} fontWeight={hoveredMarket === m ? 800 : 600} fill={COLORS.ink} {...HALO}>
                         {shortMarket(m)}
                         {v ? <> <AnimatedNumber value={v} format={compact} /></> : null}
                       </text>
@@ -440,7 +440,7 @@ export default function OriginMap({ filters, selectedMarket, onSelectMarket, sta
                 </circle>
               )}
               <circle r={6} fill={COLORS.accentDeep} stroke={COLORS.canvas} strokeWidth={2} />
-              <text x={9} y={18} fontSize={15} fontWeight={700} fill={COLORS.ink} {...HALO}>
+              <text x={9} y={18} fontSize={17} fontWeight={700} fill={COLORS.ink} {...HALO}>
                 Hong Kong
               </text>
             </g>
@@ -491,16 +491,16 @@ export default function OriginMap({ filters, selectedMarket, onSelectMarket, sta
               −
             </button>
           </div>
-          <button type="button" className={`${iconButton} w-auto px-2 text-[13px]`} onClick={focusAsia}>
+          <button type="button" className={`${iconButton} w-auto px-2 text-[15px]`} onClick={focusAsia}>
             Focus Asia
           </button>
-          <button type="button" className={`${iconButton} w-auto px-2 text-[13px]`} onClick={() => goTo(WORLD)} disabled={k === 1}>
+          <button type="button" className={`${iconButton} w-auto px-2 text-[15px]`} onClick={() => goTo(WORLD)} disabled={k === 1}>
             Reset
           </button>
         </div>
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] text-slate-600">
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[15px] text-slate-600">
         <span className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1">
           Arrivals:
           {scale.colors.map((c, i) => {

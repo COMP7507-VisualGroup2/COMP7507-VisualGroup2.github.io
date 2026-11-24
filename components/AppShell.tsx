@@ -72,7 +72,7 @@ function Header() {
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[12px] font-semibold uppercase tracking-wider text-slate-500">{label}</span>
+      <span className="text-[14px] font-semibold uppercase tracking-wider text-slate-500">{label}</span>
       {children}
     </div>
   );

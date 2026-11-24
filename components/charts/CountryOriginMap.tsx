@@ -108,7 +108,7 @@ export default function CountryOriginMap({ market, filters }: { market: string; 
                     {countryOriginLabel(market, row.category)}{!mapped(row.category) && <span className="text-slate-500">(not mapped)</span>}
                   </span>
                   <strong>{formatShare(row.value)}</strong>
-                  <span className={`${changeColorClass(growth)} ${growth === 'new' ? 'text-[12px] font-bold' : ''}`}>{growth === null ? 'N/A' : growth === 'new' ? 'NEW' : `${growth > 0 ? '+' : ''}${growth.toFixed(1)}%`}</span>
+                  <span className={`${changeColorClass(growth)} ${growth === 'new' ? 'text-[14px] font-bold' : ''}`}>{growth === null ? 'N/A' : growth === 'new' ? 'NEW' : `${growth > 0 ? '+' : ''}${growth.toFixed(1)}%`}</span>
                 </li>
               );
             })}

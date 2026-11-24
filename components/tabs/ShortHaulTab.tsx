@@ -42,7 +42,7 @@ function MetricCard({ label, current, previous, format }: {
         <span className="text-xl font-bold tracking-tight text-brand-900">{current == null ? 'Unavailable' : format(current)}</span>
         <span className={`text-sm ${color}`} aria-label={direction}>{direction === 'up' ? '▲' : direction === 'down' ? '▼' : '–'}</span>
       </p>
-      <p className="mt-1 text-[13px] text-slate-500">
+      <p className="mt-1 text-[15px] text-slate-500">
         vs {previous == null ? 'unavailable' : format(previous)} in H1 2025{' '}
         <span className={`font-semibold ${color}`}>({rounded === null ? 'N/A' : formatPct(rounded, 1, true)})</span>
       </p>
@@ -86,7 +86,7 @@ function ShortHaulProfile({ selectedMarket }: { selectedMarket: string }) {
             { name: 'Overnight', value: current.overnight / current.arrivals * 100, color: '#4E79A7' },
           ]} />
         ) : <p className="text-xs text-slate-500">Visitor-type data is unavailable.</p>}
-        <p className="mt-2 text-[12px] text-slate-500">H1 2026 · share of {selectedMarket} arrivals · HKTB visitor-type workbooks.</p>
+        <p className="mt-2 text-[14px] text-slate-500">H1 2026 · share of {selectedMarket} arrivals · HKTB visitor-type workbooks.</p>
       </section>
       <section aria-labelledby="short-haul-origin-title" className="min-w-0">
         <h3 id="short-haul-origin-title" className="mb-3 text-xs font-bold text-slate-800">1B · {isOverall ? 'Top five individually named markets' : `Top ${selectedMarket} origins`}</h3>
@@ -103,7 +103,7 @@ function ShortHaulProfile({ selectedMarket }: { selectedMarket: string }) {
             { name: 'Other origins', value: 100 - originTotal, color: '#BAB0AC' },
           ]} />
         ) : <p className="text-xs text-slate-500">Regional origin data for {selectedMarket} is unavailable.</p>}
-        <p className="mt-2 text-[12px] text-slate-500">
+        <p className="mt-2 text-[14px] text-slate-500">
           {isOverall
             ? 'H1 2026 · share of all short-haul arrivals. Other includes Macao SAR / Not Identified and remaining origins. HKTB nationality workbooks.'
             : `H1 2026 · share of ${selectedMarket} overnight visitors. Other is the remainder after the displayed regions. HKTB visitor profile.`}
@@ -117,7 +117,7 @@ function ShortHaulProfile({ selectedMarket }: { selectedMarket: string }) {
             { name: 'First-time', value: firstTime, color: '#4E79A7' },
           ]} />
         ) : <p className="text-xs text-slate-500">First-time visitor data for {selectedMarket} is unavailable{isOverall ? '; select an individual market to view its profile' : ''}.</p>}
-        <p className="mt-2 text-[12px] text-slate-500">
+        <p className="mt-2 text-[14px] text-slate-500">
           {isOverall
             ? 'H1 2026 · user-provided first-time share; original source and visitor type not stated. Repeat is the remainder.'
             : `H1 2026 · ${selectedMarket} overnight visitors. Repeat is 100% minus HKTB's first-time share.`}
@@ -161,7 +161,7 @@ export default function ShortHaulTab() {
         <MetricCard label="Average overnight stay" current={profileMetric('2026-H1', 'avg_nights')} previous={profileMetric('2025', 'avg_nights')} format={nights} />
         <MetricCard label="Same-day spend / visitor" current={currentSameDaySpend} previous={previousSameDaySpend} format={formatHkd} />
       </section>
-      <p className="text-[12px] leading-relaxed text-slate-500">
+      <p className="text-[14px] leading-relaxed text-slate-500">
         H1 2026 versus H1 2025. Arrivals are from HKTB visitor-type workbooks; overnight spend and stay are from the HKTB visitor profile. Same-day spend is TEAIT same-day expenditure divided by same-day arrivals across short-haul market areas (total arrivals minus overnight visitors); international passenger transport is excluded.
       </p>
 

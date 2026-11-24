@@ -54,10 +54,10 @@ function BreakdownChart({ title, subtitle, rows, series, periods, horizontal = f
                 ? <YAxis type="category" dataKey="period" width={95} tick={AXIS_TICK} tickLine={false} axisLine={false} />
                 : <YAxis type="number" {...amountAxis} />}
               <Tooltip {...TOOLTIP_STYLE} formatter={(value, name) => [display(Number(value)), name]} />
-              <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: 12 }} />
+              <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: 14 }} />
               {series.map(({ name, color }) => (
                 <Bar key={name} dataKey={name} stackId="profile" fill={color} maxBarSize={60}>
-                  <LabelList dataKey={`${name}-label`} position="center" fill={labelColor(color)} fontSize={11} />
+                  <LabelList dataKey={`${name}-label`} position="center" fill={labelColor(color)} fontSize={13} />
                 </Bar>
               ))}
             </BarChart>

@@ -53,7 +53,7 @@ export function RegionInsights({ filters }: { filters: Filters }) {
       {incomplete ? <div className="chart-empty">Insights are unavailable because regional data is incomplete for the selected period.</div>
         : !insight ? <div className="chart-empty">Insights are unavailable without a complete quarter in the selected period.</div>
           : (
-            <div className="grid gap-4 text-xs leading-relaxed text-slate-700 lg:grid-cols-2">
+            <div className="grid gap-4 text-[19.5px] leading-relaxed text-slate-700 lg:grid-cols-2">
               <div className="space-y-2">
                 <h3 className="font-bold text-slate-800">Insights</h3>
                 <ol className="list-decimal space-y-2 pl-4">{pairs.map((pair) => <li key={pair.insight}>{pair.insight}</li>)}</ol>
@@ -170,7 +170,7 @@ export default function RegionReviewChart({ filters }: { filters: Filters }) {
                   <XAxis dataKey="period" tick={AXIS_TICK} tickLine={false} axisLine={false} />
                   <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} tickFormatter={(value) => formatCompact(Number(value), 1)} />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(value, name) => [formatHkd(Number(value)), name]} itemSorter={(item) => -Number(item.value)} />
-                  <Legend wrapperStyle={{ fontSize: 12 }} />
+                  <Legend wrapperStyle={{ fontSize: 14 }} />
                   {regions.map((region) => <Line key={region} dataKey={region} name={label(region)} stroke={ORIGIN_COLORS[region]} strokeWidth={2} dot={{ r: 4 }} isAnimationActive={false} />)}
                 </LineChart>
               </ResponsiveContainer>
@@ -188,7 +188,7 @@ export default function RegionReviewChart({ filters }: { filters: Filters }) {
                   }}
                   itemSorter={(item) => -Number(item.value)}
                 />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Legend wrapperStyle={{ fontSize: 14 }} />
                 {REVIEW_REGIONS.map((region) => {
                   const shown = regions.includes(region);
                   const lastShown = region === regions[regions.length - 1];
@@ -199,11 +199,11 @@ export default function RegionReviewChart({ filters }: { filters: Filters }) {
                         dataKey={labelMode === 'percent' ? `${region}-share` : region}
                         position="center"
                         fill={labelColor(ORIGIN_COLORS[region])}
-                        fontSize={labelMode === 'numbers' ? 11 : 13}
+                        fontSize={labelMode === 'numbers' ? 13 : 15}
                         formatter={(value: number) => value < 1 ? '' : labelMode === 'percent' ? `${value.toFixed(1)}%` : formatCompact(value, 2)}
                       />
                       {labelMode === 'numbers' && lastShown && (
-                        <LabelList dataKey="shownTotal" position="top" fill="#334155" fontSize={12}
+                        <LabelList dataKey="shownTotal" position="top" fill="#334155" fontSize={14}
                           formatter={(value: number) => `Total ${formatCompact(value, 2)}`} />
                       )}
                     </Bar>
@@ -221,7 +221,7 @@ export default function RegionReviewChart({ filters }: { filters: Filters }) {
             <div>
               <div className="text-xs text-slate-500">YoY Growth</div>
               <strong className={`text-base ${overview.growth === null ? 'text-slate-500' : overview.growth >= 0 ? 'text-green-700' : 'text-red-600'}`}>{formatPct(overview.growth, 1, true)}</strong>
-              <div className="text-[13px] text-slate-500">vs same period in 2025</div>
+              <div className="text-[15px] text-slate-500">vs same period in 2025</div>
             </div>
           </aside>
         </div>

@@ -262,7 +262,7 @@ export function StayCard() {
         {[2.8, 3.0, 3.2, 3.4].map((v) => (
           <g key={v}>
             <line x1={left} y1={y(v)} x2={width - right} y2={y(v)} stroke="#edf0f2" />
-            <text x={left - 6} y={y(v) + 3} textAnchor="end" fill="#89949c" fontSize="11">
+            <text x={left - 6} y={y(v) + 3} textAnchor="end" fill="#89949c" fontSize="13">
               {v.toFixed(1)}
             </text>
           </g>
@@ -275,7 +275,7 @@ export function StayCard() {
             <g key={i}>
               <title>{isBaseline ? `H1 2025 average: ${v.toFixed(1)} nights` : `${MONTH_ABBR[i - 1]} 2026: ${v.toFixed(1)} nights; ${formatGrowth(change)} vs ${MONTH_ABBR[i - 1]} 2025`}</title>
               <circle className="stay-dot" style={{ animationDelay: `${600 + i * 90}ms` }} cx={x(i)} cy={y(v)} r="4.5" fill={isBaseline ? FLAT : colorOf(growthClass(change))} stroke="#fff" strokeWidth="1.5" />
-              <text x={x(i)} y={height - 9} textAnchor="middle" fill="#53636e" fontSize="12">
+              <text x={x(i)} y={height - 9} textAnchor="middle" fill="#53636e" fontSize="14">
                 {isBaseline ? "H1 '25" : MONTH_ABBR[i - 1]}
               </text>
             </g>

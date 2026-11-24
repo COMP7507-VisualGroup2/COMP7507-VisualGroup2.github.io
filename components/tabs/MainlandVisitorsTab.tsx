@@ -35,7 +35,7 @@ function VisitorTypeChart() {
         { name: 'Same-day', value: share(data.same_day, data.visitors), color: '#F28E2B' },
         { name: 'Overnight', value: share(data.overnight, data.visitors), color: '#4E79A7' },
       ]} />
-      <p className="mt-2 text-[12px] text-slate-500">H1 2026 · share of Mainland arrivals · HKTB visitor-type workbooks.</p>
+      <p className="mt-2 text-[14px] text-slate-500">H1 2026 · share of Mainland arrivals · HKTB visitor-type workbooks.</p>
     </>
   );
 }
@@ -51,7 +51,7 @@ function OriginChart() {
         ...currentTopOrigins.map((row, index) => ({ name: row.province_en, value: row.all_visitors_share_pct, color: TABLEAU_CASUAL[index] })),
         { name: 'Other origins', value: other, color: '#BAB0AC' },
       ]} />
-      <p className="mt-2 text-[12px] text-slate-500">H1 2026 · share of all Mainland visitors. Other is the remainder after the top five. User-provided table; source not stated.</p>
+      <p className="mt-2 text-[14px] text-slate-500">H1 2026 · share of all Mainland visitors. Other is the remainder after the top five. User-provided table; source not stated.</p>
     </>
   );
 }
@@ -64,7 +64,7 @@ function RepeatVisitChart() {
         { name: 'Repeat', value: 100 - firstTime2026, color: '#F28E2B' },
         { name: 'First-time', value: firstTime2026, color: '#4E79A7' },
       ]} />
-      <p className="mt-2 text-[12px] text-slate-500">H1 2026 · Mainland overnight visitors. Repeat share is 100% minus HKTB&apos;s first-time share.</p>
+      <p className="mt-2 text-[14px] text-slate-500">H1 2026 · Mainland overnight visitors. Repeat share is 100% minus HKTB&apos;s first-time share.</p>
     </>
   );
 }
@@ -137,7 +137,7 @@ export default function MainlandVisitorsTab() {
           change={sameDaySpendChange}
         />
       </section>
-      <p className="text-[12px] leading-relaxed text-slate-500">
+      <p className="text-[14px] leading-relaxed text-slate-500">
         Same-day spend per visitor: HKTB TEAIT, excluding international passenger transport.
       </p>
 

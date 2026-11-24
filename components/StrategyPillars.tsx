@@ -35,7 +35,7 @@ function PillarCard({
         key={m}
         type="button"
         onClick={() => onSelectMarket?.(m)}
-        className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[13px] font-medium transition hover:border-slate-400 ${
+        className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[15px] font-medium transition hover:border-slate-400 ${
           activeMarket === m ? 'border-slate-800 bg-slate-800 text-canvas' : lead ? 'border-slate-300 bg-canvas text-slate-800' : 'border-slate-200 bg-slate-50 text-slate-600'
         }`}
         title={`Open the ${m} playbook`}
@@ -49,13 +49,13 @@ function PillarCard({
   return (
     <article className="flex flex-col rounded-2xl border border-slate-200/80 bg-canvas shadow-card">
       <header className="rounded-t-2xl p-4 text-canvas sm:p-5" style={{ background: accent }}>
-        <p className="text-[13px] font-bold uppercase tracking-[0.18em] text-canvas/80">Pillar {pillar.number}</p>
+        <p className="text-[15px] font-bold uppercase tracking-[0.18em] text-canvas/80">Pillar {pillar.number}</p>
         <h3 className="mt-1 text-base font-bold leading-snug">{pillar.title}</h3>
         <p className="mt-1 text-xs text-canvas/85">{pillar.tagline}</p>
       </header>
 
       <div className="flex-1 space-y-1 p-4 sm:p-5">
-        <p className="mb-2 text-[13px] font-semibold uppercase tracking-wider text-slate-500">Why it matters (data-driven)</p>
+        <p className="mb-2 text-[15px] font-semibold uppercase tracking-wider text-slate-500">Why it matters (data-driven)</p>
         <ul className="mb-3 space-y-2">
           {pillar.rationale.map((r) => (
             <li key={r} className="flex gap-2 text-sm leading-snug text-slate-700">
@@ -67,11 +67,11 @@ function PillarCard({
 
         {(focus.length > 0 || supporting.length > 0) && (
           <div className="mb-3 rounded-xl bg-slate-50 p-3">
-            <p className="mb-1.5 text-[13px] font-semibold uppercase tracking-wider text-slate-500">Lead markets</p>
+            <p className="mb-1.5 text-[15px] font-semibold uppercase tracking-wider text-slate-500">Lead markets</p>
             <div className="flex flex-wrap gap-1.5">{focus.map((m) => chip(m, true))}</div>
             {supporting.length > 0 && (
               <>
-                <p className="mb-1.5 mt-2.5 text-[13px] font-semibold uppercase tracking-wider text-slate-500">Also supports</p>
+                <p className="mb-1.5 mt-2.5 text-[15px] font-semibold uppercase tracking-wider text-slate-500">Also supports</p>
                 <div className="flex flex-wrap gap-1.5">{supporting.map((m) => chip(m, false))}</div>
               </>
             )}
@@ -83,7 +83,7 @@ function PillarCard({
             {pillar.initiatives.map((x, idx) => (
               <li key={x} className="flex gap-2 text-sm leading-snug text-slate-700">
                 <span
-                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[12px] font-bold text-canvas"
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[14px] font-bold text-canvas"
                   style={{ background: accent }}
                 >
                   {idx + 1}

@@ -45,9 +45,9 @@ export default function MarketMovers({ filters }: { filters: Filters }) {
   const max = d.top[0]?.arrivals ?? 1;
   const chip = (label: string, value: number | null, hint: string) => (
     <div className="rounded-xl bg-slate-50 p-2.5">
-      <p className="text-[13px] text-slate-600">{label}</p>
+      <p className="text-[15px] text-slate-600">{label}</p>
       <p className="text-lg font-bold text-slate-900">{value !== null ? <AnimatedNumber value={value} format={(v) => `${Math.round(v)}%`} /> : '–'}</p>
-      <p className="text-[12px] text-slate-500">{hint}</p>
+      <p className="text-[14px] text-slate-500">{hint}</p>
     </div>
   );
 
