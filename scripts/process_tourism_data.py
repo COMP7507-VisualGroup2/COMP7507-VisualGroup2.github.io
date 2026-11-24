@@ -2,7 +2,7 @@
 """Hong Kong Inbound Tourism Evaluation - data pipeline.
 
 Reads the project's local source files and writes the static JSON consumed by the
-Next.js dashboard (Executive summary / Visitor Persona / Revenue Analysis / 2027 Outlook).
+Next.js dashboard (Executive summary / Visitor Persona / Revenue Analysis / H2 2026 Outlook).
 There is no live data fetching: every input is a file committed under data/.
 
 Inputs (all in data/):
@@ -136,9 +136,9 @@ HKTB_NAME_ALIASES = {
 AGE_COLUMNS = [("K", "0-15"), ("L", "16-25"), ("M", "26-35"), ("N", "36-45"), ("O", "46-55"), ("P", "56-65"), ("Q", "66+")]
 APPENDIX_MONTH_COLUMNS = [("F", 1), ("J", 2), ("N", 3), ("Y", 4), ("AC", 5), ("AG", 6)]
 
-# 2027 market playbooks: which strategic pillars apply to each HKTB source market, with market-specific
+# H2 2026 market playbooks: which strategic pillars apply to each HKTB source market, with market-specific
 # initiatives. KPI specs are (metric, change) pairs; baselines are computed from the HKTB data and the
-# 2027 targets are proposed changes on those baselines:
+# H2 2026 targets are proposed changes on those baselines:
 #   ("growth", +pct)      arrivals growth target vs Jan-Jun 2026 YoY baseline
 #   ("overnight", +pp)    overnight share of arrivals (Jan-Jun 2026)
 #   ("nights", +n)        average nights of overnight visitors (H1 2026)
@@ -773,7 +773,7 @@ def load_hktb_arrivals(registry):
 
 
 def build_market_playbooks(profile_rows, market_h1):
-    """Market playbooks for the 2027 pillars: HKTB-data baselines with proposed 2027 targets."""
+    """Market playbooks for the H2 2026 pillars: HKTB-data baselines with proposed H2 2026 targets."""
     def pv(period, market, dimension, category=None):
         for r in profile_rows:
             if r["period"] == period and r["market"] == market and r["dimension"] == dimension \
@@ -801,34 +801,34 @@ def build_market_playbooks(profile_rows, market_h1):
             kind, *args = spec_kpi
             if kind == "growth":
                 return {"metric": "Arrivals growth (YoY)", "baseline": "{:+.1f}% (Jan-Jun 2026)".format(yoy) if yoy is not None else "n/a",
-                        "target_2027": "{:+.0f}%".format(args[0])}
+                        "target_h2_2026": "{:+.0f}%".format(args[0])}
             if kind == "overnight":
                 base = math.floor(overnight + 0.5)
                 return {"metric": "Overnight share of arrivals", "baseline": "{}%".format(base),
-                        "target_2027": "{}%".format(base + args[0])}
+                        "target_h2_2026": "{}%".format(base + args[0])}
             if kind == "nights":
                 v = pv("2026-H1", m, "avg_nights")
-                return {"metric": "Average nights (overnight visitors)", "baseline": "{:.1f}".format(v), "target_2027": "{:.1f}".format(v + args[0])}
+                return {"metric": "Average nights (overnight visitors)", "baseline": "{:.1f}".format(v), "target_h2_2026": "{:.1f}".format(v + args[0])}
             if kind == "spend":
                 v = pv("2026-H1", m, "per_capita_overnight_hkd")
                 return {"metric": "Spend per overnight visitor", "baseline": "HK${:,.0f}".format(v),
-                        "target_2027": "HK${:,.0f}".format(round(v * (1 + args[0]), -2))}
+                        "target_h2_2026": "HK${:,.0f}".format(round(v * (1 + args[0]), -2))}
             if kind == "first":
                 v = pv("2026-H1", m, "first_timer_pct")
-                return {"metric": "First-time visitors", "baseline": "{:.0f}%".format(v), "target_2027": "{:.0f}%".format(v + args[0])}
+                return {"metric": "First-time visitors", "baseline": "{:.0f}%".format(v), "target_h2_2026": "{:.0f}%".format(v + args[0])}
             if kind == "family":
                 v = pv("2026-H1", m, "companion", "With family members")
                 return {"metric": "Overnight visitors travelling with family", "baseline": "{:.0f}%".format(v),
-                        "target_2027": "{:.0f}%".format(v + args[0])}
+                        "target_h2_2026": "{:.0f}%".format(v + args[0])}
             if kind == "multi":
                 v = pv("2025", segment, "itinerary", "Multi-destination")
                 return {"metric": "Multi-destination trips ({} segment)".format(segment), "baseline": "{:.0f}% (2025)".format(v),
-                        "target_2027": "{:.0f}%".format(v + args[0])}
+                        "target_h2_2026": "{:.0f}%".format(v + args[0])}
             if kind == "place":
                 name, target = args
                 rank = top_places.index(name) + 1 if name in top_places else None
                 return {"metric": "{}: rank among places visited".format(name),
-                        "baseline": "#{}".format(rank) if rank else "Not in top 10", "target_2027": target}
+                        "baseline": "#{}".format(rank) if rank else "Not in top 10", "target_h2_2026": target}
             raise ValueError("unknown KPI kind " + kind)
 
         playbooks.append({
@@ -1079,7 +1079,7 @@ def build_summary(registry):
 
 
 # --------------------------------------------------------------------------- #
-# 2027 strategy pillars (rationale and KPIs from the HKTB / TEAIT data)
+# H2 2026 strategy pillars (rationale and KPIs from the HKTB / TEAIT data)
 # --------------------------------------------------------------------------- #
 def build_pillars(summary, profile_rows):
     def pv(period, market, dimension, category):
@@ -1130,16 +1130,16 @@ def build_pillars(summary, profile_rows):
             ],
             "kpis": [
                 {"metric": "Overnight share of arrivals", "baseline": "{:.1f}%".format(100 - same_day_share),
-                 "target_2027": "{:.1f}%".format(100 - same_day_share + 3)},
+                 "target_h2_2026": "{:.1f}%".format(100 - same_day_share + 3)},
                 {"metric": "Long-haul share of arrivals", "baseline": "{:.1f}%".format(long_haul_share),
-                 "target_2027": "{:.1f}%".format(long_haul_share + 1.5)},
+                 "target_h2_2026": "{:.1f}%".format(long_haul_share + 1.5)},
                 {"metric": "Spend per overnight visitor (HKD)", "baseline": "{:,.0f}".format(h1_now["overnight_per_capita_hkd"]),
-                 "target_2027": "{:,.0f}".format(round(h1_now["overnight_per_capita_hkd"] * 1.05, -1))},
+                 "target_h2_2026": "{:,.0f}".format(round(h1_now["overnight_per_capita_hkd"] * 1.05, -1))},
             ],
             "timeline": [
-                {"phase": "Q1 2027", "action": "Launch long-haul stopover campaign and MICE bid fund round."},
-                {"phase": "Q2-Q3 2027", "action": "Roll out 10 bookable CityWalk itineraries with OTA partners."},
-                {"phase": "Q4 2027", "action": "Review overnight conversion and per-capita spend uplift."},
+                {"phase": "Jul-Aug 2026", "action": "Launch long-haul stopover campaign and MICE bid fund round."},
+                {"phase": "Sep-Nov 2026", "action": "Roll out 10 bookable CityWalk itineraries with OTA partners."},
+                {"phase": "Dec 2026", "action": "Review overnight conversion and per-capita spend uplift."},
             ],
         },
         {
@@ -1161,13 +1161,13 @@ def build_pillars(summary, profile_rows):
                 "Event-impact dashboard tracking incremental arrivals, hotel nights and spend per event.",
             ],
             "kpis": [
-                {"metric": "Mega-events hosted", "baseline": "2025-26 calendar", "target_2027": "+20% events"},
-                {"metric": "Overnight hotel-bill spending (YoY)", "baseline": "{:+.1f}%".format(hotel_growth), "target_2027": "+8-10%"},
-                {"metric": "Overnight entertainment spending (YoY)", "baseline": "{:+.1f}%".format(entertainment_growth), "target_2027": "+5%"},
+                {"metric": "Mega-events hosted", "baseline": "2025-26 calendar", "target_h2_2026": "+20% events"},
+                {"metric": "Overnight hotel-bill spending (YoY)", "baseline": "{:+.1f}%".format(hotel_growth), "target_h2_2026": "+8-10%"},
+                {"metric": "Overnight entertainment spending (YoY)", "baseline": "{:+.1f}%".format(entertainment_growth), "target_h2_2026": "+5%"},
             ],
             "timeline": [
-                {"phase": "H2 2026", "action": "Lock 2027 Kai Tak anchor events and ticket-bundle partners."},
-                {"phase": "2027", "action": "Run shoulder-season festivals; publish per-event impact reports."},
+                {"phase": "Jul-Sep 2026", "action": "Lock Kai Tak anchor events and ticket-bundle partners for the H2 2026 calendar."},
+                {"phase": "Oct-Dec 2026", "action": "Run shoulder-season festivals; publish per-event impact reports."},
             ],
         },
         {
@@ -1189,14 +1189,14 @@ def build_pillars(summary, profile_rows):
                 "Convert same-day Mainland flows into overnight stays with evening events and hotel bundles.",
             ],
             "kpis": [
-                {"metric": "Multi-destination itineraries sold", "baseline": "Pilot", "target_2027": "500k travellers"},
-                {"metric": "Mainland overnight conversion", "baseline": "{:.0f}%".format(mainland_overnight), "target_2027": "+3pp"},
+                {"metric": "Multi-destination itineraries sold", "baseline": "Pilot", "target_h2_2026": "500k travellers"},
+                {"metric": "Mainland overnight conversion", "baseline": "{:.0f}%".format(mainland_overnight), "target_h2_2026": "+3pp"},
                 {"metric": "Long-haul multi-destination trips", "baseline": "{:.0f}% (2025)".format(long_multi) if long_multi is not None else "n/a",
-                 "target_2027": "+5pp"},
+                 "target_h2_2026": "+5pp"},
             ],
             "timeline": [
-                {"phase": "Q1 2027", "action": "Launch single-ticket pilot (HSR + HZMB + attraction pass)."},
-                {"phase": "Q3 2027", "action": "Extend transit-visa routing campaign to long-haul source markets."},
+                {"phase": "Jul-Sep 2026", "action": "Launch single-ticket pilot (HSR + HZMB + attraction pass)."},
+                {"phase": "Oct-Dec 2026", "action": "Extend transit-visa routing campaign to long-haul source markets."},
             ],
         },
     ]

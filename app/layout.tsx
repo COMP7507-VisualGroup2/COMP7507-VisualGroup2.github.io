@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: '%s | Hong Kong Inbound Tourism',
   },
   description:
-    'Hong Kong inbound tourism dashboard (Jan 2025 – Jun 2026): executive summary against government targets, visitor personas, revenue analysis and a 2027 outlook.',
+    'Hong Kong inbound tourism dashboard (Jan 2025 – Jun 2026): executive summary against government targets, visitor personas, revenue analysis and an H2 2026 outlook.',
 };
 
 export const viewport: Viewport = {

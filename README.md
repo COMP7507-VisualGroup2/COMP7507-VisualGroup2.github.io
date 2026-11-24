@@ -1,6 +1,6 @@
 # Hong Kong Inbound Tourism Evaluation & Market Promotion Planning
 
-COMP7507 Group 2. A static Next.js + Tailwind dashboard evaluating Hong Kong inbound tourism (Jan 2025 – 2026 YTD). Its structure follows Part C of the project proposal, plus a 2027 outlook. Layout and Executive summary follow the COMP7507 Group Project v3 design. A dependency-free Python pipeline processes the supplied data.
+COMP7507 Group 2. A static Next.js + Tailwind dashboard evaluating Hong Kong inbound tourism (Jan 2025 – 2026 YTD). Its structure follows Part C of the project proposal, plus an H2 2026 outlook. Layout and Executive summary follow the COMP7507 Group Project v3 design. A dependency-free Python pipeline processes the supplied data.
 
 ## Tabs
 
@@ -10,7 +10,7 @@ COMP7507 Group 2. A static Next.js + Tailwind dashboard evaluating Hong Kong inb
 | `/visitor-persona/` | Region Analysis | Regional visitor and spending trends and visitor profiles |
 | `/countries-analysis/` | Country Analysis | Fixed to Jan–Jun 2026 (no period filter). Four key metrics, insights and actions, origin maps, all-country comparisons and individual visitor profiles |
 | `/revenue/` | Region Analysis | Alias of the Region Analysis page |
-| `/outlook-2027/` | 2027 Outlook | 3 strategic pillars with links to market playbooks in Country Analysis |
+| `/outlook-2027/` | 2026 H2 Outlook | 3 strategic pillars with links to market playbooks in Country Analysis |
 
 The legacy Mainland China Visitors, Short Haul and Reference routes remain accessible by direct URL, but are no longer dashboard tabs.
 

@@ -130,7 +130,7 @@ export interface VisitorDemographics {
 export interface PillarKpi {
   metric: string;
   baseline: string;
-  target_2027: string;
+  target_h2_2026: string;
 }
 
 export interface Pillar {
@@ -146,7 +146,7 @@ export interface Pillar {
   focus_markets: string[];
 }
 
-/** 2027 playbook for one HKTB source market: data-driven baselines with proposed targets per pillar. */
+/** H2 2026 playbook for one HKTB source market: data-driven baselines with proposed targets per pillar. */
 export interface MarketPlaybook {
   market: string;
   origin: Origin;

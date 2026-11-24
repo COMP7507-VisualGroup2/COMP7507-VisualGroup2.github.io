@@ -17,7 +17,7 @@ export const TABS = [
   { href: '/countries-analysis/', label: 'Country Analysis', short: 'Country', title: 'Country Analysis', description: 'Explore visitor profiles and spending for major countries' },
   { href: '/mainland-visitors/', label: 'Mainland China Visitors', short: 'Mainland', title: 'Mainland China Visitors', description: 'Who visits, where they come from, and where H1 spending is shifting.' },
   { href: '/short-haul/', label: 'Short Haul', short: 'Short Haul', title: 'Short Haul Visitors', description: 'Market performance, overnight stays and opportunities for H2.' },
-  { href: '/outlook-2027/', label: '2026 H2 Outlook', short: '2027', title: '2026 H2 Outlook: Market Promotion Plan', description: 'Three strategy pillars and proposed 2026 H2 targets for 18 HKTB source markets.' },
+  { href: '/outlook-2027/', label: '2026 H2 Outlook', short: 'H2 2026', title: '2026 H2 Outlook: Market Promotion Plan', description: 'Three strategy pillars and proposed 2026 H2 targets for 18 HKTB source markets.' },
   { href: '/reference/', label: 'Reference', short: 'Reference', title: 'Tourism reference charts.', description: 'Visitor and revenue growth, visitor mix, and source markets.' },
 ];
 

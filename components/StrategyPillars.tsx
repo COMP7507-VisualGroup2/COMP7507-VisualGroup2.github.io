@@ -94,13 +94,13 @@ function PillarCard({
           </ol>
         </Accordion>
 
-        <Accordion title="2027 KPI targets (all markets)">
+        <Accordion title="H2 2026 KPI targets (all markets)">
           <table className="w-full text-xs">
             <thead className="text-slate-500">
               <tr>
                 <th className="pb-1 text-left font-medium">Metric</th>
                 <th className="pb-1 text-right font-medium">Baseline</th>
-                <th className="pb-1 text-right font-medium">2027</th>
+                <th className="pb-1 text-right font-medium">H2 2026</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -109,7 +109,7 @@ function PillarCard({
                   <td className="py-1.5 pr-2 text-slate-700">{k.metric}</td>
                   <td className="py-1.5 text-right tabular-nums text-slate-600">{k.baseline}</td>
                   <td className="py-1.5 pl-2 text-right font-semibold tabular-nums" style={{ color: accent }}>
-                    {k.target_2027}
+                    {k.target_h2_2026}
                   </td>
                 </tr>
               ))}
