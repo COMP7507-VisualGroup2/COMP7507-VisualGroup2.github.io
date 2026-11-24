@@ -20,7 +20,7 @@ export default function ContextMetric({ label, value, previous, change, previous
           {direction === 'up' ? '▲' : direction === 'down' ? '▼' : '–'}
         </span>
       </p>
-      <p className="mt-1 text-[15px] text-slate-500">
+      <p className="mt-1 text-[13px] text-slate-500">
         vs <AnimatedText text={previous} /> in {previousPeriod}{' '}
         <span className={`font-semibold ${changeColor}`}>
           (<AnimatedText text={roundedChange === null ? 'N/A' : `${roundedChange > 0 ? '+' : ''}${roundedChange.toFixed(1)}%`} />)

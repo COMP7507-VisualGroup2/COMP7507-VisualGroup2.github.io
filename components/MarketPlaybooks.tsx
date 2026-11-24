@@ -76,7 +76,7 @@ export default function MarketPlaybooks({ selected, origin, available }: { selec
     <section className="space-y-3">
       <h2 className="text-lg font-bold text-brand-900">Insights and proposed actions</h2>
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-[21.75px] text-slate-700">
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-slate-700">
           <h3 className="mb-2 font-bold text-amber-900">Insights · {title}</h3>
           {displayedPairs.length ? (
             <ol className="list-decimal space-y-2 pl-4">
@@ -84,7 +84,7 @@ export default function MarketPlaybooks({ selected, origin, available }: { selec
             </ol>
           ) : <p>Insights are unavailable for this selection and period.</p>}
         </div>
-        <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-[21.75px] text-slate-700">
+        <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-slate-700">
           <h3 className="mb-2 font-bold text-green-900">Proposed actions · {title}</h3>
           {displayedPairs.length ? (
             <ol className="list-decimal space-y-2 pl-4">

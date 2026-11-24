@@ -40,7 +40,7 @@ export function MarketShareChart({ period, filters }: { period: ProfilePeriod; f
         <BarChart data={data} layout="vertical" margin={{ top: 0, right: 16, left: 4, bottom: 0 }} barCategoryGap={6}>
           <CartesianGrid stroke={COLORS.grid} horizontal={false} />
           <XAxis type="number" tick={AXIS_TICK} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}%`} />
-          <YAxis type="category" dataKey="name" tick={{ ...AXIS_TICK, fontSize: 15 }} tickLine={false} axisLine={false} width={78} interval={0} />
+          <YAxis type="category" dataKey="name" tick={{ ...AXIS_TICK, fontSize: 13 }} tickLine={false} axisLine={false} width={78} interval={0} />
           <Tooltip
             {...TOOLTIP_STYLE}
             cursor={{ fill: 'rgba(242,142,43,0.08)' }}
@@ -59,7 +59,7 @@ export function MarketShareChart({ period, filters }: { period: ProfilePeriod; f
               );
             }}
           />
-          <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 16 }} />
+          <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 14 }} />
           <Bar dataKey="overnightShare" name="Share of overnight visitors" fill={COLORS.steel} radius={[0, 3, 3, 0]} maxBarSize={11} />
           <Bar dataKey="spendShare" name="Share of estimated spend" fill={COLORS.brandDeep} radius={[0, 3, 3, 0]} maxBarSize={11} />
         </BarChart>
@@ -94,7 +94,7 @@ export function MarketDriversChart({ period, filters }: { period: ProfilePeriod;
         <BarChart data={data} layout="vertical" stackOffset="sign" margin={{ top: 0, right: 16, left: 4, bottom: 0 }} barCategoryGap={6}>
           <CartesianGrid stroke={COLORS.grid} horizontal={false} />
           <XAxis type="number" tick={AXIS_TICK} tickLine={false} axisLine={false} tickFormatter={(v) => formatCompact(Number(v), 0)} />
-          <YAxis type="category" dataKey="name" tick={{ ...AXIS_TICK, fontSize: 15 }} tickLine={false} axisLine={false} width={78} interval={0} />
+          <YAxis type="category" dataKey="name" tick={{ ...AXIS_TICK, fontSize: 13 }} tickLine={false} axisLine={false} width={78} interval={0} />
           <ReferenceLine x={0} stroke={COLORS.steelDeep} />
           <Tooltip
             {...TOOLTIP_STYLE}
@@ -113,7 +113,7 @@ export function MarketDriversChart({ period, filters }: { period: ProfilePeriod;
               );
             }}
           />
-          <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 16 }} />
+          <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 14 }} />
           <Bar dataKey="volume" name="Visitor volume" stackId="d" fill={COLORS.brandDeep} maxBarSize={14} />
           <Bar dataKey="yield" name="Spend per visitor" stackId="d" fill={COLORS.accent} maxBarSize={14} />
         </BarChart>
@@ -131,9 +131,9 @@ export function SegmentCategoryChart({ year, segment }: { year: string; segment?
       <BarChart data={data} layout="vertical" margin={{ top: 0, right: 16, left: 4, bottom: 0 }} barCategoryGap={14}>
         <CartesianGrid stroke={COLORS.grid} horizontal={false} />
         <XAxis type="number" tick={AXIS_TICK} tickLine={false} axisLine={false} tickFormatter={(v) => formatHkdMillions(Number(v))} />
-        <YAxis type="category" dataKey="segment" tick={{ ...AXIS_TICK, fontSize: 15 }} tickLine={false} axisLine={false} width={78} />
+        <YAxis type="category" dataKey="segment" tick={{ ...AXIS_TICK, fontSize: 13 }} tickLine={false} axisLine={false} width={78} />
         <Tooltip {...TOOLTIP_STYLE} cursor={{ fill: 'rgba(242,142,43,0.08)' }} formatter={(v) => formatHkdMillions(Number(v))} />
-        <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 16 }} />
+        <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 14 }} />
         {SPEND_CATEGORIES.map((c, i) => (
           <Bar key={c} dataKey={c} stackId="c" fill={SERIES[i]} maxBarSize={30} />
         ))}

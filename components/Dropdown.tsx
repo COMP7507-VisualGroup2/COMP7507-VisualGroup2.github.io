@@ -91,7 +91,7 @@ export default function Dropdown<T extends string>({ value, options, onChange, l
         onKeyDown={onKeyDown}
         className={`flex w-full min-w-[7rem] items-center justify-between gap-2 text-left transition focus:outline-none ${
           variant === 'dark'
-            ? `h-[34px] rounded-[5px] border bg-[#112e48] px-2.5 text-[17px] text-[#edf2f5] hover:border-[#84a1b5] focus:border-[#84a1b5] ${open ? 'border-[#84a1b5]' : 'border-[#2c465c]'}`
+            ? `h-[34px] rounded-[5px] border bg-[#112e48] px-2.5 text-[15px] text-[#edf2f5] hover:border-[#84a1b5] focus:border-[#84a1b5] ${open ? 'border-[#84a1b5]' : 'border-[#2c465c]'}`
             : `rounded-[5px] border bg-canvas px-2.5 py-1.5 text-xs font-medium text-[#0a2540] shadow-sm hover:border-[#afbec7] focus:ring-2 focus:ring-[#d9e8ef] ${open ? 'border-[#8caab9] ring-2 ring-[#d9e8ef]' : 'border-[#dfe5e8]'}`
         }`}
       >

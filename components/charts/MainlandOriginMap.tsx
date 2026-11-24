@@ -49,7 +49,7 @@ export default function MainlandOriginMap({ filters }: { filters: Pick<Filters, 
                   {row.province_en}
                 </span>
                 <strong className="text-right">{row.all_visitors_share_pct}%</strong>
-                <span className={`text-right ${changeColorClass(growth)} ${growth === 'new' ? 'text-[14px] font-bold' : ''}`}>{growth === null ? 'N/A' : growth === 'new' ? 'NEW' : `${growth > 0 ? '+' : ''}${growth.toFixed(1)}%`}</span>
+                <span className={`text-right ${changeColorClass(growth)} ${growth === 'new' ? 'text-[12px] font-bold' : ''}`}>{growth === null ? 'N/A' : growth === 'new' ? 'NEW' : `${growth > 0 ? '+' : ''}${growth.toFixed(1)}%`}</span>
               </li>
             );
           })}

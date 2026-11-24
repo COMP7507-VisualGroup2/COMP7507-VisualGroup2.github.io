@@ -59,7 +59,7 @@ export default function CountryMetrics({ filters, selected }: { filters: Filters
         ))}
       </div>
       {selected && (
-        <p className="text-[14px] text-slate-500">Overnight spend uses supplied country-profile values where available.</p>
+        <p className="text-[12px] text-slate-500">Overnight spend uses supplied country-profile values where available.</p>
       )}
     </section>
   );

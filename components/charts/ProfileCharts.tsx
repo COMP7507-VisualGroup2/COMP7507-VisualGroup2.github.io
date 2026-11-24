@@ -59,14 +59,14 @@ function SegmentStack({ data, keys, colors, height = 230 }: { data: Row[]; keys:
           axisLine={false}
           tickFormatter={(v) => `${v}%`}
         />
-        <YAxis type="category" dataKey="label" tick={{ ...AXIS_TICK, fontSize: 15 }} tickLine={false} axisLine={false} width={150} />
+        <YAxis type="category" dataKey="label" tick={{ ...AXIS_TICK, fontSize: 13 }} tickLine={false} axisLine={false} width={150} />
         <Tooltip {...TOOLTIP_STYLE} formatter={(v) => formatShare(Number(v))} cursor={{ fill: 'rgba(242,142,43,0.08)' }} />
-        <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 15 }} formatter={(v) => <span style={{ color: COLORS.steelDeep }}>{v}</span>} />
+        <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 13 }} formatter={(v) => <span style={{ color: COLORS.steelDeep }}>{v}</span>} />
         {keys.map((k, i) => {
           const fill = colors[i % colors.length];
           return (
             <Bar key={k} dataKey={k} stackId="s" fill={fill} maxBarSize={30}>
-              <LabelList dataKey={k} position="center" fill={labelColor(fill)} fontSize={14} formatter={(v: number) => (v >= 7 ? `${Math.round(v)}%` : '')} />
+              <LabelList dataKey={k} position="center" fill={labelColor(fill)} fontSize={12} formatter={(v: number) => (v >= 7 ? `${Math.round(v)}%` : '')} />
             </Bar>
           );
         })}
@@ -97,7 +97,7 @@ export function AgeBySegment({ period, segment }: { period: ProfilePeriod; segme
   return (
     <div>
       <SegmentStack data={data} keys={AGE_GROUPS} colors={AGE_COLORS} />
-      <p className="mt-1 text-[15px] text-slate-600">Share of arrivals by age bracket · label shows mean age · {H1_LABEL[period]} (HKTB arrival statistics).</p>
+      <p className="mt-1 text-[13px] text-slate-600">Share of arrivals by age bracket · label shows mean age · {H1_LABEL[period]} (HKTB arrival statistics).</p>
     </div>
   );
 }
@@ -156,7 +156,7 @@ export function StayBySegment({ period, segment }: { period: ProfilePeriod; segm
   return (
     <div>
       <SegmentStack data={data} keys={['Overnight', 'Same-day']} colors={[VISITOR_TYPE_COLORS.Overnight, VISITOR_TYPE_COLORS['Same-day']]} height={210} />
-      <p className="mt-1 text-[15px] text-slate-600">Label shows average nights stayed by overnight visitors.</p>
+      <p className="mt-1 text-[13px] text-slate-600">Label shows average nights stayed by overnight visitors.</p>
     </div>
   );
 }
@@ -202,7 +202,7 @@ export function SpendMixBySegment({ period, segment }: { period: ProfilePeriod; 
   return (
     <div>
       <SegmentStack data={data} keys={MIX} colors={[COLORS.accent, COLORS.brandDeep, COLORS.brand, COLORS.blushDeep]} />
-      <p className="mt-1 text-[15px] text-slate-600">
+      <p className="mt-1 text-[13px] text-slate-600">
         Share of overnight visitors&apos; spending in Hong Kong · label shows spend per overnight visitor. Hotel bills include meals and other spending inside the hotel.
       </p>
     </div>
@@ -277,7 +277,7 @@ export function MarketYieldScatter({
             tickLine={false}
             axisLine={false}
             tickFormatter={(v) => Number(v).toFixed(1)}
-            label={{ value: 'Average nights stayed', position: 'insideBottom', offset: -4, fontSize: 14, fill: COLORS.steelDeep }}
+            label={{ value: 'Average nights stayed', position: 'insideBottom', offset: -4, fontSize: 12, fill: COLORS.steelDeep }}
           />
           <YAxis
             type="number"
@@ -306,7 +306,7 @@ export function MarketYieldScatter({
                   <p className="text-slate-600">
                     {formatNumber(p.overnight)} overnight arrivals ({H1_LABEL[period]})
                   </p>
-                  <p className="mt-1 text-[14px] text-brand-800">Click to open persona</p>
+                  <p className="mt-1 text-[12px] text-brand-800">Click to open persona</p>
                 </div>
               );
             }}
@@ -334,7 +334,7 @@ export function MarketYieldScatter({
                     x={cx}
                     y={r > 14 ? cy + 3 : cy - r - 4}
                     textAnchor="middle"
-                    fontSize={14}
+                    fontSize={12}
                     fontWeight={active ? 700 : 500}
                     fill={r > 14 ? COLORS.canvas : COLORS.ink}
                   >
@@ -346,7 +346,7 @@ export function MarketYieldScatter({
           />
         </ScatterChart>
       </ResponsiveContainer>
-      <p className="mt-1 text-[15px] text-slate-600">
+      <p className="mt-1 text-[13px] text-slate-600">
         Dashed lines = all-market average ({avgNights?.toFixed(1)} nights, {avgSpend ? formatHkd(avgSpend) : '–'}). Spend and nights: HKTB Visitor Profile, {PERIOD_LABEL[period]}; bubble size: overnight arrivals, {H1_LABEL[period]}.
       </p>
     </div>
@@ -396,7 +396,7 @@ export function ExperienceScorecard({ period, segment }: { period: ProfilePeriod
                   <td key={e.key} className="py-2 text-right tabular-nums">
                     <span className="font-semibold text-slate-900">{v === null ? '–' : e.unit === '/10' ? v.toFixed(1) : `${v}%`}</span>
                     {d !== null && d !== 0 && (
-                      <span className={`ml-1.5 text-[15px] font-semibold ${d > 0 ? 'text-green-700' : 'text-red-600'}`}>
+                      <span className={`ml-1.5 text-[13px] font-semibold ${d > 0 ? 'text-green-700' : 'text-red-600'}`}>
                         {d > 0 ? '▲' : '▼'}
                         {e.unit === '/10' ? Math.abs(d).toFixed(1) : `${Math.abs(d)}pp`}
                       </span>
@@ -408,7 +408,7 @@ export function ExperienceScorecard({ period, segment }: { period: ProfilePeriod
           ))}
         </tbody>
       </table>
-      {period === '2026-H1' && <p className="mt-2 text-[15px] text-slate-600">Arrows compare with 2025 (full year).</p>}
+      {period === '2026-H1' && <p className="mt-2 text-[13px] text-slate-600">Arrows compare with 2025 (full year).</p>}
     </div>
   );
 }
@@ -429,10 +429,10 @@ export function AspectTable({ segment }: { segment?: Segment }) {
 
 export function RankBadge({ change }: { change: number | 'new' | null }) {
   if (change === null) return null;
-  if (change === 'new') return <span className="rounded bg-accent-50 px-1.5 text-[14px] font-semibold text-accent-600">NEW</span>;
-  if (change === 0) return <span className="text-[14px] text-slate-400">–</span>;
+  if (change === 'new') return <span className="rounded bg-accent-50 px-1.5 text-[12px] font-semibold text-accent-600">NEW</span>;
+  if (change === 0) return <span className="text-[12px] text-slate-400">–</span>;
   return (
-    <span className={`text-[14px] font-semibold ${change > 0 ? 'text-green-700' : 'text-red-600'}`}>
+    <span className={`text-[12px] font-semibold ${change > 0 ? 'text-green-700' : 'text-red-600'}`}>
       {change > 0 ? '▲' : '▼'}
       {Math.abs(change)}
     </span>
@@ -449,7 +449,7 @@ export function TopPlaces({ period, segment }: { period: ProfilePeriod; segment?
         {places.map((p) => (
           <li key={p.category} className="flex items-center gap-2 rounded-lg bg-slate-50 px-2.5 py-1.5">
             <span
-              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[15px] font-bold text-canvas"
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[13px] font-bold text-canvas"
               style={{ background: p.value <= 3 ? COLORS.brandDeep : COLORS.brand }}
             >
               {p.value}
@@ -461,7 +461,7 @@ export function TopPlaces({ period, segment }: { period: ProfilePeriod; segment?
           </li>
         ))}
       </ol>
-      {period === '2026-H1' && <p className="mt-2 text-[15px] text-slate-600">▲▼ rank change vs 2025 full year · NEW = not in the 2025 top 10.</p>}
+      {period === '2026-H1' && <p className="mt-2 text-[13px] text-slate-600">▲▼ rank change vs 2025 full year · NEW = not in the 2025 top 10.</p>}
     </div>
   );
 }
