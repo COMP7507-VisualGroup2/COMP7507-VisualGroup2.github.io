@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Dropdown from './Dropdown';
 import { dataMeta, filterMonths, summary } from '@/lib/data';
-import { analysis2026Filters, filterNotes } from '@/lib/filters';
+import { analysis2026Filters, countryAnalysisFilters, filterNotes } from '@/lib/filters';
 import { DEFAULT_FILTERS, FiltersProvider, useCountryMarket, useFilters } from '@/lib/filters-context';
 import { monthLong } from '@/lib/format';
 import { marketInFilter } from '@/lib/persona';
@@ -32,6 +32,8 @@ const PURPOSE_OPTIONS = [opt('All', 'All purposes'), ...['Vacation', 'Visiting f
 const CHANNEL_OPTIONS = [opt('All', 'All channels'), opt('Air', 'Air'), opt('Land', 'Land'), opt('Sea', 'Sea')];
 const MONTH_OPTIONS = filterMonths.map((m) => opt(m, monthLong(m)));
 const YEARS = Array.from(new Set(filterMonths.map((m) => m.slice(0, 4))));
+const COUNTRY_PERIOD = countryAnalysisFilters(DEFAULT_FILTERS, filterMonths);
+const COUNTRY_PERIOD_LABEL = `${mon(COUNTRY_PERIOD.start)}–${mon(COUNTRY_PERIOD.end)} ${COUNTRY_PERIOD.end.slice(0, 4)}`;
 const PRESETS = [
   { label: 'All', start: filterMonths[0], end: filterMonths[filterMonths.length - 1] },
   ...YEARS.map((y) => {
@@ -80,7 +82,7 @@ function FilterRow({ showContextFilters, countryAnalysis }: { showContextFilters
   const { filters: sharedFilters, setFilters, market } = useFilters();
   const filters = showContextFilters ? sharedFilters : analysis2026Filters(sharedFilters, filterMonths);
   const { choices, selected, setMarket: setCountryMarket } = useCountryMarket();
-  const set = (patch: Partial<Filters>) => setFilters({ ...filters, ...patch });
+  const set = (patch: Partial<Filters>) => setFilters({ ...(countryAnalysis ? sharedFilters : filters), ...patch });
   const areaSegment = (area: string) => summary.areas.find((a) => a.area === area)?.segment;
   const setMarket = (origin: Segment | 'All') => {
     if (countryAnalysis && selected && selected !== 'All' && !marketInFilter(selected, { origin, region: 'All' })) setCountryMarket('All');
@@ -91,7 +93,11 @@ function FilterRow({ showContextFilters, countryAnalysis }: { showContextFilters
       setFilters({ ...sharedFilters, origin: 'All' });
     }
   }, [countryAnalysis, market, setFilters, sharedFilters]);
-  const visibleFilters = showContextFilters ? filters : { ...filters, region: DEFAULT_FILTERS.region, visitorType: DEFAULT_FILTERS.visitorType, purpose: DEFAULT_FILTERS.purpose, channel: DEFAULT_FILTERS.channel };
+  const visibleFilters = showContextFilters ? filters : {
+    ...filters,
+    ...(countryAnalysis ? { start: DEFAULT_FILTERS.start, end: DEFAULT_FILTERS.end } : {}),
+    region: DEFAULT_FILTERS.region, visitorType: DEFAULT_FILTERS.visitorType, purpose: DEFAULT_FILTERS.purpose, channel: DEFAULT_FILTERS.channel,
+  };
   const isDirty = JSON.stringify(visibleFilters) !== JSON.stringify(DEFAULT_FILTERS) || (countryAnalysis && selected !== undefined && selected !== 'All');
   const originLabel = showContextFilters ? 'Visitor segment' : 'Visitor Region';
   const monthOptions = showContextFilters ? MONTH_OPTIONS : MONTH_OPTIONS.filter((option) => option.value.startsWith('2026-'));
@@ -116,6 +122,11 @@ function FilterRow({ showContextFilters, countryAnalysis }: { showContextFilters
           <Dropdown label="Visitor type" value={filters.visitorType} options={TYPE_OPTIONS} onChange={(v) => set({ visitorType: v as Filters['visitorType'] })} />
         </Field>
       )}
+      {countryAnalysis ? (
+        <Field label="Period">
+          <span className="py-1.5 text-xs font-semibold text-brand-900">{COUNTRY_PERIOD_LABEL}</span>
+        </Field>
+      ) : (
       <Field label="Period">
         <div className="flex flex-wrap items-center gap-1.5">
           <div className="inline-flex rounded-lg bg-slate-100 p-0.5">
@@ -138,6 +149,7 @@ function FilterRow({ showContextFilters, countryAnalysis }: { showContextFilters
           <Dropdown label="End month" value={filters.end} options={monthOptions} onChange={(end) => set({ end, start: end < filters.start ? end : filters.start })} />
         </div>
       </Field>
+      )}
       {showContextFilters && (
         <>
           <Field label="Trip purpose">
@@ -150,7 +162,11 @@ function FilterRow({ showContextFilters, countryAnalysis }: { showContextFilters
       )}
       {isDirty && (
         <button type="button" onClick={() => {
-          setFilters(showContextFilters ? DEFAULT_FILTERS : { ...DEFAULT_FILTERS, region: filters.region, visitorType: filters.visitorType, purpose: filters.purpose, channel: filters.channel });
+          setFilters(showContextFilters ? DEFAULT_FILTERS : {
+            ...DEFAULT_FILTERS,
+            ...(countryAnalysis ? { start: sharedFilters.start, end: sharedFilters.end } : {}),
+            region: filters.region, visitorType: filters.visitorType, purpose: filters.purpose, channel: filters.channel,
+          });
           if (countryAnalysis) setCountryMarket('All');
         }} className="mb-0.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-accent-600 hover:bg-accent-500/10">
           Reset
@@ -165,7 +181,7 @@ function StickyBar() {
   const activePath = pathname === '/revenue/' ? '/visitor-persona/' : pathname;
   const [open, setOpen] = useState(false);
   useEffect(() => setOpen(false), [pathname]);
-  const showFilters = pathname !== '/' && pathname !== '/reference/' && pathname !== '/mainland-visitors/' && pathname !== '/short-haul/';
+  const showFilters = pathname !== '/' && pathname !== '/reference/' && pathname !== '/mainland-visitors/' && pathname !== '/short-haul/' && pathname !== '/outlook-2027/';
 
   return (
     <div className="sticky top-0 z-30 border-b border-slate-200 bg-canvas/90 font-sans backdrop-blur supports-[backdrop-filter]:bg-canvas/80">
@@ -217,8 +233,8 @@ function Frame({ children }: { children: ReactNode }) {
   const end = dataMeta.coverage.end;
   const lastDay = new Date(Number(end.slice(0, 4)), Number(end.slice(5)), 0).getDate();
   const isVisitorAnalysis = page.href === '/visitor-persona/' || page.href === '/countries-analysis/';
-  const noteFilters = isVisitorAnalysis ? { ...filters, region: DEFAULT_FILTERS.region, visitorType: DEFAULT_FILTERS.visitorType, purpose: DEFAULT_FILTERS.purpose, channel: DEFAULT_FILTERS.channel } : filters;
-  const notes = isExecutiveSummary || page.href === '/reference/' || page.href === '/mainland-visitors/' || page.href === '/short-haul/' ? [] : filterNotes(noteFilters);
+  const noteFilters = isVisitorAnalysis ? { ...(page.href === '/countries-analysis/' ? countryAnalysisFilters(filters, filterMonths) : filters), region: DEFAULT_FILTERS.region, visitorType: DEFAULT_FILTERS.visitorType, purpose: DEFAULT_FILTERS.purpose, channel: DEFAULT_FILTERS.channel } : filters;
+  const notes = isExecutiveSummary || page.href === '/reference/' || page.href === '/mainland-visitors/' || page.href === '/short-haul/' || page.href === '/outlook-2027/' ? [] : filterNotes(noteFilters);
 
   return (
     <>

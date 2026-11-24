@@ -14,13 +14,13 @@ import RegionReviewChart, { RegionInsights } from '../charts/RegionReviewChart';
 import { AgeProfilePie, AverageStayChart, ExpenditureChart, FirstTimePie, PurposeChart, ShoppingTreemap, TravelCompanionChart, VisitorTypePie } from '../charts/RegionProfileCharts';
 import { PlacesBumpChart } from '../VisitorProfileCharts';
 import { filterMonths } from '@/lib/data';
-import { analysis2026Filters, describeSegment } from '@/lib/filters';
+import { analysis2026Filters, countryAnalysisFilters, describeSegment } from '@/lib/filters';
 import { useCountryMarket, useFilters } from '@/lib/filters-context';
 import { periodForRange } from '@/lib/persona';
 
 export default function VisitorPersonaTab({ view = 'region' }: { view?: 'region' | 'country' }) {
   const { filters: sharedFilters } = useFilters();
-  const filters = useMemo(() => analysis2026Filters(sharedFilters, filterMonths), [sharedFilters]);
+  const filters = useMemo(() => (view === 'country' ? countryAnalysisFilters : analysis2026Filters)(sharedFilters, filterMonths), [sharedFilters, view]);
   const { choices, selected } = useCountryMarket();
   const analysisFilters = useMemo(() => ({ ...filters, visitorType: 'All' as const, region: 'All' }), [filters]);
   const profileSegment = analysisFilters.origin !== 'All' ? analysisFilters.origin : 'All markets';

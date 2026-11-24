@@ -16,6 +16,12 @@ export function analysis2026Filters(f: Filters, months: string[]): Filters {
     : { ...f, start, end };
 }
 
+/** Country Analysis has no period selector: it is fixed to the available 2026 half-year (Jan–Jun 2026). */
+export function countryAnalysisFilters(f: Filters, months: string[]): Filters {
+  const available = months.filter((month) => month.startsWith('2026-'));
+  return available.length ? { ...f, start: available[0], end: available[available.length - 1] } : f;
+}
+
 export function describeSegment(f: Filters): string {
   const market = f.region !== 'All' ? f.region : f.origin === 'All' ? 'All markets' : f.origin;
   return [market, f.visitorType === 'All' ? 'all visitors' : f.visitorType].join(' · ');
